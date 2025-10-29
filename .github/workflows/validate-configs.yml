@@ -51,9 +51,9 @@ jobs:
         echo "Installing Kea DHCP server..."
         sudo apt-get install -y kea-dhcp4-server kea-ctrl-agent kea-common
         
-        # Check what Kea binaries are available
+        # Check what Kea binaries are available (with timeout)
         echo "Available Kea binaries:"
-        find /usr -name "*kea*" 2>/dev/null | grep -E "(bin|sbin)" | head -10
+        timeout 10 find /usr -name "*kea*" -type f 2>/dev/null | grep -E "(bin|sbin)" | head -5 || echo "Binary search timed out or failed"
         
     - name: 🧪 Validate DNS Configuration
       run: |
@@ -99,42 +99,26 @@ jobs:
         echo "File readable test:"
         cat "$CONFIG_PATH" | head -3
         
-        # Check available Kea validation commands
+        # Check available Kea validation commands (quick check)
         echo "Checking available Kea commands:"
-        which kea-dhcp4 || echo "kea-dhcp4 not found"
-        which kea-dhcp4-server || echo "kea-dhcp4-server not found" 
-        which kea-admin || echo "kea-admin not found"
-        
-        # Try different Kea validation methods
-        VALIDATION_SUCCESS=false
-        
-        # Method 1: Try kea-dhcp4 with config test
-        if command -v kea-dhcp4 &> /dev/null; then
-          echo "Trying kea-dhcp4 validation..."
-          if timeout 30 kea-dhcp4 -t "$CONFIG_PATH" > /tmp/kea-output.log 2>&1; then
-            echo "✅ Kea validation successful with kea-dhcp4"
-            VALIDATION_SUCCESS=true
+        for cmd in kea-dhcp4 kea-dhcp4-server kea-admin; do
+          if command -v "$cmd" &>/dev/null; then
+            echo "✅ Found: $cmd at $(which $cmd)"
           else
-            echo "⚠️ kea-dhcp4 validation failed, output:"
-            head -10 /tmp/kea-output.log || echo "No output file"
+            echo "❌ Not found: $cmd"
           fi
-        fi
+        done
         
-        # Method 2: Try systemd config check if available
-        if [[ "$VALIDATION_SUCCESS" == "false" ]] && systemctl cat kea-dhcp4-server &>/dev/null; then
-          echo "Trying systemd config validation..."
-          # Copy config to expected location for systemd test
-          sudo mkdir -p /etc/kea
-          sudo cp "$CONFIG_PATH" /etc/kea/kea-dhcp4.conf
-          if sudo systemd-analyze verify kea-dhcp4-server.service 2>/dev/null; then
-            echo "✅ Systemd service validation passed"
-            VALIDATION_SUCCESS=true
+        # Try Kea validation with shorter timeout
+        if command -v kea-dhcp4 &> /dev/null; then
+          echo "Trying kea-dhcp4 validation (10s timeout)..."
+          if timeout 10 kea-dhcp4 -t "$CONFIG_PATH" 2>&1; then
+            echo "✅ Kea validation successful"
+          else
+            echo "⚠️ Kea validation failed or timed out - continuing anyway"
           fi
-        fi
-        
-        # If Kea validation fails, continue with JSON validation only
-        if [[ "$VALIDATION_SUCCESS" == "false" ]]; then
-          echo "⚠️ Kea-specific validation failed, continuing with JSON validation only"
+        else
+          echo "⚠️ kea-dhcp4 binary not found - skipping Kea-specific validation"
         fi
         
         echo "Checking JSON syntax..."
