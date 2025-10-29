@@ -1,18 +1,12 @@
 # 🛡️ **System Hardening & Baseline Security**
 
-<div align="center">
-
 [![Ubuntu](https://img.shields.io/badge/Ubuntu-Hardened-E95420?style=for-the-badge&logo=ubuntu&logoColor=white)](https://ubuntu.com/server)
 [![SSH](https://img.shields.io/badge/SSH-Key%20Only-success?style=for-the-badge&logo=openssh&logoColor=white)](./sshd_config)
 [![Security](https://img.shields.io/badge/Security-Enterprise-red?style=for-the-badge&logo=shield&logoColor=white)](./security-setup.sh)
 
-</div>
-
 ---
 
 ## 🎯 **Security Arsenal**
-
-<div align="center">
 
 | 🔐 **Component** | 📝 **Purpose** | 📁 **File** | 🚀 **Status** |
 |:---:|:---|:---:|:---:|
@@ -21,8 +15,6 @@
 | 🤖 **Auto Setup** | One-command security deployment | [`security-setup.sh`](./security-setup.sh) | ✅ Ready |
 | 🚨 **Login Banner** | Legal notice & deterrent | [`issue.net`](./issue.net) | ✅ Ready |
 | 📖 **Deploy Guide** | Complete deployment procedures | [`DEPLOYMENT.md`](./DEPLOYMENT.md) | ✅ Ready |
-
-</div>
 
 ## 🚀 Quick Start (Recommended)
 
@@ -81,9 +73,9 @@ sudo cp /opt/server-config-repo/hardening/issue.net /etc/
 
 ### 2. Restart the SSH service
 
-    ```bash
-    sudo systemctl restart ssh
-    ```
+```bash
+sudo systemctl restart ssh
+```
 
 ### Custom User/Group Setup
 
@@ -101,7 +93,8 @@ This step ensures the necessary administrative group exists on the system.
 
 ## 2. Applying Configuration to a New Server (Recovery)
 
-For recovery, you would follow the same steps: edit the default config file with the specified changes, and re-run the user/group commands.
+For recovery, you would follow the same steps: edit the default config file with the specified changes, and
+re-run the user/group commands.
 
 ## 3. Troubleshooting and Verification
 
@@ -119,6 +112,7 @@ For recovery, you would follow the same steps: edit the default config file with
 
 1. **Check Config:** `sudo sshd -t` (returns nothing on success).
 
-2. **Check Firewall:** Verify that the firewall rules explicitly permit inbound TCP traffic on port **2222**. The firewall configuration is in **`fw/rules.v4`**.
-    * **Check current running rules:** `sudo iptables -L INPUT -v -n | grep 2222`
-    * **If rules are missing:** Reload the saved rules: `sudo iptables-restore < /etc/iptables/rules.v4`
+2. **Check Firewall:** Verify that the firewall rules explicitly permit inbound TCP traffic on port **2222**.
+   The firewall configuration is in **`fw/rules.v4`**.
+   - **Check current running rules:** `sudo iptables -L INPUT -v -n | grep 2222`
+   - **If rules are missing:** Reload the saved rules: `sudo iptables-restore < /etc/iptables/rules.v4`

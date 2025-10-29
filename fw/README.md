@@ -1,39 +1,19 @@
 # 🔥 **Firewall Configuration**
 
-<div align="center">
-
 [![nftables](https://img.shields.io/badge/nftables-1.0+-red?style=for-the-badge&logo=linux&logoColor=white)](https://netfilter.org/projects/nftables/)
 [![Security](https://img.shields.io/badge/Security-Enterprise%20Grade-success?style=for-the-badge&logo=shield&logoColor=white)](./nftables.conf)
-[![NAT](https://img.shields.io/badge/NAT-Enabled-blue?style=for-the-badge&logo=router&logoColor=white)](#-nat--masquerading)
-
-</div>
+[![NAT](https://img.shields.io/badge/NAT-Enabled-blue?style=for-the-badge&logo=router&logoColor=white)](./nftables.conf)
 
 ---
 
 ## 🎯 **Modern Firewall Stack**
 
-<table>
-<tr>
-<td width="50%">
-
-### 🛡️ **Security Features**
-- 🚫 **Default Deny**: Explicit allow rules only
-- 🔍 **Stateful Tracking**: Connection state awareness
-- 🚨 **Rate Limiting**: DoS/DDoS protection
-- 📊 **Comprehensive Logging**: Security monitoring
-
-</td>
-<td width="50%">
-
-### 🌐 **Network Services**
-- 🔄 **NAT/Masquerading**: LAN → Internet
-- 🎯 **Interface Separation**: WAN/LAN isolation
-- ⚡ **Performance Optimized**: Hardware acceleration
-- 🔧 **Easy Management**: Modern nftables syntax
-
-</td>
-</tr>
-</table>
+| 🛡️ **Security Features** | 🌐 **Network Services** |
+|:---|:---|
+| 🚫 **Default Deny**: Explicit allow rules only | � **NAT/Masquerading**: LAN → Internet |
+| � **Stateful Tracking**: Connection state awareness | 🎯 **Interface Separation**: WAN/LAN isolation |
+| 🚨 **Rate Limiting**: DoS/DDoS protection | ⚡ **Performance Optimized**: Hardware acceleration |
+| 📊 **Comprehensive Logging**: Security monitoring | 🔧 **Easy Management**: Modern nftables syntax |
 
 > 🆕 **Technology Upgrade**: Migrated from legacy iptables → modern nftables for enhanced performance and security
 
@@ -149,4 +129,5 @@ sudo tail -f /var/log/kern.log | grep "nft-"
 
 1. **Check IP Forwarding:** Run `sysctl net.ipv4.ip_forward`. It **must** return `1`.
 
-2. **Check NAT Rule:** Verify the POSTROUTING chain contains the `MASQUERADE` rule: `sudo iptables -L POSTROUTING -t nat -v -n`.
+2. **Check NAT Rule:** Verify the POSTROUTING chain contains the `MASQUERADE` rule:
+   `sudo iptables -L POSTROUTING -t nat -v -n`.
