@@ -15,7 +15,15 @@ jobs:
     - name: 📥 Checkout Repository
       uses: actions/checkout@v4
       
-    - name: 🔧 Install Dependencies
+    - name: � Debug Repository Contents
+      run: |
+        echo "Repository structure:"
+        find . -name "*.conf" -o -name "*.local" | head -20
+        echo "DHCP directory contents:"
+        ls -la dhcp/ || echo "DHCP directory not found"
+        echo "Current working directory: $(pwd)"
+      
+    - name: �🔧 Install Dependencies
       run: |
         # Check connectivity (informational only)
         echo "Testing basic connectivity..."
@@ -69,13 +77,27 @@ jobs:
     - name: 🧪 Validate DHCP Configuration
       run: |
         echo "Validating Kea DHCP configuration..."
+        
+        # Check if the configuration file exists
+        if [[ ! -f "dhcp/kea-dhcp4.conf" ]]; then
+          echo "❌ Configuration file dhcp/kea-dhcp4.conf not found"
+          ls -la dhcp/
+          exit 1
+        fi
+        
+        # Get absolute path for Kea validation
+        CONFIG_PATH="$(pwd)/dhcp/kea-dhcp4.conf"
+        echo "Configuration file path: $CONFIG_PATH"
+        
         # Try different Kea validation methods
         if command -v kea-dhcp4 &> /dev/null; then
-          kea-dhcp4 -t dhcp/kea-dhcp4.conf
+          echo "Using kea-dhcp4 for validation..."
+          kea-dhcp4 -t "$CONFIG_PATH"
         elif command -v kea-dhcp4-server &> /dev/null; then
-          kea-dhcp4-server -t dhcp/kea-dhcp4.conf
+          echo "Using kea-dhcp4-server for validation..."
+          kea-dhcp4-server -t "$CONFIG_PATH"
         else
-          echo "⚠️ Kea DHCP server not found, validating JSON syntax only"
+          echo "⚠️ Kea DHCP server binary not found, validating JSON syntax only"
         fi
         
         echo "Checking JSON syntax..."
