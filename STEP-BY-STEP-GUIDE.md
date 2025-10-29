@@ -321,6 +321,8 @@ curl -I https://www.google.com
 
 ⚠️ **IMPORTANT**: Set up SSH keys BEFORE testing SSH configuration!
 
+> 📖 **For detailed SSH troubleshooting and recovery procedures**, see [`hardening/DEPLOYMENT.md`](hardening/DEPLOYMENT.md)
+
 ### 7.1 Generate SSH Key Pair (on your client)
 
 ```bash
@@ -424,5 +426,7 @@ echo "DHCP: 10.207.0.100-200"
 5. **Backup Schedule**: Set up automated configuration backups
 
 **🎊 Congratulations! Your enterprise-grade network appliance is operational!**
+ 
+ 
  
  

@@ -20,9 +20,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Security policy and contributing guidelines
 
 ### Changed
-- **BREAKING**: Renamed `dhcp/dhcpd.conf` to `dhcp/kea-dhcp4.conf` (Kea DHCP format)
-- **BREAKING**: Renamed `dns/resolv.conf` to `dns/named.conf.local` (BIND9 format)
-- **BREAKING**: Renamed `fw/rules.v4` to `fw/nftables.conf` (nftables format)
+- **BREAKING**: Replaced legacy ISC DHCP with modern Kea DHCP configuration (`dhcp/kea-dhcp4.conf`)
+- **BREAKING**: Modernized DNS with BIND9 security hardening (`dns/named.conf.local`)
+- **BREAKING**: Upgraded firewall from iptables to nftables (`fw/nftables.conf`)
 - Updated all README files with proper placeholder documentation
 - Enhanced SSH configuration with modern cipher suites
 - Improved firewall rules with stateful filtering and logging
