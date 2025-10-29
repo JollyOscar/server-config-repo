@@ -1,12 +1,12 @@
-# sshd_config# sshd_config# sshd_config
+# sshd_config# sshd_config# sshd_config# sshd_config
 
 # This is the sshd server system-wide configuration file. See
 
-# sshd_config(5) for more information.# This is the sshd server system-wide configuration file. See# This is the sshd server system-wide configuration file. See
+# sshd_config(5) for more information.# This is the sshd server system-wide configuration file. See
 
 
 
-# This sshd was compiled with PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games# sshd_config(5) for more information.# sshd_config(5) for more information.
+# This sshd was compiled with PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games# sshd_config(5) for more information.# This is the sshd server system-wide configuration file. See# This is the sshd server system-wide configuration file. See
 
 # The strategy used for options in the default sshd_config shipped with
 
@@ -14,94 +14,197 @@
 
 # possible, but leave them commented. Uncommented options override the
 
-# default value.# This sshd was compiled with PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games# This sshd was compiled with PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games
+# default value.# This sshd was compiled with PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games# sshd_config(5) for more information.# sshd_config(5) for more information.
 
 
 
-Include /etc/ssh/sshd_config.d/*.conf# The strategy used for options in the default sshd_config shipped with# The strategy used for options in the default sshd_config shipped with
+Include /etc/ssh/sshd_config.d/*.conf# The strategy used for options in the default sshd_config shipped with
 
 
 
-# When systemd socket activation is used (the default), the socket# OpenSSH is to specify options with their default value where# OpenSSH is to specify options with their default value where
-
-# configuration must be re-generated after changing Port, AddressFamily, or
-
-# ListenAddress.# possible, but leave them commented. Uncommented options override the# possible, but leave them commented. Uncommented options override the
-
-#
-
-# For changes to take effect, run:# default value.# default value.
-
-#
-
-#   systemctl daemon-reload
-
-#   systemctl restart ssh.socket
-
-Include /etc/ssh/sshd_config.d/*.confInclude /etc/ssh/sshd_config.d/*.conf
-
-Port 2222
+Port 2222# OpenSSH is to specify options with their default value where
 
 AddressFamily inet
 
-#ListenAddress 0.0.0.0
+#ListenAddress 0.0.0.0# possible, but leave them commented. Uncommented options override the
 
-#ListenAddress ::# When systemd socket activation is used (the default), the socket# When systemd socket activation is used (the default), the socket
+#ListenAddress ::
 
+# default value.# This sshd was compiled with PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games# This sshd was compiled with PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games
 
-
-#HostKey /etc/ssh/ssh_host_rsa_key# configuration must be re-generated after changing Port, AddressFamily, or# configuration must be re-generated after changing Port, AddressFamily, or
+#HostKey /etc/ssh/ssh_host_rsa_key
 
 #HostKey /etc/ssh/ssh_host_ecdsa_key
 
-#HostKey /etc/ssh/ssh_host_ed25519_key# ListenAddress.# ListenAddress.
+#HostKey /etc/ssh/ssh_host_ed25519_key
 
+Include /etc/ssh/sshd_config.d/*.conf# The strategy used for options in the default sshd_config shipped with# The strategy used for options in the default sshd_config shipped with
 
-
-# Ciphers and keying##
+# Ciphers and keying
 
 #RekeyLimit default none
 
-# For changes to take effect, run:# For changes to take effect, run:
 
-# Logging
 
-#SyslogFacility AUTH##
+# Logging# When systemd socket activation is used (the default), the socket# OpenSSH is to specify options with their default value where# OpenSSH is to specify options with their default value where
 
-#LogLevel INFO
+#SyslogFacility AUTH
 
-#   systemctl daemon-reload#   systemctl daemon-reload
+#LogLevel INFO# configuration must be re-generated after changing Port, AddressFamily, or
 
-# Authentication:
 
-LoginGraceTime 1m#   systemctl restart ssh.socket#   systemctl restart ssh.socket
 
-PermitRootLogin no
+# Authentication:# ListenAddress.# possible, but leave them commented. Uncommented options override the# possible, but leave them commented. Uncommented options override the
+
+LoginGraceTime 1m
+
+PermitRootLogin no#
 
 StrictModes yes
 
-MaxAuthTries 3
+MaxAuthTries 3# For changes to take effect, run:# default value.# default value.
 
-MaxSessions 2Port 2222Port 2222
+MaxSessions 2
 
-MaxStartups 2:30:5
+MaxStartups 2:30:5#
 
-AddressFamily inetAddressFamily inet
 
-#PubkeyAuthentication yes
 
-#Expect .ssh/authorized_keys2 to be disregarded by default in future.#ListenAddress 0.0.0.0#ListenAddress 0.0.0.0
+#PubkeyAuthentication yes#   systemctl daemon-reload
 
-#AuthorizedKeysFile      .ssh/authorized_keys .ssh/authorized_keys2
+#AuthorizedKeysFile .ssh/authorized_keys .ssh/authorized_keys2
+
+#AuthorizedPrincipalsFile none#   systemctl restart ssh.socket
+
+#AuthorizedKeysCommand none
+
+#AuthorizedKeysCommandUser nobodyInclude /etc/ssh/sshd_config.d/*.confInclude /etc/ssh/sshd_config.d/*.conf
+
+
+
+# For this to work you will also need host keys in /etc/ssh/ssh_known_hostsPort 2222
+
+#HostbasedAuthentication no
+
+#IgnoreUserKnownHosts noAddressFamily inet
+
+#IgnoreRhosts yes
+
+#ListenAddress 0.0.0.0
+
+# Security hardening - disable password authentication
+
+PasswordAuthentication no#ListenAddress ::# When systemd socket activation is used (the default), the socket# When systemd socket activation is used (the default), the socket
+
+PermitEmptyPasswords no
+
+PubkeyAuthentication yes
+
+KbdInteractiveAuthentication no
+
+ChallengeResponseAuthentication no#HostKey /etc/ssh/ssh_host_rsa_key# configuration must be re-generated after changing Port, AddressFamily, or# configuration must be re-generated after changing Port, AddressFamily, or
+
+
+
+# Kerberos options#HostKey /etc/ssh/ssh_host_ecdsa_key
+
+#KerberosAuthentication no
+
+#KerberosOrLocalPasswd yes#HostKey /etc/ssh/ssh_host_ed25519_key# ListenAddress.# ListenAddress.
+
+#KerberosTicketCleanup yes
+
+
+
+# GSSAPI options
+
+#GSSAPIAuthentication no# Ciphers and keying##
+
+#GSSAPICleanupCredentials yes
+
+#GSSAPIStrictAcceptorCheck yes#RekeyLimit default none
+
+#GSSAPIKeyExchange no
+
+# For changes to take effect, run:# For changes to take effect, run:
+
+#UsePAM yes
+
+# Logging
+
+# Security hardening options
+
+X11Forwarding no#SyslogFacility AUTH##
+
+AllowAgentForwarding no
+
+AllowTcpForwarding no#LogLevel INFO
+
+PermitTunnel no
+
+PermitUserEnvironment no#   systemctl daemon-reload#   systemctl daemon-reload
+
+PrintMotd yes
+
+PrintLastLog yes# Authentication:
+
+TCPKeepAlive yes
+
+Compression noLoginGraceTime 1m#   systemctl restart ssh.socket#   systemctl restart ssh.socket
+
+ClientAliveInterval 300
+
+ClientAliveCountMax 2PermitRootLogin no
+
+UseDNS no
+
+GatewayPorts noStrictModes yes
+
+
+
+# Protocol and cipher hardeningMaxAuthTries 3
+
+Protocol 2
+
+Ciphers chacha20-poly1305@openssh.com,aes256-gcm@openssh.com,aes128-gcm@openssh.com,aes256-ctr,aes192-ctr,aes128-ctrMaxSessions 2Port 2222Port 2222
+
+MACs hmac-sha2-256-etm@openssh.com,hmac-sha2-512-etm@openssh.com,hmac-sha2-256,hmac-sha2-512
+
+KexAlgorithms curve25519-sha256@libssh.org,diffie-hellman-group16-sha512,diffie-hellman-group18-sha512MaxStartups 2:30:5
+
+
+
+# User restrictions (replace 'admin' with your actual admin username)AddressFamily inetAddressFamily inet
+
+AllowUsers admin
+
+DenyUsers root#PubkeyAuthentication yes
+
+
+
+#Banner none#Expect .ssh/authorized_keys2 to be disregarded by default in future.#ListenAddress 0.0.0.0#ListenAddress 0.0.0.0
+
+
+
+# Allow client to pass locale environment variables#AuthorizedKeysFile      .ssh/authorized_keys .ssh/authorized_keys2
+
+AcceptEnv LANG LC_*
 
 # #ListenAddress ::# #ListenAddress ::
 
-#AuthorizedPrincipalsFile none
+# override default of no subsystems
 
-AuthorizedPrincipalsFile no
+Subsystem sftp /usr/lib/openssh/sftp-server#AuthorizedPrincipalsFile none
 
 
 
+#Match User anoncvsAuthorizedPrincipalsFile no
+
+#       AllowTCPForwarding no
+
+#       PermitTTY no
+
+#       ForceCommand cvs server
 #AuthorizedKeysCommand none#HostKey /etc/ssh/ssh_host_rsa_key#HostKey /etc/ssh/ssh_host_rsa_key
 
 #AuthorizedKeysCommandUser nobody
