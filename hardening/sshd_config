@@ -1,94 +1,184 @@
-# sshd_config# sshd_config# sshd_config# sshd_config
+# sshd_config - OpenSSH server configuration# sshd_config# sshd_config# sshd_config# sshd_config
 
-# This is the sshd server system-wide configuration file. See
+# This configuration follows Ubuntu's official security recommendations
 
-# sshd_config(5) for more information.# This is the sshd server system-wide configuration file. See
+# See: https://help.ubuntu.com/community/SSH/OpenSSH/Configuring# This is the sshd server system-wide configuration file. See
 
 
 
-# This sshd was compiled with PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games# sshd_config(5) for more information.# This is the sshd server system-wide configuration file. See# This is the sshd server system-wide configuration file. See
+# Include any additional configurations# sshd_config(5) for more information.# This is the sshd server system-wide configuration file. See
 
-# The strategy used for options in the default sshd_config shipped with
+Include /etc/ssh/sshd_config.d/*.conf
+
+
+
+# Basic Connection Settings
+
+Port 2222                    # Custom port for security (Ubuntu recommends non-standard ports)# This sshd was compiled with PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games# sshd_config(5) for more information.# This is the sshd server system-wide configuration file. See# This is the sshd server system-wide configuration file. See
+
+AddressFamily inet          # IPv4 only for simplicity
+
+#ListenAddress 0.0.0.0      # Listen on all interfaces# The strategy used for options in the default sshd_config shipped with
+
+Protocol 2                  # SSH protocol version 2 only
 
 # OpenSSH is to specify options with their default value where
 
-# possible, but leave them commented. Uncommented options override the
+# Host Keys - Use modern, secure key types
 
-# default value.# This sshd was compiled with PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games# sshd_config(5) for more information.# sshd_config(5) for more information.
+HostKey /etc/ssh/ssh_host_rsa_key# possible, but leave them commented. Uncommented options override the
+
+HostKey /etc/ssh/ssh_host_ecdsa_key
+
+HostKey /etc/ssh/ssh_host_ed25519_key# default value.# This sshd was compiled with PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games# sshd_config(5) for more information.# sshd_config(5) for more information.
 
 
 
-Include /etc/ssh/sshd_config.d/*.conf# The strategy used for options in the default sshd_config shipped with
+# Security: Disable weak algorithms
+
+Ciphers aes256-gcm@openssh.com,chacha20-poly1305@openssh.com,aes256-ctr
+
+MACs hmac-sha2-256-etm@openssh.com,hmac-sha2-512-etm@openssh.comInclude /etc/ssh/sshd_config.d/*.conf# The strategy used for options in the default sshd_config shipped with
+
+KexAlgorithms curve25519-sha256@libssh.org,diffie-hellman-group16-sha512
 
 
 
-Port 2222# OpenSSH is to specify options with their default value where
+# Logging (Ubuntu recommends VERBOSE for security monitoring)
+
+SyslogFacility AUTHPort 2222# OpenSSH is to specify options with their default value where
+
+LogLevel VERBOSE            # Ubuntu: "recommended to log more information"
 
 AddressFamily inet
 
-#ListenAddress 0.0.0.0# possible, but leave them commented. Uncommented options override the
+# Authentication Settings (Ubuntu's key recommendations)
 
-#ListenAddress ::
+LoginGraceTime 30           # Ubuntu: "lower login grace time frees up connections"#ListenAddress 0.0.0.0# possible, but leave them commented. Uncommented options override the
 
-# default value.# This sshd was compiled with PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games# This sshd was compiled with PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games
+PermitRootLogin no          # Ubuntu: Critical security practice
+
+StrictModes yes             # Verify file permissions#ListenAddress ::
+
+MaxAuthTries 3              # Limit brute force attempts
+
+MaxSessions 2               # Limit concurrent sessions per connection# default value.# This sshd was compiled with PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games# This sshd was compiled with PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games
+
+MaxStartups 2:30:10         # Ubuntu: "limit pending connections" - start refusing 30% at 2, 100% at 10
 
 #HostKey /etc/ssh/ssh_host_rsa_key
 
-#HostKey /etc/ssh/ssh_host_ecdsa_key
+# Disable Password Authentication (Ubuntu: "recommended unless specific reason not to")
 
-#HostKey /etc/ssh/ssh_host_ed25519_key
+PasswordAuthentication no   # Ubuntu: "massively improves your security"#HostKey /etc/ssh/ssh_host_ecdsa_key
 
-Include /etc/ssh/sshd_config.d/*.conf# The strategy used for options in the default sshd_config shipped with# The strategy used for options in the default sshd_config shipped with
+PermitEmptyPasswords no     # Never allow empty passwords
 
-# Ciphers and keying
-
-#RekeyLimit default none
+ChallengeResponseAuthentication no#HostKey /etc/ssh/ssh_host_ed25519_key
 
 
 
-# Logging# When systemd socket activation is used (the default), the socket# OpenSSH is to specify options with their default value where# OpenSSH is to specify options with their default value where
+# Public Key Authentication (Ubuntu's recommended method)Include /etc/ssh/sshd_config.d/*.conf# The strategy used for options in the default sshd_config shipped with# The strategy used for options in the default sshd_config shipped with
 
-#SyslogFacility AUTH
+PubkeyAuthentication yes
 
-#LogLevel INFO# configuration must be re-generated after changing Port, AddressFamily, or
+AuthorizedKeysFile .ssh/authorized_keys# Ciphers and keying
+
+AuthorizedPrincipalsFile none
+
+AuthorizedKeysCommand none#RekeyLimit default none
+
+AuthorizedKeysCommandUser nobody
 
 
 
-# Authentication:# ListenAddress.# possible, but leave them commented. Uncommented options override the# possible, but leave them commented. Uncommented options override the
+# Disable Forwarding (Ubuntu: "recommended if using SSH keys with specified commands")
+
+AllowTcpForwarding no       # Ubuntu: "gives more options to attacker"# Logging# When systemd socket activation is used (the default), the socket# OpenSSH is to specify options with their default value where# OpenSSH is to specify options with their default value where
+
+X11Forwarding no            # Ubuntu: "disable for additional security"
+
+AllowStreamLocalForwarding no#SyslogFacility AUTH
+
+GatewayPorts no
+
+PermitTunnel no#LogLevel INFO# configuration must be re-generated after changing Port, AddressFamily, or
+
+
+
+# Host-based Authentication (disabled for security)
+
+HostbasedAuthentication no
+
+IgnoreUserKnownHosts yes# Authentication:# ListenAddress.# possible, but leave them commented. Uncommented options override the# possible, but leave them commented. Uncommented options override the
+
+IgnoreRhosts yes
 
 LoginGraceTime 1m
 
-PermitRootLogin no#
+# User Access Control (Ubuntu: "significantly improve security")
 
-StrictModes yes
+# Uncomment and customize these lines based on your user requirements:PermitRootLogin no#
 
-MaxAuthTries 3# For changes to take effect, run:# default value.# default value.
+#AllowUsers username1 username2     # Ubuntu: "allow only specific users"
 
-MaxSessions 2
+#DenyUsers baduser1 baduser2        # Ubuntu: "deny specific users"StrictModes yes
 
-MaxStartups 2:30:5#
+#AllowGroups ssh-users              # Allow only members of ssh-users group
+
+#DenyGroups noshell                 # Deny members of noshell groupMaxAuthTries 3# For changes to take effect, run:# default value.# default value.
 
 
+
+# Additional Security SettingsMaxSessions 2
+
+PermitUserEnvironment no    # Don't allow user environment variables
+
+UsePAM yes                  # Use PAM for additional authentication methodsMaxStartups 2:30:5#
+
+UseDNS no                   # Skip DNS lookups for faster connections
+
+PrintMotd no                # Don't print message of the day
+
+PrintLastLog yes            # Show last login information
 
 #PubkeyAuthentication yes#   systemctl daemon-reload
 
-#AuthorizedKeysFile .ssh/authorized_keys .ssh/authorized_keys2
+# Banner Configuration (Ubuntu: "display banner for legal notices")
+
+# Uncomment to enable login banner:#AuthorizedKeysFile .ssh/authorized_keys .ssh/authorized_keys2
+
+#Banner /etc/issue.net      # Ubuntu: "display legalese to scare novice attackers"
 
 #AuthorizedPrincipalsFile none#   systemctl restart ssh.socket
 
-#AuthorizedKeysCommand none
+# Subsystems
 
-#AuthorizedKeysCommandUser nobodyInclude /etc/ssh/sshd_config.d/*.confInclude /etc/ssh/sshd_config.d/*.conf
+Subsystem sftp /usr/lib/openssh/sftp-server#AuthorizedKeysCommand none
 
 
+
+# Client Connection Settings#AuthorizedKeysCommandUser nobodyInclude /etc/ssh/sshd_config.d/*.confInclude /etc/ssh/sshd_config.d/*.conf
+
+ClientAliveInterval 300     # Send keepalive every 5 minutes
+
+ClientAliveCountMax 2       # Disconnect after 2 missed keepalives (10 minutes total)
+
+TCPKeepAlive yes           # Use TCP keepalive
 
 # For this to work you will also need host keys in /etc/ssh/ssh_known_hostsPort 2222
 
-#HostbasedAuthentication no
+# Compression
 
-#IgnoreUserKnownHosts noAddressFamily inet
+Compression delayed         # Enable compression after authentication#HostbasedAuthentication no
 
-#IgnoreRhosts yes
+
+
+# Advanced Security Features#IgnoreUserKnownHosts noAddressFamily inet
+
+VersionAddendum none        # Don't advertise SSH version details
+
+DebianBanner no            # Don't show Debian/Ubuntu banner#IgnoreRhosts yes
 
 #ListenAddress 0.0.0.0
 

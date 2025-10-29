@@ -38,16 +38,34 @@ sudo cp /opt/server-config-repo/hardening/sshd_config /etc/ssh/
 sudo systemctl restart sshd
 ```
 
-**Key Security Changes:**
+**Key Security Changes (Following Ubuntu's Official Recommendations):**
 - Custom port (2222) instead of default 22
-- Root login disabled
-- Password authentication disabled (key-only)
-- Connection limits and timeouts
+- Root login disabled (Ubuntu security best practice)
+- Password authentication disabled (Ubuntu: "massively improves your security")
+- Key-only authentication (Ubuntu's recommended method)
+- Connection rate limiting (MaxStartups 2:30:10)
+- Forwarding disabled (Ubuntu: "gives more options to attacker")
+- Verbose logging enabled (Ubuntu: "recommended to log more information")
 - Modern cipher suites only
 
-    *Note: Ensure `StrictModes yes` and `LoginGraceTime 2m` are also uncommented if not already.*
+**Rate Limiting (Ubuntu's UFW Recommendation):**
 
-3. **Restart the SSH service:**
+Ubuntu recommends using UFW to rate-limit SSH connections:
+
+```bash
+sudo ufw limit ssh
+# This limits one IP to 10 connection attempts in 30 seconds
+```
+
+### Optional: Enable Login Banner
+
+Uncomment the Banner line in sshd_config and copy the banner file:
+
+```bash
+sudo cp /opt/server-config-repo/hardening/issue.net /etc/
+```
+
+### 2. Restart the SSH service
 
     ```bash
     sudo systemctl restart ssh
