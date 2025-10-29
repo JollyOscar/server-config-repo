@@ -1,0 +1,43 @@
+{
+  "terminal.integrated.tabs.title": "${process}${separator}${cwdFolder}${separator}${shellCommand}",
+  "terminal.integrated.shellIntegration.enabled": true,
+  "terminal.integrated.shellIntegration.showWelcome": false,
+  "terminal.integrated.shellIntegration.decorationsEnabled": "both",
+  "terminal.integrated.cwd": "${workspaceFolder}",
+  "terminal.integrated.fontSize": 14,
+  "terminal.integrated.fontFamily": "Cascadia Code, Consolas, 'Courier New', monospace",
+  "terminal.integrated.cursorBlinking": true,
+  "terminal.integrated.cursorStyle": "line",
+  "terminal.integrated.tabStopWidth": 4,
+  "terminal.integrated.unicodeVersion": "11",
+  "terminal.integrated.windowsEnableConpty": true,
+  "terminal.integrated.useWslProfiles": true,
+  "terminal.integrated.wordSeparators": " ()[]{}',\"`─''\"\"| \\/:;<>&",
+  "terminal.sourceControlRepositoriesKind": "integrated",
+  "terminal.integrated.profiles.windows": {
+    "PowerShell": {
+      "source": "PowerShell",
+      "icon": "terminal-powershell",
+      "args": ["-NoLogo"]
+    },
+    "Command Prompt": {
+      "path": ["${env:windir}\\Sysnative\\cmd.exe", "${env:windir}\\System32\\cmd.exe"],
+      "args": [],
+      "icon": "terminal-cmd"
+    },
+    "Git Bash": {
+      "source": "Git Bash"
+    }
+  },
+  "terminal.integrated.defaultProfile.windows": "PowerShell",
+  "terminal.integrated.minimumContrastRatio": 4.5,
+  "terminal.integrated.drawBoldTextInBrightColors": true,
+  "terminal.integrated.confirmOnExit": "hasChildProcesses",
+  "terminal.integrated.confirmOnKill": "panel",
+  "terminal.integrated.enableVisualBell": false,
+  "terminal.integrated.scrollback": 10000,
+  "terminal.integrated.copyOnSelection": false,
+  "terminal.integrated.rightClickBehavior": "copyPaste",
+  "terminal.integrated.showExitAlert": false,
+  "terminal.integrated.splitCwd": "workspaceRoot"
+}
