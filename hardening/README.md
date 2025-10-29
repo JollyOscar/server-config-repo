@@ -1,32 +1,49 @@
 # 🛡️ System Hardening and Baseline Security
 
-This directory contains instructions to modify the default `/etc/ssh/sshd_config` file, establishing a secure baseline for SSH access.
+This directory contains comprehensive security hardening configurations and scripts for establishing a secure baseline for your network appliance.
 
-## 1. Initial Installation and Configuration
+## 🔒 Security Components
 
-### SSH Daemon (`sshd_config` - Edit Default File)
+This hardening package includes:
 
-The hardening procedure involves editing the default SSH configuration file to enforce key-based authentication and a custom port (**2222**).
+- **Enhanced SSH Configuration** (`sshd_config`) - Secure SSH settings with key-only auth
+- **Kernel Security Parameters** (`sysctl-security.conf`) - System-level hardening
+- **Automated Security Setup** (`security-setup.sh`) - Comprehensive hardening script
 
-**Configuration Steps:**
+## 🚀 Quick Start (Recommended)
 
-1. **Backup the default file:**
+Run the automated security setup script:
 
-    ```bash
-    sudo cp /etc/ssh/sshd_config /etc/ssh/sshd_config.bak
-    ```
+```bash
+sudo chmod +x /opt/server-config-repo/hardening/security-setup.sh
+sudo /opt/server-config-repo/hardening/security-setup.sh
+```
 
-2. **Edit the file** (`sudo nano /etc/ssh/sshd_config`) and **uncomment/change** the following lines to match the settings below:
+This script will:
+- Install security packages (fail2ban, AIDE, etc.)
+- Configure SSH hardening
+- Set up file integrity monitoring
+- Apply kernel security parameters
+- Create security monitoring cron jobs
 
-    | Line | Default Value (often commented out) | Custom Value | Action |
-    | :--- | :--- | :--- | :--- |
-    | `Port` | `#Port 22` | `Port 2222` | **Uncomment and Change** |
-    | `PermitRootLogin` | `#PermitRootLogin prohibit-password` | `PermitRootLogin no` | **Uncomment and Change** |
-    | `PasswordAuthentication` | `#PasswordAuthentication yes` | `PasswordAuthentication no` | **Uncomment and Change** |
-    | `KbdInteractiveAuthentication`| `#KbdInteractiveAuthentication yes` | `KbdInteractiveAuthentication no` | **Uncomment and Change** |
-    | `PubkeyAuthentication` | `#PubkeyAuthentication yes` | `PubkeyAuthentication yes` | **Uncomment** |
-    | `AuthorizedPrincipalsFile` | (often commented) | `AuthorizedPrincipalsFile no` | **Uncomment** |
-    | `UsePAM` | (often commented) | `UsePAM yes` | **Uncomment** |
+## 📋 Manual Configuration Steps
+
+### 1. SSH Daemon Hardening
+
+**Quick Apply:**
+
+```bash
+sudo cp /etc/ssh/sshd_config /etc/ssh/sshd_config.bak
+sudo cp /opt/server-config-repo/hardening/sshd_config /etc/ssh/
+sudo systemctl restart sshd
+```
+
+**Key Security Changes:**
+- Custom port (2222) instead of default 22
+- Root login disabled
+- Password authentication disabled (key-only)
+- Connection limits and timeouts
+- Modern cipher suites only
 
     *Note: Ensure `StrictModes yes` and `LoginGraceTime 2m` are also uncommented if not already.*
 

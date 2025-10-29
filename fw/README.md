@@ -1,49 +1,102 @@
-# 🔥 Firewall Service (iptables) Configuration
+# 🔥 Firewall Configuration (nftables)
 
-The firewall uses the **legacy `iptables` utility** (persisted via `iptables-persistent`) to implement robust security, including stateful packet inspection and Network Address Translation (NAT) for LAN clients.
+The firewall uses **modern nftables** to implement robust security with stateful packet inspection, Network Address Translation (NAT), and rate limiting for enhanced protection.
 
-## 1. Initial Installation and Configuration
+> **Note**: This configuration has been updated from legacy iptables to modern nftables format. The filename has been changed from `rules.v4` to `nftables.conf`.
 
-### IPTables Rules (`rules.v4` - File in Repo: `fw/rules.v4`)
+## 🛡️ Security Features
 
-The configuration file contains rules that:
-1. Enable **NAT (Masquerading)** on the WAN interface (`ens18`).
-2. Allow all necessary inbound traffic to the appliance from the LAN (`ens19`): **SSH (2222), DNS (53), HTTP (80), HTTPS (443), DHCP (67/68)**.
-3. Set the default policy to drop unwanted traffic.
+The nftables configuration provides:
 
-**Configuration Steps:**
+1. **Default deny policy** with explicit allow rules
+2. **Stateful connection tracking** for established/related traffic
+3. **NAT/Masquerading** for LAN client internet access
+4. **Rate limiting** to prevent abuse and DoS attacks
+5. **Logging** of dropped packets for security monitoring
+6. **Interface-specific rules** for WAN/LAN separation
+
+## 📋 Configuration Steps
 
 1. **Enable IP Forwarding (Critical for NAT):**
 
+    ```bash
+    echo "net.ipv4.ip_forward=1" | sudo tee /etc/sysctl.d/99-ipforward.conf
+    sudo sysctl -p /etc/sysctl.d/99-ipforward.conf
+    ```
+
+2. **Install and configure nftables:**
+
+    ```bash
+    sudo apt install -y nftables
+    sudo systemctl enable nftables
+    ```
+
+3. **Apply the nftables configuration:**
+
+    ```bash
+    sudo cp /opt/server-config-repo/fw/nftables.conf /etc/nftables.conf
+    sudo chmod 644 /etc/nftables.conf
+    ```
+
+4. **Test and load the configuration:**
+
+    ```bash
+    # Test the configuration syntax
+    sudo nft -c -f /etc/nftables.conf
+    
+    # Load the configuration
+    sudo systemctl restart nftables
+    sudo systemctl status nftables
+    ```
+
+## 🔧 Configuration Customization
+
+**Important**: Replace the following placeholders with your actual values:
+
+- **WAN Interface**: Replace `ens18` with your actual WAN interface name
+- **LAN Interface**: Replace `ens19` with your actual LAN interface name  
+- **LAN Network**: Replace `10.207.0.0/24` with your actual LAN subnet
+- **Appliance IP**: Replace `10.207.0.250` with your actual server IP
+- **SSH Port**: Replace `2222` with your actual SSH port
+
+## 🧪 Testing Firewall Rules
+
+Verify your firewall configuration:
+
 ```bash
-echo "net.ipv4.ip_forward=1" | sudo tee /etc/sysctl.d/99-ipforward.conf
-sudo sysctl -p /etc/sysctl.d/99-ipforward.conf
+# Check active ruleset
+sudo nft list ruleset
+
+# Test connectivity from LAN client
+ping 8.8.8.8  # Should work from LAN clients
+
+# Check logs for dropped packets
+sudo journalctl -f | grep "nft-"
 ```
 
-2. **Apply `rules.v4`:** Copy the custom rules to the persistent file location.
+## 🚨 Emergency Access
+
+If you get locked out, you can disable the firewall temporarily:
 
 ```bash
-sudo cp /etc/iptables/rules.v4 /etc/iptables/rules.v4.bak
-sudo cp /opt/server-config-repo/fw/rules.v4 /etc/iptables/
+# Flush all rules (emergency only)
+sudo nft flush ruleset
+
+# Or stop the service
+sudo systemctl stop nftables
 ```
 
-3. **Load the Rules:** Use the persistence utility to load the custom configuration immediately.
+## 📊 Monitoring
+
+View firewall statistics and logs:
 
 ```bash
-sudo iptables-restore < /etc/iptables/rules.v4
+# View rule statistics
+sudo nft list ruleset -a
+
+# Monitor dropped packets
+sudo tail -f /var/log/kern.log | grep "nft-"
 ```
-
-## 2. Applying Configuration to a New Server (Recovery)
-
-1. **Copy the configuration file:**
-
-```bash
-sudo cp /opt/server-config-repo/fw/rules.v4 /etc/iptables/
-```
-
-2. **Ensure IP Forwarding is active** (as per step 1 above).
-
-3. **Load the rules:** `sudo iptables-restore < /etc/iptables/rules.v4`.
 
 ## 3. Troubleshooting and Verification
 

@@ -1,0 +1,62 @@
+name: 🔍 Configuration Validation
+
+on:
+  push:
+    branches: [ main, Copilot ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  validate-configs:
+    name: Validate Configuration Files
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: 📥 Checkout Repository
+      uses: actions/checkout@v4
+      
+    - name: 🔧 Install Dependencies
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y bind9-utils kea-dhcp4 nftables jq
+        
+    - name: 🧪 Validate DNS Configuration
+      run: |
+        echo "Validating BIND9 configuration..."
+        named-checkconf dns/named.conf.local
+        
+        echo "Validating DNS zone files..."
+        named-checkzone mycorp.lan dns/db.mycorp.lan
+        named-checkzone 0.207.10.in-addr.arpa dns/db.10.207.0
+        
+    - name: 🧪 Validate DHCP Configuration
+      run: |
+        echo "Validating Kea DHCP configuration..."
+        kea-dhcp4 -t dhcp/kea-dhcp4.conf
+        
+        echo "Checking JSON syntax..."
+        jq . dhcp/kea-dhcp4.conf > /dev/null
+        
+    - name: 🧪 Validate Firewall Configuration
+      run: |
+        echo "Validating nftables configuration..."
+        # Create temporary file with corrected variables for testing
+        sed 's/define WAN_IF = "ens18"/define WAN_IF = "eth0"/' fw/nftables.conf > /tmp/nftables-test.conf
+        sed -i 's/define LAN_IF = "ens19"/define LAN_IF = "eth1"/' /tmp/nftables-test.conf
+        
+        sudo nft -c -f /tmp/nftables-test.conf
+        
+    - name: 🧪 Validate SSH Configuration
+      run: |
+        echo "Validating SSH configuration..."
+        sudo sshd -t -f hardening/sshd_config
+        
+    - name: 📊 Configuration Summary
+      run: |
+        echo "✅ All configuration files validated successfully!"
+        echo ""
+        echo "📋 Validated Components:"
+        echo "  - BIND9 DNS configuration and zone files"
+        echo "  - Kea DHCP4 configuration"
+        echo "  - nftables firewall rules"
+        echo "  - SSH daemon configuration"

@@ -38,11 +38,12 @@ AddressFamily inet
 #LogLevel INFO
 
 # Authentication:
-#LoginGraceTime 2m
+LoginGraceTime 1m
 PermitRootLogin no
-#StrictModes yes
-#MaxAuthTries 6
-#MaxSessions 10
+StrictModes yes
+MaxAuthTries 3
+MaxSessions 2
+MaxStartups 2:30:5
 
 #PubkeyAuthentication yes
 #Expect .ssh/authorized_keys2 to be disregarded by default in future.
@@ -59,12 +60,12 @@ AuthorizedPrincipalsFile no
 #Don't read the user's ~/.rhosts and ~/.shosts files
 #IgnoreRhosts yes
 
-# To disable tunneled clear text passwords, change to no here!
-#PasswordAuthentication no
-#PermitEmptyPasswords no
-# Change to yes to enable challenge-response passwords (beware issues with
-# some PAM modules and threads)
+# Security hardening - disable password authentication
+PasswordAuthentication no
+PermitEmptyPasswords no
+PubkeyAuthentication yes
 KbdInteractiveAuthentication no
+ChallengeResponseAuthentication no
 
 # Kerberos options
 #KerberosAuthentication no
@@ -91,23 +92,30 @@ KbdInteractiveAuthentication no
 #AllowAgentForwarding yes
 #AllowTcpForwarding yes
 #GatewayPorts no
-X11Forwarding yes
-#X11DisplayOffset 10
-#X11UseLocalhost yes
-#PermitTTY yes
-PrintMotd no
-#PrintLastLog yes
-#TCPKeepAlive yes
-#PermitUserEnvironment no
-#Compression delayed
-#ClientAliveInterval 0
-#ClientAliveCountMax 3
-#UseDNS no
-#PidFile /run/sshd.pid
-#MaxStartups 10:30:100
-#PermitTunnel no
-#ChrootDirectory none
-#VersionAddendum none
+# Security hardening options
+X11Forwarding no
+AllowAgentForwarding no
+AllowTcpForwarding no
+PermitTunnel no
+PermitUserEnvironment no
+PrintMotd yes
+PrintLastLog yes
+TCPKeepAlive yes
+Compression no
+ClientAliveInterval 300
+ClientAliveCountMax 2
+UseDNS no
+GatewayPorts no
+
+# Protocol and cipher hardening
+Protocol 2
+Ciphers chacha20-poly1305@openssh.com,aes256-gcm@openssh.com,aes128-gcm@openssh.com,aes256-ctr,aes192-ctr,aes128-ctr
+MACs hmac-sha2-256-etm@openssh.com,hmac-sha2-512-etm@openssh.com,hmac-sha2-256,hmac-sha2-512
+KexAlgorithms curve25519-sha256@libssh.org,diffie-hellman-group16-sha512,diffie-hellman-group18-sha512
+
+# User restrictions (replace 'admin' with your actual admin username)
+AllowUsers admin
+DenyUsers root
 
 # no default banner path
 #Banner none

@@ -1,0 +1,28 @@
+; BIND9 Forward Zone File for mycorp.lan
+; Replace domain names and IPs with your actual infrastructure
+$TTL    604800
+@       IN      SOA     dns.mycorp.lan. admin.mycorp.lan. (
+                              1         ; Serial (increment for changes)
+                         604800         ; Refresh
+                          86400         ; Retry
+                        2419200         ; Expire
+                         604800 )       ; Negative Cache TTL
+
+; Name servers
+@       IN      NS      dns.mycorp.lan.
+
+; A records for internal hosts
+; Replace these with your actual server names and IP addresses
+dns             IN      A       10.207.0.250
+gateway         IN      A       10.207.0.250
+router          IN      A       10.207.0.250
+
+; Example internal hosts (replace with actual infrastructure)
+server          IN      A       10.207.0.50
+workstation1    IN      A       10.207.0.101
+workstation2    IN      A       10.207.0.102
+printer         IN      A       10.207.0.110
+
+; CNAME records (aliases)
+mail            IN      CNAME   server.mycorp.lan.
+www             IN      CNAME   server.mycorp.lan.
