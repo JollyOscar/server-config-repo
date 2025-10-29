@@ -1,38 +1,18 @@
 # 📡 **DHCP Service Configuration**
 
-<div align="center">
-
 [![Kea DHCP](https://img.shields.io/badge/Kea%20DHCP-2.4+-orange?style=for-the-badge&logo=internet-archive&logoColor=white)](https://www.isc.org/kea/)
 [![Status](https://img.shields.io/badge/Status-Production%20Ready-success?style=for-the-badge&logo=checkmarx&logoColor=white)](./kea-dhcp4.conf)
-
-</div>
 
 ---
 
 ## 🎯 **Service Overview**
 
-<table>
-<tr>
-<td width="50%">
-
-### 📊 **Network Configuration**
-- 🌐 **Interface**: `ens19` (LAN)
-- 🏠 **Subnet**: `10.207.0.0/24`
-- 📡 **DHCP Range**: `10.207.0.100-200`
-- 🚪 **Gateway**: `10.207.0.250`
-
-</td>
-<td width="50%">
-
-### ⚡ **Technology Stack**
-- 🚀 **Server**: Kea DHCP 2.4+
-- 📝 **Format**: Modern JSON Configuration
-- 🔄 **Migration**: ISC DHCP → Kea DHCP
-- 🎛️ **Management**: RESTful API Support
-
-</td>
-</tr>
-</table>
+| 📊 **Network Configuration** | ⚡ **Technology Stack** |
+|:---|:---|
+| 🌐 **Interface**: `ens19` (LAN) | 🚀 **Server**: Kea DHCP 2.4+ |
+| 🏠 **Subnet**: `10.207.0.0/24` | 📝 **Format**: Modern JSON Configuration |
+| 📡 **DHCP Range**: `10.207.0.100-200` | 🔄 **Migration**: ISC DHCP → Kea DHCP |
+| 🚪 **Gateway**: `10.207.0.250` | 🎛️ **Management**: RESTful API Support |
 
 > 🆕 **Modern Upgrade**: Migrated from legacy ISC DHCP to Kea DHCP with JSON configuration format
 
@@ -125,6 +105,7 @@ sudo systemctl status kea-dhcp4
 
 **Resolution:**
 
-1. **Check Logs:** `sudo journalctl -u kea-dhcp4.service`. Errors will usually point to the specific line number in the JSON file.
+1. **Check Logs:** `sudo journalctl -u kea-dhcp4.service`. Errors will usually point to the specific line number in
+   the JSON file.
 
 2. **Verify Configuration:** Run the syntax test: `sudo kea-dhcp4 -t /etc/kea/kea-dhcp4.conf`.

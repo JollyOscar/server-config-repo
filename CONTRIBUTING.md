@@ -1,12 +1,8 @@
 # 🤝 **Contributing to Server Configuration Repository**
 
-<div align="center">
-
 [![Welcome](https://img.shields.io/badge/Contributors-Welcome!-success?style=for-the-badge&logo=github&logoColor=white)](../../contributors)
-[![Code of Conduct](https://img.shields.io/badge/Code%20of%20Conduct-Respectful-blue?style=for-the-badge&logo=heart&logoColor=white)](#-code-of-conduct)
+[![Code of Conduct](https://img.shields.io/badge/Code%20of%20Conduct-Respectful-blue?style=for-the-badge&logo=heart&logoColor=white)](#code-of-conduct)
 [![License](https://img.shields.io/badge/License-Private-red?style=for-the-badge&logo=lock&logoColor=white)](./LICENSE)
-
-</div>
 
 ---
 
