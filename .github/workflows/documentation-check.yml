@@ -22,7 +22,12 @@ jobs:
     - name: 🔍 Lint Markdown Files
       run: |
         echo "Checking markdown files for consistency..."
-        markdownlint **/*.md --config .markdownlint.json || true
+        if markdownlint **/*.md --config .markdownlint.json; then
+          echo "✅ All markdown files pass linting"
+        else
+          echo "⚠️ Some markdown files have linting issues (non-blocking)"
+          echo "This is informational only and won't fail the build"
+        fi
         
     - name: 📋 Check Required Documentation
       run: |
