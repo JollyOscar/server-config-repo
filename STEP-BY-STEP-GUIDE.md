@@ -97,9 +97,6 @@ cd /opt
 sudo git clone https://github.com/JollyOscar/server-config-repo.git
 cd server-config-repo
 
-# Switch to the enhanced branch with beautiful documentation
-sudo git checkout markdown-customization
-
 # Set proper permissions
 sudo chown -R $USER:$USER /opt/server-config-repo
 ```
@@ -425,8 +422,5 @@ echo "DHCP: 10.207.0.100-200"
 4. **Regular Updates**: Keep system and configurations updated
 5. **Backup Schedule**: Set up automated configuration backups
 
-**🎊 Congratulations! Your enterprise-grade network appliance is operational!**
- 
- 
- 
+**🎊 Congratulations! Your enterprise-grade network appliance is operational!** 
  
