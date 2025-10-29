@@ -1,14 +1,28 @@
-# 🛡️ System Hardening and Baseline Security
+# 🛡️ **System Hardening & Baseline Security**
 
-This directory contains comprehensive security hardening configurations and scripts for establishing a secure baseline for your network appliance.
+<div align="center">
 
-## 🔒 Security Components
+[![Ubuntu](https://img.shields.io/badge/Ubuntu-Hardened-E95420?style=for-the-badge&logo=ubuntu&logoColor=white)](https://ubuntu.com/server)
+[![SSH](https://img.shields.io/badge/SSH-Key%20Only-success?style=for-the-badge&logo=openssh&logoColor=white)](./sshd_config)
+[![Security](https://img.shields.io/badge/Security-Enterprise-red?style=for-the-badge&logo=shield&logoColor=white)](./security-setup.sh)
 
-This hardening package includes:
+</div>
 
-- **Enhanced SSH Configuration** (`sshd_config`) - Secure SSH settings with key-only auth
-- **Kernel Security Parameters** (`sysctl-security.conf`) - System-level hardening
-- **Automated Security Setup** (`security-setup.sh`) - Comprehensive hardening script
+---
+
+## 🎯 **Security Arsenal**
+
+<div align="center">
+
+| 🔐 **Component** | 📝 **Purpose** | 📁 **File** | 🚀 **Status** |
+|:---:|:---|:---:|:---:|
+| 🔑 **SSH Hardening** | Key-only auth, custom port, rate limiting | [`sshd_config`](./sshd_config) | ✅ Ready |
+| ⚙️ **Kernel Security** | System-level security parameters | [`sysctl-security.conf`](./sysctl-security.conf) | ✅ Ready |
+| 🤖 **Auto Setup** | One-command security deployment | [`security-setup.sh`](./security-setup.sh) | ✅ Ready |
+| 🚨 **Login Banner** | Legal notice & deterrent | [`issue.net`](./issue.net) | ✅ Ready |
+| 📖 **Deploy Guide** | Complete deployment procedures | [`DEPLOYMENT.md`](./DEPLOYMENT.md) | ✅ Ready |
+
+</div>
 
 ## 🚀 Quick Start (Recommended)
 

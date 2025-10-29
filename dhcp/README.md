@@ -1,52 +1,94 @@
-# 🤝 DHCP Service (Kea DHCP) Configuration
+# 📡 **DHCP Service Configuration**
 
-The DHCP service runs the **Kea DHCP Server** on the **LAN interface (ens19)**, dynamically assigning IPs within the **10.207.0.0/24** subnet, using the range **10.207.0.100 to 10.207.0.200**.
+<div align="center">
 
-> **Note**: This configuration has been updated to use Kea DHCP (modern JSON format) instead of ISC DHCP Server. The filename has been changed from `dhcpd.conf` to `kea-dhcp4.conf`.
+[![Kea DHCP](https://img.shields.io/badge/Kea%20DHCP-2.4+-orange?style=for-the-badge&logo=internet-archive&logoColor=white)](https://www.isc.org/kea/)
+[![Status](https://img.shields.io/badge/Status-Production%20Ready-success?style=for-the-badge&logo=checkmarx&logoColor=white)](./kea-dhcp4.conf)
 
-## 1. Initial Installation and Configuration
+</div>
 
-### Kea DHCP Configuration (`kea-dhcp4.conf` - JSON Format)
+---
 
-The custom `kea-dhcp4.conf` defines the DHCP range and specifies network options (Gateway and DNS Server) for the internal network using the appliance's static IP (**10.207.0.250**).
+## 🎯 **Service Overview**
 
-**Configuration Steps:**
+<table>
+<tr>
+<td width="50%">
 
-1. **Install Kea DHCP Server and stop old ISC DHCP** (if present):
+### 📊 **Network Configuration**
+- 🌐 **Interface**: `ens19` (LAN)
+- 🏠 **Subnet**: `10.207.0.0/24`
+- 📡 **DHCP Range**: `10.207.0.100-200`
+- 🚪 **Gateway**: `10.207.0.250`
 
-    ```bash
-    sudo apt install -y kea-dhcp4 kea-ctrl-agent
-    sudo systemctl stop isc-dhcp-server
-    sudo systemctl disable isc-dhcp-server
-    ```
+</td>
+<td width="50%">
 
-2. **Backup the default configuration:**
+### ⚡ **Technology Stack**
+- 🚀 **Server**: Kea DHCP 2.4+
+- 📝 **Format**: Modern JSON Configuration
+- 🔄 **Migration**: ISC DHCP → Kea DHCP
+- 🎛️ **Management**: RESTful API Support
 
-    ```bash
-    sudo cp /etc/kea/kea-dhcp4.conf /etc/kea/kea-dhcp4.conf.bak
-    ```
+</td>
+</tr>
+</table>
 
-3. **Apply the custom configuration:**
+> 🆕 **Modern Upgrade**: Migrated from legacy ISC DHCP to Kea DHCP with JSON configuration format
 
-    ```bash
-    sudo cp /opt/server-config-repo/dhcp/kea-dhcp4.conf /etc/kea/
-    sudo chown root:root /etc/kea/kea-dhcp4.conf
-    sudo chmod 644 /etc/kea/kea-dhcp4.conf
-    ```
+---
 
-4. **Test configuration syntax:**
+## 🚀 **Quick Deployment**
 
-    ```bash
-    sudo kea-dhcp4 -t /etc/kea/kea-dhcp4.conf
-    ```
+### 📦 **One-Command Setup**
 
-5. **Enable and start the service:**
+```bash
+# 🎯 Complete DHCP deployment
+sudo apt install -y kea-dhcp4 kea-ctrl-agent && \
+sudo cp /opt/server-config-repo/dhcp/kea-dhcp4.conf /etc/kea/ && \
+sudo systemctl enable --now kea-dhcp4
+```
 
-    ```bash
-    sudo systemctl enable kea-dhcp4
-    sudo systemctl start kea-dhcp4
-    sudo systemctl status kea-dhcp4
-    ```
+---
+
+## 📋 **Step-by-Step Installation**
+
+### 🔧 **Phase 1: Package Management**
+
+```bash
+# 📥 Install Kea DHCP Server
+sudo apt install -y kea-dhcp4 kea-ctrl-agent
+
+# 🛑 Stop legacy ISC DHCP (if present)
+sudo systemctl stop isc-dhcp-server 2>/dev/null || true
+sudo systemctl disable isc-dhcp-server 2>/dev/null || true
+```
+
+### 🛠️ **Phase 2: Configuration Deployment**
+
+```bash
+# 💾 Backup existing configuration
+sudo cp /etc/kea/kea-dhcp4.conf /etc/kea/kea-dhcp4.conf.bak
+
+# 📋 Deploy custom configuration
+sudo cp /opt/server-config-repo/dhcp/kea-dhcp4.conf /etc/kea/
+sudo chown root:root /etc/kea/kea-dhcp4.conf
+sudo chmod 644 /etc/kea/kea-dhcp4.conf
+```
+
+### ✅ **Phase 3: Validation & Launch**
+
+```bash
+# 🔍 Test configuration syntax
+sudo kea-dhcp4 -t /etc/kea/kea-dhcp4.conf
+
+# 🚀 Enable and start service
+sudo systemctl enable kea-dhcp4
+sudo systemctl start kea-dhcp4
+
+# 📊 Verify status
+sudo systemctl status kea-dhcp4
+```
 
 ## 🔧 Configuration Customization
 

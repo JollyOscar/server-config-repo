@@ -1,8 +1,41 @@
-# 🌐 DNS Service (BIND9) Configuration
+# 🌐 **DNS Service Configuration**
 
-This service provides internal network name resolution for the **mycorp.lan** domain and forwards all external queries to public DNS servers.
+<div align="center">
 
-> **Note**: The configuration file has been renamed from `resolv.conf` to `named.conf.local` to correctly reflect BIND9 configuration format.
+[![BIND9](https://img.shields.io/badge/BIND9-9.18+-blue?style=for-the-badge&logo=cloudflare&logoColor=white)](https://www.isc.org/bind/)
+[![Security](https://img.shields.io/badge/Security-Hardened-success?style=for-the-badge&logo=shield&logoColor=white)](./named.conf.local)
+[![Domain](https://img.shields.io/badge/Internal%20Domain-mycorp.lan-purple?style=for-the-badge&logo=domain&logoColor=white)](./db.mycorp.lan)
+
+</div>
+
+---
+
+## 🎯 **Service Overview**
+
+<table>
+<tr>
+<td width="50%">
+
+### 🏠 **Internal DNS**
+- 🌐 **Domain**: `mycorp.lan`
+- 📍 **Zone Files**: Forward & Reverse
+- 🔄 **Auto-Updates**: Dynamic records
+- 🛡️ **Security**: Rate limiting enabled
+
+</td>
+<td width="50%">
+
+### 🌍 **External Forwarding**
+- 🚀 **Primary**: Cloudflare (`1.1.1.1`)
+- 🔒 **Secondary**: Google (`8.8.8.8`)
+- ⚡ **Performance**: Caching enabled
+- 🎯 **Reliability**: Multi-server fallback
+
+</td>
+</tr>
+</table>
+
+> 🆕 **Configuration Update**: Renamed `resolv.conf` → `named.conf.local` for proper BIND9 format
 
 ## 1. Initial Installation and Configuration
 

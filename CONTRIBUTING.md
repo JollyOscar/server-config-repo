@@ -1,14 +1,39 @@
-# Contributing to Server Configuration Repository
+# 🤝 **Contributing to Server Configuration Repository**
 
-Thank you for your interest in contributing to this network appliance configuration repository! 
+<div align="center">
 
-## 🎯 Project Purpose
+[![Welcome](https://img.shields.io/badge/Contributors-Welcome!-success?style=for-the-badge&logo=github&logoColor=white)](../../contributors)
+[![Code of Conduct](https://img.shields.io/badge/Code%20of%20Conduct-Respectful-blue?style=for-the-badge&logo=heart&logoColor=white)](#-code-of-conduct)
+[![License](https://img.shields.io/badge/License-Private-red?style=for-the-badge&logo=lock&logoColor=white)](./LICENSE)
 
-This repository provides secure, production-ready configurations for a multi-service network appliance running:
-- **DNS** (BIND9) for internal name resolution
-- **DHCP** (Kea) for IP address management  
-- **Firewall** (nftables) for network security
-- **System Hardening** for baseline security
+</div>
+
+---
+
+## 🎯 **Project Mission**
+
+<table>
+<tr>
+<td width="50%">
+
+### 🌐 **Core Services**
+- 🌍 **DNS** (BIND9) - Name Resolution
+- 📡 **DHCP** (Kea) - IP Management
+- 🔥 **Firewall** (nftables) - Network Security
+- 🛡️ **Hardening** - Baseline Security
+
+</td>
+<td width="50%">
+
+### 🎯 **Objectives**
+- ✅ **Production-Ready** configurations
+- 🔒 **Security-First** approach
+- 📚 **Well-Documented** solutions
+- 🚀 **Easy Deployment** processes
+
+</td>
+</tr>
+</table>
 
 ## 🤝 How to Contribute
 

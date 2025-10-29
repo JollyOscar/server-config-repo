@@ -1,8 +1,41 @@
-# 🔥 Firewall Configuration (nftables)
+# 🔥 **Firewall Configuration**
 
-The firewall uses **modern nftables** to implement robust security with stateful packet inspection, Network Address Translation (NAT), and rate limiting for enhanced protection.
+<div align="center">
 
-> **Note**: This configuration has been updated from legacy iptables to modern nftables format. The filename has been changed from `rules.v4` to `nftables.conf`.
+[![nftables](https://img.shields.io/badge/nftables-1.0+-red?style=for-the-badge&logo=linux&logoColor=white)](https://netfilter.org/projects/nftables/)
+[![Security](https://img.shields.io/badge/Security-Enterprise%20Grade-success?style=for-the-badge&logo=shield&logoColor=white)](./nftables.conf)
+[![NAT](https://img.shields.io/badge/NAT-Enabled-blue?style=for-the-badge&logo=router&logoColor=white)](#-nat--masquerading)
+
+</div>
+
+---
+
+## 🎯 **Modern Firewall Stack**
+
+<table>
+<tr>
+<td width="50%">
+
+### 🛡️ **Security Features**
+- 🚫 **Default Deny**: Explicit allow rules only
+- 🔍 **Stateful Tracking**: Connection state awareness
+- 🚨 **Rate Limiting**: DoS/DDoS protection
+- 📊 **Comprehensive Logging**: Security monitoring
+
+</td>
+<td width="50%">
+
+### 🌐 **Network Services**
+- 🔄 **NAT/Masquerading**: LAN → Internet
+- 🎯 **Interface Separation**: WAN/LAN isolation
+- ⚡ **Performance Optimized**: Hardware acceleration
+- 🔧 **Easy Management**: Modern nftables syntax
+
+</td>
+</tr>
+</table>
+
+> 🆕 **Technology Upgrade**: Migrated from legacy iptables → modern nftables for enhanced performance and security
 
 ## 🛡️ Security Features
 
