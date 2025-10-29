@@ -2,6 +2,8 @@
 
 This service provides internal network name resolution for the **mycorp.lan** domain and forwards all external queries to public DNS servers.
 
+> **Note**: The configuration file has been renamed from `resolv.conf` to `named.conf.local` to correctly reflect BIND9 configuration format.
+
 ## 1. Initial Installation and Configuration
 
 ### BIND9 Configuration (`named.conf.local`)
@@ -10,24 +12,62 @@ This file defines the internal zones and configures recursive lookup behavior us
 
 **Configuration Steps:**
 
-1. **Apply `named.conf.local`:**
+1. **Apply the main configuration:**
 
     ```bash
     sudo cp /etc/bind/named.conf.local /etc/bind/named.conf.local.bak
     sudo cp /opt/server-config-repo/dns/named.conf.local /etc/bind/
     ```
 
-2. **Apply zone files:** Copy your custom forward (`db.mycorp.lan`) and reverse (`db.10.207.0`) zone files to `/etc/bind/`. (These are assumed to be separate config files, not in this repo).
+2. **Apply zone files:**
+
+    ```bash
+    sudo cp /opt/server-config-repo/dns/db.mycorp.lan /etc/bind/
+    sudo cp /opt/server-config-repo/dns/db.10.207.0 /etc/bind/
+    sudo chown bind:bind /etc/bind/db.*
+    sudo chmod 644 /etc/bind/db.*
+    ```
 
 3. **Check configuration syntax:**
 
     ```bash
-    sudo named-checkconf
-    # Example check for forward zone:
+    sudo named-checkconf /etc/bind/named.conf.local
     sudo named-checkzone mycorp.lan /etc/bind/db.mycorp.lan
+    sudo named-checkzone 0.207.10.in-addr.arpa /etc/bind/db.10.207.0
     ```
 
-4. **Restart the service:**
+4. **Restart and enable the service:**
+
+    ```bash
+    sudo systemctl restart bind9
+    sudo systemctl enable bind9
+    sudo systemctl status bind9
+    ```
+
+## 🔧 Configuration Customization
+
+**Important**: Replace the following placeholders with your actual values:
+
+- **Domain Name**: Replace `mycorp.lan` with your actual internal domain
+- **Admin Email**: Replace `admin.mycorp.lan` with your actual email
+- **Server Names**: Replace example hostnames with your actual servers
+- **IP Addresses**: Update all IP addresses to match your network
+- **Interface IP**: Replace `10.207.0.250` with your actual DNS server IP
+
+## 🧪 Testing DNS Resolution
+
+Test your DNS configuration:
+
+```bash
+# Test forward resolution
+nslookup server.mycorp.lan 10.207.0.250
+
+# Test reverse resolution  
+nslookup 10.207.0.250
+
+# Test external forwarding
+nslookup google.com 10.207.0.250
+```
 
     ```bash
     sudo systemctl restart bind9

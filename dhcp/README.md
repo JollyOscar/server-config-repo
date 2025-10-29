@@ -1,6 +1,8 @@
 # 🤝 DHCP Service (Kea DHCP) Configuration
 
-The DHCP service runs the **Kea DHCP Server** on the **LAN interface (ens19)**, dynamically assigning IPs within the **10.207.0.0/24** subnet, using the range **10.207.0.10 to 10.207.0.200**.
+The DHCP service runs the **Kea DHCP Server** on the **LAN interface (ens19)**, dynamically assigning IPs within the **10.207.0.0/24** subnet, using the range **10.207.0.100 to 10.207.0.200**.
+
+> **Note**: This configuration has been updated to use Kea DHCP (modern JSON format) instead of ISC DHCP Server. The filename has been changed from `dhcpd.conf` to `kea-dhcp4.conf`.
 
 ## 1. Initial Installation and Configuration
 
@@ -10,11 +12,12 @@ The custom `kea-dhcp4.conf` defines the DHCP range and specifies network options
 
 **Configuration Steps:**
 
-1. **Stop the old ISC DHCP service** (if present) and ensure the Kea service is installed.
+1. **Install Kea DHCP Server and stop old ISC DHCP** (if present):
 
     ```bash
-    sudo apt install -y kea-dhcp4
+    sudo apt install -y kea-dhcp4 kea-ctrl-agent
     sudo systemctl stop isc-dhcp-server
+    sudo systemctl disable isc-dhcp-server
     ```
 
 2. **Backup the default configuration:**
@@ -23,25 +26,37 @@ The custom `kea-dhcp4.conf` defines the DHCP range and specifies network options
     sudo cp /etc/kea/kea-dhcp4.conf /etc/kea/kea-dhcp4.conf.bak
     ```
 
-3. **Apply `kea-dhcp4.conf`:**
+3. **Apply the custom configuration:**
 
     ```bash
-    # Note: Kea often uses /etc/kea/ as the config directory
     sudo cp /opt/server-config-repo/dhcp/kea-dhcp4.conf /etc/kea/
+    sudo chown root:root /etc/kea/kea-dhcp4.conf
+    sudo chmod 644 /etc/kea/kea-dhcp4.conf
     ```
 
-4. **Check Configuration Syntax (JSON Check):**
+4. **Test configuration syntax:**
 
     ```bash
-    # Kea has a test utility, often invoked via systemctl or specific command
     sudo kea-dhcp4 -t /etc/kea/kea-dhcp4.conf
     ```
 
-5. **Restart the service:**
+5. **Enable and start the service:**
 
     ```bash
-    sudo systemctl restart kea-dhcp4
+    sudo systemctl enable kea-dhcp4
+    sudo systemctl start kea-dhcp4
+    sudo systemctl status kea-dhcp4
     ```
+
+## 🔧 Configuration Customization
+
+**Important**: Replace the following placeholders with your actual values:
+
+- **MAC Address**: Replace `aa:bb:cc:dd:ee:ff` in reservations with actual MAC addresses
+- **Hostnames**: Replace `server.mycorp.lan` with your actual server names  
+- **Domain**: Replace `mycorp.lan` with your actual domain name
+- **Interface**: Replace `ens19` with your actual LAN interface name
+- **IP Range**: Adjust `10.207.0.100 - 10.207.0.200` if needed
 
 ## 2. Applying Configuration to a New Server (Recovery)
 

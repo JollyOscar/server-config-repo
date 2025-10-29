@@ -1,0 +1,24 @@
+; BIND9 Reverse Zone File for 10.207.0.x network
+; Replace IP addresses with your actual infrastructure
+$TTL    604800
+@       IN      SOA     dns.mycorp.lan. admin.mycorp.lan. (
+                              1         ; Serial (increment for changes)
+                         604800         ; Refresh
+                          86400         ; Retry
+                        2419200         ; Expire
+                         604800 )       ; Negative Cache TTL
+
+; Name servers
+@       IN      NS      dns.mycorp.lan.
+
+; PTR records for reverse DNS lookups
+; Replace these with your actual server names and last octet of IP
+250     IN      PTR     dns.mycorp.lan.
+250     IN      PTR     gateway.mycorp.lan.
+250     IN      PTR     router.mycorp.lan.
+
+; Example internal hosts (replace with actual infrastructure)
+50      IN      PTR     server.mycorp.lan.
+101     IN      PTR     workstation1.mycorp.lan.
+102     IN      PTR     workstation2.mycorp.lan.
+110     IN      PTR     printer.mycorp.lan.

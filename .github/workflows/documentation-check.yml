@@ -1,0 +1,111 @@
+name: 📚 Documentation Check
+
+on:
+  push:
+    branches: [ main, Copilot ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  documentation:
+    name: Check Documentation Quality
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: 📥 Checkout Repository
+      uses: actions/checkout@v4
+      
+    - name: 📝 Install markdownlint
+      run: |
+        npm install -g markdownlint-cli
+        
+    - name: 🔍 Lint Markdown Files
+      run: |
+        echo "Checking markdown files for consistency..."
+        if markdownlint **/*.md --config .markdownlint.json; then
+          echo "✅ All markdown files pass linting"
+        else
+          echo "⚠️ Some markdown files have linting issues (non-blocking)"
+          echo "This is informational only and won't fail the build"
+        fi
+        
+    - name: 📋 Check Required Documentation
+      run: |
+        echo "Checking for required documentation files..."
+        
+        required_files=(
+          "README.md"
+          "dhcp/README.md"
+          "dns/README.md" 
+          "fw/README.md"
+          "hardening/README.md"
+        )
+        
+        missing_files=()
+        for file in "${required_files[@]}"; do
+          if [[ ! -f "$file" ]]; then
+            missing_files+=("$file")
+          else
+            echo "✅ Found: $file"
+          fi
+        done
+        
+        if [[ ${#missing_files[@]} -gt 0 ]]; then
+          echo "❌ Missing documentation files:"
+          printf '%s\n' "${missing_files[@]}"
+          exit 1
+        fi
+        
+    - name: 🔧 Check Configuration File Names
+      run: |
+        echo "Verifying configuration file naming conventions..."
+        
+        # Check for correct Kea DHCP filename
+        if [[ -f "dhcp/kea-dhcp4.conf" ]]; then
+          echo "✅ Kea DHCP configuration file correctly named"
+        else
+          echo "❌ Missing dhcp/kea-dhcp4.conf"
+          exit 1
+        fi
+        
+        # Check for correct BIND9 filename  
+        if [[ -f "dns/named.conf.local" ]]; then
+          echo "✅ BIND9 configuration file correctly named"
+        else
+          echo "❌ Missing dns/named.conf.local"
+          exit 1
+        fi
+        
+        # Check for correct nftables filename
+        if [[ -f "fw/nftables.conf" ]]; then
+          echo "✅ nftables configuration file correctly named"
+        else
+          echo "❌ Missing fw/nftables.conf" 
+          exit 1
+        fi
+        
+    - name: 🔍 Check for Placeholder Reminders
+      run: |
+        echo "Checking for proper placeholder documentation..."
+        
+        # Check if READMEs mention customization requirements
+        if grep -r "Replace.*with your actual" */README.md; then
+          echo "✅ Found placeholder customization instructions"
+        else
+          echo "⚠️  Consider adding more placeholder customization guidance"
+        fi
+        
+        # Check for example values that need replacement
+        example_patterns=(
+          "mycorp.lan" 
+          "10.207.0"
+          "ens18"
+          "ens19"
+          "admin@mycorp.lan"
+        )
+        
+        echo "Found example values that should be customized:"
+        for pattern in "${example_patterns[@]}"; do
+          echo "  $pattern:"
+          grep -r "$pattern" --include="*.conf" --include="*.local" . | head -3 || echo "    (not found)"
+        done
