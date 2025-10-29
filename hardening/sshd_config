@@ -1,131 +1,258 @@
-# sshd_config# sshd_config
+# sshd_config# sshd_config# sshd_config
 
-# This is the sshd server system-wide configuration file. See# This is the sshd server system-wide configuration file. See
+# This is the sshd server system-wide configuration file. See
 
-# sshd_config(5) for more information.# sshd_config(5) for more information.
-
-
-
-# This sshd was compiled with PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games# This sshd was compiled with PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games
-
-# The strategy used for options in the default sshd_config shipped with# The strategy used for options in the default sshd_config shipped with
-
-# OpenSSH is to specify options with their default value where# OpenSSH is to specify options with their default value where
-
-# possible, but leave them commented. Uncommented options override the# possible, but leave them commented. Uncommented options override the
-
-# default value.# default value.
+# sshd_config(5) for more information.# This is the sshd server system-wide configuration file. See# This is the sshd server system-wide configuration file. See
 
 
+
+# This sshd was compiled with PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games# sshd_config(5) for more information.# sshd_config(5) for more information.
+
+# The strategy used for options in the default sshd_config shipped with
+
+# OpenSSH is to specify options with their default value where
+
+# possible, but leave them commented. Uncommented options override the
+
+# default value.# This sshd was compiled with PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games# This sshd was compiled with PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games
+
+
+
+Include /etc/ssh/sshd_config.d/*.conf# The strategy used for options in the default sshd_config shipped with# The strategy used for options in the default sshd_config shipped with
+
+
+
+# When systemd socket activation is used (the default), the socket# OpenSSH is to specify options with their default value where# OpenSSH is to specify options with their default value where
+
+# configuration must be re-generated after changing Port, AddressFamily, or
+
+# ListenAddress.# possible, but leave them commented. Uncommented options override the# possible, but leave them commented. Uncommented options override the
+
+#
+
+# For changes to take effect, run:# default value.# default value.
+
+#
+
+#   systemctl daemon-reload
+
+#   systemctl restart ssh.socket
 
 Include /etc/ssh/sshd_config.d/*.confInclude /etc/ssh/sshd_config.d/*.conf
 
+Port 2222
+
+AddressFamily inet
+
+#ListenAddress 0.0.0.0
+
+#ListenAddress ::# When systemd socket activation is used (the default), the socket# When systemd socket activation is used (the default), the socket
 
 
-# When systemd socket activation is used (the default), the socket# When systemd socket activation is used (the default), the socket
 
-# configuration must be re-generated after changing Port, AddressFamily, or# configuration must be re-generated after changing Port, AddressFamily, or
+#HostKey /etc/ssh/ssh_host_rsa_key# configuration must be re-generated after changing Port, AddressFamily, or# configuration must be re-generated after changing Port, AddressFamily, or
 
-# ListenAddress.# ListenAddress.
+#HostKey /etc/ssh/ssh_host_ecdsa_key
 
-##
+#HostKey /etc/ssh/ssh_host_ed25519_key# ListenAddress.# ListenAddress.
+
+
+
+# Ciphers and keying##
+
+#RekeyLimit default none
 
 # For changes to take effect, run:# For changes to take effect, run:
 
-##
+# Logging
+
+#SyslogFacility AUTH##
+
+#LogLevel INFO
 
 #   systemctl daemon-reload#   systemctl daemon-reload
 
-#   systemctl restart ssh.socket#   systemctl restart ssh.socket
+# Authentication:
 
+LoginGraceTime 1m#   systemctl restart ssh.socket#   systemctl restart ssh.socket
 
+PermitRootLogin no
 
-Port 2222Port 2222
+StrictModes yes
+
+MaxAuthTries 3
+
+MaxSessions 2Port 2222Port 2222
+
+MaxStartups 2:30:5
 
 AddressFamily inetAddressFamily inet
 
-#ListenAddress 0.0.0.0#ListenAddress 0.0.0.0
+#PubkeyAuthentication yes
+
+#Expect .ssh/authorized_keys2 to be disregarded by default in future.#ListenAddress 0.0.0.0#ListenAddress 0.0.0.0
+
+#AuthorizedKeysFile      .ssh/authorized_keys .ssh/authorized_keys2
 
 # #ListenAddress ::# #ListenAddress ::
 
-
-
-#HostKey /etc/ssh/ssh_host_rsa_key#HostKey /etc/ssh/ssh_host_rsa_key
-
-#HostKey /etc/ssh/ssh_host_ecdsa_key#HostKey /etc/ssh/ssh_host_ecdsa_key
-
-#HostKey /etc/ssh/ssh_host_ed25519_key#HostKey /etc/ssh/ssh_host_ed25519_key
-
-
-
-# Ciphers and keying# Ciphers and keying
-
-#RekeyLimit default none#RekeyLimit default none
-
-
-
-# Logging# Logging
-
-#SyslogFacility AUTH#SyslogFacility AUTH
-
-#LogLevel INFO#LogLevel INFO
-
-
-
-# Authentication:# Authentication:
-
-LoginGraceTime 1mLoginGraceTime 1m
-
-PermitRootLogin noPermitRootLogin no
-
-StrictModes yesStrictModes yes
-
-MaxAuthTries 3MaxAuthTries 3
-
-MaxSessions 2MaxSessions 2
-
-MaxStartups 2:30:5MaxStartups 2:30:5
-
-
-
-#PubkeyAuthentication yes#PubkeyAuthentication yes
-
-#Expect .ssh/authorized_keys2 to be disregarded by default in future.#Expect .ssh/authorized_keys2 to be disregarded by default in future.
-
-#AuthorizedKeysFile      .ssh/authorized_keys .ssh/authorized_keys2#AuthorizedKeysFile      .ssh/authorized_keys .ssh/authorized_keys2
-
-
-
-#AuthorizedPrincipalsFile noneAuthorizedPrincipalsFile no
+#AuthorizedPrincipalsFile none
 
 AuthorizedPrincipalsFile no
 
-#AuthorizedKeysCommand none
 
-#AuthorizedKeysCommand none#AuthorizedKeysCommandUser nobody
+
+#AuthorizedKeysCommand none#HostKey /etc/ssh/ssh_host_rsa_key#HostKey /etc/ssh/ssh_host_rsa_key
 
 #AuthorizedKeysCommandUser nobody
 
+#HostKey /etc/ssh/ssh_host_ecdsa_key#HostKey /etc/ssh/ssh_host_ecdsa_key
+
 # For this to work you will also need host keys in /etc/ssh/ssh_known_hosts
 
-# For this to work you will also need host keys in /etc/ssh/ssh_known_hosts#HostbasedAuthentication no
+#HostbasedAuthentication no#HostKey /etc/ssh/ssh_host_ed25519_key#HostKey /etc/ssh/ssh_host_ed25519_key
 
-#HostbasedAuthentication no#IgnoreUserKnownHosts no
+#IgnoreUserKnownHosts no
 
-#IgnoreUserKnownHosts no#Don't read the user's ~/.rhosts and ~/.shosts files
-
-#Don't read the user's ~/.rhosts and ~/.shosts files#IgnoreRhosts yes
+#Don't read the user's ~/.rhosts and ~/.shosts files
 
 #IgnoreRhosts yes
 
+# Ciphers and keying# Ciphers and keying
+
 # Security hardening - disable password authentication
 
-# Security hardening - disable password authenticationPasswordAuthentication no
+PasswordAuthentication no#RekeyLimit default none#RekeyLimit default none
 
-PasswordAuthentication noPermitEmptyPasswords no
+PermitEmptyPasswords no
 
-PermitEmptyPasswords noPubkeyAuthentication yes
+PubkeyAuthentication yes
 
+KbdInteractiveAuthentication no
+
+ChallengeResponseAuthentication no# Logging# Logging
+
+
+
+# Kerberos options#SyslogFacility AUTH#SyslogFacility AUTH
+
+#KerberosAuthentication no
+
+#KerberosOrLocalPasswd yes#LogLevel INFO#LogLevel INFO
+
+#KerberosTicketCleanup yes
+
+
+
+# GSSAPI options
+
+#GSSAPIAuthentication no# Authentication:# Authentication:
+
+#GSSAPICleanupCredentials yes
+
+#GSSAPIStrictAcceptorCheck yesLoginGraceTime 1mLoginGraceTime 1m
+
+#GSSAPIKeyExchange no
+
+PermitRootLogin noPermitRootLogin no
+
+# Set this to 'yes' to enable PAM authentication, account processing,
+
+# and session processing. If this is enabled, PAM authentication willStrictModes yesStrictModes yes
+
+# be allowed through the KbdInteractiveAuthentication and
+
+# PasswordAuthentication. Depending on your PAM configuration,MaxAuthTries 3MaxAuthTries 3
+
+# PAM authentication via KbdInteractiveAuthentication may bypass
+
+# the setting of 'PermitRootLogin prohibit-password'MaxSessions 2MaxSessions 2
+
+# If you just want the pam account and session checks to run without
+
+# PAM authentication, then enable this but set PasswordAuthenticationMaxStartups 2:30:5MaxStartups 2:30:5
+
+# and KbdInteractiveAuthentication to 'no'.
+
+#UsePAM yes
+
+
+
+# Security hardening options#PubkeyAuthentication yes#PubkeyAuthentication yes
+
+X11Forwarding no
+
+AllowAgentForwarding no#Expect .ssh/authorized_keys2 to be disregarded by default in future.#Expect .ssh/authorized_keys2 to be disregarded by default in future.
+
+AllowTcpForwarding no
+
+PermitTunnel no#AuthorizedKeysFile      .ssh/authorized_keys .ssh/authorized_keys2#AuthorizedKeysFile      .ssh/authorized_keys .ssh/authorized_keys2
+
+PermitUserEnvironment no
+
+PrintMotd yes
+
+PrintLastLog yes
+
+TCPKeepAlive yes#AuthorizedPrincipalsFile noneAuthorizedPrincipalsFile no
+
+Compression no
+
+ClientAliveInterval 300AuthorizedPrincipalsFile no
+
+ClientAliveCountMax 2
+
+UseDNS no#AuthorizedKeysCommand none
+
+GatewayPorts no
+
+#AuthorizedKeysCommand none#AuthorizedKeysCommandUser nobody
+
+# Protocol and cipher hardening
+
+Protocol 2#AuthorizedKeysCommandUser nobody
+
+Ciphers chacha20-poly1305@openssh.com,aes256-gcm@openssh.com,aes128-gcm@openssh.com,aes256-ctr,aes192-ctr,aes128-ctr
+
+MACs hmac-sha2-256-etm@openssh.com,hmac-sha2-512-etm@openssh.com,hmac-sha2-256,hmac-sha2-512# For this to work you will also need host keys in /etc/ssh/ssh_known_hosts
+
+KexAlgorithms curve25519-sha256@libssh.org,diffie-hellman-group16-sha512,diffie-hellman-group18-sha512
+
+# For this to work you will also need host keys in /etc/ssh/ssh_known_hosts#HostbasedAuthentication no
+
+# User restrictions (replace 'admin' with your actual admin username)
+
+AllowUsers admin#HostbasedAuthentication no#IgnoreUserKnownHosts no
+
+DenyUsers root
+
+#IgnoreUserKnownHosts no#Don't read the user's ~/.rhosts and ~/.shosts files
+
+# no default banner path
+
+#Banner none#Don't read the user's ~/.rhosts and ~/.shosts files#IgnoreRhosts yes
+
+
+
+# Allow client to pass locale environment variables#IgnoreRhosts yes
+
+AcceptEnv LANG LC_*
+
+# Security hardening - disable password authentication
+
+# override default of no subsystems
+
+Subsystem sftp /usr/lib/openssh/sftp-server# Security hardening - disable password authenticationPasswordAuthentication no
+
+
+
+#Match User anoncvsPasswordAuthentication noPermitEmptyPasswords no
+
+#       AllowTCPForwarding no
+
+#       PermitTTY noPermitEmptyPasswords noPubkeyAuthentication yes
+
+#       ForceCommand cvs server
 PubkeyAuthentication yesKbdInteractiveAuthentication no
 
 KbdInteractiveAuthentication noChallengeResponseAuthentication no
