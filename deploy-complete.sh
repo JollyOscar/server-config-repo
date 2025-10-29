@@ -45,8 +45,7 @@ cd /opt
 sudo git clone https://github.com/JollyOscar/server-config-repo.git
 cd server-config-repo
 
-echo "Switching to latest enhanced branch..."
-sudo git checkout markdown-customization
+echo "Using the current branch for deployment..."
 
 echo "Setting up permissions..."
 sudo chown -R $USER:$USER /opt/server-config-repo

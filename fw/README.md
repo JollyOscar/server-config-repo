@@ -117,9 +117,9 @@ sudo tail -f /var/log/kern.log | grep "nft-"
 
 | Step | Command | Expected Output/Result |
 | :--- | :--- | :--- |
-| **Rule Loading** | `sudo iptables-save` | Should display the chains and rules, including the NAT `MASQUERADE` rule on **ens18**. |
+| **Rule Loading** | `sudo nft list ruleset` | Should display the chains and rules, including the NAT `masquerade` rule on **ens18**. |
 | **Verify NAT** | From a LAN client (e.g., 10.207.0.101), run a trace route (`traceroute 8.8.8.8`). | The first hop should be **10.207.0.250**. |
-| **Verify SSH Filter** | Check the INPUT chain for the custom port: `sudo iptables -L INPUT -v -n &#124; grep 2222` | Should show the rule accepting TCP traffic on port 2222. |
+| **Verify SSH Filter** | Check the INPUT chain for the custom port: `sudo nft list chain inet filter input \| grep 2222` | Should show the rule accepting TCP traffic on port 2222. |
 
 ### Troubleshooting Example: Internet Access Blocked
 

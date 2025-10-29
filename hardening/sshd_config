@@ -1,92 +1,182 @@
-# sshd_config - OpenSSH server configuration# sshd_config# sshd_config# sshd_config# sshd_config
+# sshd_config - OpenSSH server configuration# sshd_config - OpenSSH server configuration# sshd_config# sshd_config# sshd_config# sshd_config
 
 # This configuration follows Ubuntu's official security recommendations
 
-# See: https://help.ubuntu.com/community/SSH/OpenSSH/Configuring# This is the sshd server system-wide configuration file. See
+# See: https://help.ubuntu.com/community/SSH/OpenSSH/Configuring# This configuration follows Ubuntu's official security recommendations
 
 
 
-# Include any additional configurations# sshd_config(5) for more information.# This is the sshd server system-wide configuration file. See
-
-Include /etc/ssh/sshd_config.d/*.conf
+Include /etc/ssh/sshd_config.d/*.conf# See: https://help.ubuntu.com/community/SSH/OpenSSH/Configuring# This is the sshd server system-wide configuration file. See
 
 
 
 # Basic Connection Settings
 
-Port 2222                    # Custom port for security (Ubuntu recommends non-standard ports)# This sshd was compiled with PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games# sshd_config(5) for more information.# This is the sshd server system-wide configuration file. See# This is the sshd server system-wide configuration file. See
+Port 2222
 
-AddressFamily inet          # IPv4 only for simplicity
+AddressFamily inet# Include any additional configurations# sshd_config(5) for more information.# This is the sshd server system-wide configuration file. See
 
-#ListenAddress 0.0.0.0      # Listen on all interfaces# The strategy used for options in the default sshd_config shipped with
+Protocol 2
 
-Protocol 2                  # SSH protocol version 2 only
-
-# OpenSSH is to specify options with their default value where
+Include /etc/ssh/sshd_config.d/*.conf
 
 # Host Keys - Use modern, secure key types
 
-HostKey /etc/ssh/ssh_host_rsa_key# possible, but leave them commented. Uncommented options override the
+HostKey /etc/ssh/ssh_host_rsa_key
 
 HostKey /etc/ssh/ssh_host_ecdsa_key
 
-HostKey /etc/ssh/ssh_host_ed25519_key# default value.# This sshd was compiled with PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games# sshd_config(5) for more information.# sshd_config(5) for more information.
+HostKey /etc/ssh/ssh_host_ed25519_key# Basic Connection Settings
 
 
 
-# Security: Disable weak algorithms
+# Security: Disable weak algorithmsPort 2222                    # Custom port for security (Ubuntu recommends non-standard ports)# This sshd was compiled with PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games# sshd_config(5) for more information.# This is the sshd server system-wide configuration file. See# This is the sshd server system-wide configuration file. See
 
 Ciphers aes256-gcm@openssh.com,chacha20-poly1305@openssh.com,aes256-ctr
 
-MACs hmac-sha2-256-etm@openssh.com,hmac-sha2-512-etm@openssh.comInclude /etc/ssh/sshd_config.d/*.conf# The strategy used for options in the default sshd_config shipped with
+MACs hmac-sha2-256-etm@openssh.com,hmac-sha2-512-etm@openssh.comAddressFamily inet          # IPv4 only for simplicity
 
 KexAlgorithms curve25519-sha256@libssh.org,diffie-hellman-group16-sha512
 
-
+#ListenAddress 0.0.0.0      # Listen on all interfaces# The strategy used for options in the default sshd_config shipped with
 
 # Logging (Ubuntu recommends VERBOSE for security monitoring)
 
-SyslogFacility AUTHPort 2222# OpenSSH is to specify options with their default value where
+SyslogFacility AUTHProtocol 2                  # SSH protocol version 2 only
 
-LogLevel VERBOSE            # Ubuntu: "recommended to log more information"
+LogLevel VERBOSE
 
-AddressFamily inet
+# OpenSSH is to specify options with their default value where
 
 # Authentication Settings (Ubuntu's key recommendations)
 
-LoginGraceTime 30           # Ubuntu: "lower login grace time frees up connections"#ListenAddress 0.0.0.0# possible, but leave them commented. Uncommented options override the
+LoginGraceTime 30# Host Keys - Use modern, secure key types
 
-PermitRootLogin no          # Ubuntu: Critical security practice
+PermitRootLogin no
 
-StrictModes yes             # Verify file permissions#ListenAddress ::
+StrictModes yesHostKey /etc/ssh/ssh_host_rsa_key# possible, but leave them commented. Uncommented options override the
 
-MaxAuthTries 3              # Limit brute force attempts
+MaxAuthTries 3
 
-MaxSessions 2               # Limit concurrent sessions per connection# default value.# This sshd was compiled with PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games# This sshd was compiled with PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games
+MaxSessions 2HostKey /etc/ssh/ssh_host_ecdsa_key
 
-MaxStartups 2:30:10         # Ubuntu: "limit pending connections" - start refusing 30% at 2, 100% at 10
+MaxStartups 2:30:10
 
-#HostKey /etc/ssh/ssh_host_rsa_key
+HostKey /etc/ssh/ssh_host_ed25519_key# default value.# This sshd was compiled with PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games# sshd_config(5) for more information.# sshd_config(5) for more information.
 
 # Disable Password Authentication (Ubuntu: "recommended unless specific reason not to")
 
-PasswordAuthentication no   # Ubuntu: "massively improves your security"#HostKey /etc/ssh/ssh_host_ecdsa_key
+PasswordAuthentication no
 
-PermitEmptyPasswords no     # Never allow empty passwords
+PermitEmptyPasswords no
 
-ChallengeResponseAuthentication no#HostKey /etc/ssh/ssh_host_ed25519_key
+ChallengeResponseAuthentication no# Security: Disable weak algorithms
 
 
 
-# Public Key Authentication (Ubuntu's recommended method)Include /etc/ssh/sshd_config.d/*.conf# The strategy used for options in the default sshd_config shipped with# The strategy used for options in the default sshd_config shipped with
+# Public Key Authentication (Ubuntu's recommended method)Ciphers aes256-gcm@openssh.com,chacha20-poly1305@openssh.com,aes256-ctr
 
 PubkeyAuthentication yes
 
-AuthorizedKeysFile .ssh/authorized_keys# Ciphers and keying
+AuthorizedKeysFile .ssh/authorized_keysMACs hmac-sha2-256-etm@openssh.com,hmac-sha2-512-etm@openssh.comInclude /etc/ssh/sshd_config.d/*.conf# The strategy used for options in the default sshd_config shipped with
 
 AuthorizedPrincipalsFile none
 
-AuthorizedKeysCommand none#RekeyLimit default none
+AuthorizedKeysCommand noneKexAlgorithms curve25519-sha256@libssh.org,diffie-hellman-group16-sha512
+
+AuthorizedKeysCommandUser nobody
+
+
+
+# Disable Forwarding (Ubuntu: "recommended if using SSH keys with specified commands")
+
+AllowTcpForwarding no# Logging (Ubuntu recommends VERBOSE for security monitoring)
+
+X11Forwarding no
+
+AllowStreamLocalForwarding noSyslogFacility AUTHPort 2222# OpenSSH is to specify options with their default value where
+
+GatewayPorts no
+
+PermitTunnel noLogLevel VERBOSE            # Ubuntu: "recommended to log more information"
+
+
+
+# Host-based Authentication (disabled for security)AddressFamily inet
+
+HostbasedAuthentication no
+
+IgnoreUserKnownHosts yes# Authentication Settings (Ubuntu's key recommendations)
+
+IgnoreRhosts yes
+
+LoginGraceTime 30           # Ubuntu: "lower login grace time frees up connections"#ListenAddress 0.0.0.0# possible, but leave them commented. Uncommented options override the
+
+# User Access Control (Ubuntu: "significantly improve security")
+
+# Uncomment and customize these lines based on your user requirements:PermitRootLogin no          # Ubuntu: Critical security practice
+
+#AllowUsers username1 username2
+
+#DenyUsers baduser1 baduser2StrictModes yes             # Verify file permissions#ListenAddress ::
+
+#AllowGroups ssh-users
+
+#DenyGroups noshellMaxAuthTries 3              # Limit brute force attempts
+
+
+
+# Additional Security SettingsMaxSessions 2               # Limit concurrent sessions per connection# default value.# This sshd was compiled with PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games# This sshd was compiled with PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games
+
+PermitUserEnvironment no
+
+UsePAM yesMaxStartups 2:30:10         # Ubuntu: "limit pending connections" - start refusing 30% at 2, 100% at 10
+
+UseDNS no
+
+PrintMotd no#HostKey /etc/ssh/ssh_host_rsa_key
+
+PrintLastLog yes
+
+# Disable Password Authentication (Ubuntu: "recommended unless specific reason not to")
+
+# Banner Configuration (Ubuntu: "display banner for legal notices")
+
+# Uncomment to enable login banner:PasswordAuthentication no   # Ubuntu: "massively improves your security"#HostKey /etc/ssh/ssh_host_ecdsa_key
+
+#Banner /etc/issue.net
+
+PermitEmptyPasswords no     # Never allow empty passwords
+
+# Subsystems
+
+Subsystem sftp /usr/lib/openssh/sftp-serverChallengeResponseAuthentication no#HostKey /etc/ssh/ssh_host_ed25519_key
+
+
+
+# Client Connection Settings
+
+ClientAliveInterval 300
+
+ClientAliveCountMax 2# Public Key Authentication (Ubuntu's recommended method)Include /etc/ssh/sshd_config.d/*.conf# The strategy used for options in the default sshd_config shipped with# The strategy used for options in the default sshd_config shipped with
+
+TCPKeepAlive yes
+
+PubkeyAuthentication yes
+
+# Compression
+
+Compression delayedAuthorizedKeysFile .ssh/authorized_keys# Ciphers and keying
+
+
+
+# Advanced Security FeaturesAuthorizedPrincipalsFile none
+
+VersionAddendum none
+
+DebianBanner noAuthorizedKeysCommand none#RekeyLimit default none
+
+AcceptEnv LANG LC_*
 
 AuthorizedKeysCommandUser nobody
 

@@ -113,6 +113,6 @@ re-run the user/group commands.
 1. **Check Config:** `sudo sshd -t` (returns nothing on success).
 
 2. **Check Firewall:** Verify that the firewall rules explicitly permit inbound TCP traffic on port **2222**.
-   The firewall configuration is in **`fw/rules.v4`**.
-   - **Check current running rules:** `sudo iptables -L INPUT -v -n | grep 2222`
-   - **If rules are missing:** Reload the saved rules: `sudo iptables-restore < /etc/iptables/rules.v4`
+   The firewall configuration is in **`fw/nftables.conf`**.
+   - **Check current running rules:** `sudo nft list chain inet filter input | grep 2222`
+   - **If rules are missing:** Reload the saved rules: `sudo systemctl restart nftables`

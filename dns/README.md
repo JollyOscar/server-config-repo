@@ -15,7 +15,7 @@
 | 🔄 **Auto-Updates**: Dynamic records | ⚡ **Performance**: Caching enabled |
 | �️ **Security**: Rate limiting enabled | 🎯 **Reliability**: Multi-server fallback |
 
-> 🆕 **Configuration Update**: Renamed `resolv.conf` → `named.conf.local` for proper BIND9 format
+> 🆕 **Configuration Update**: Replaced incorrect `resolv.conf` with `named.conf.local` for proper BIND9 configuration.
 
 ## 1. Initial Installation and Configuration
 
