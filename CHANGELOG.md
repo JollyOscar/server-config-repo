@@ -8,6 +8,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Added
+
 - Modern nftables firewall configuration with rate limiting
 - Kea DHCP server configuration (JSON format)
 - Enhanced DNS security with BIND9 rate limiting
@@ -20,6 +21,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Security policy and contributing guidelines
 
 ### Changed
+
 - **BREAKING**: Replaced legacy ISC DHCP with modern Kea DHCP configuration (`dhcp/kea-dhcp4.conf`)
 - **BREAKING**: Modernized DNS with BIND9 security hardening (`dns/named.conf.local`)
 - **BREAKING**: Upgraded firewall from iptables to nftables (`fw/nftables.conf`)
@@ -29,12 +31,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Updated DNS configuration with security hardening
 
 ### Fixed
+
 - Corrected DHCP configuration syntax for Kea compatibility
 - Fixed DNS zone file references and configuration paths
 - Improved firewall rule organization and security
 - Enhanced SSH security with proper authentication restrictions
 
 ### Security
+
 - Implemented default-deny firewall policy
 - Added rate limiting for SSH and DNS services
 - Disabled weak SSH authentication methods
@@ -46,6 +50,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [1.0.0] - 2024-10-29
 
 ### Added
+
 - Initial repository structure
 - Basic network service configurations
 - Documentation framework
@@ -60,6 +65,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 If you're upgrading from previous versions, please note these breaking changes:
 
 #### DHCP Service Migration
+
 ```bash
 # Old: ISC DHCP Server
 sudo systemctl stop isc-dhcp-server
@@ -73,6 +79,7 @@ sudo systemctl start kea-dhcp4
 ```
 
 #### Firewall Migration
+
 ```bash
 # Old: iptables rules
 sudo iptables-save > /tmp/old-rules.txt
@@ -84,6 +91,7 @@ sudo nft -f /etc/nftables.conf
 ```
 
 #### DNS Configuration Update
+
 ```bash
 # Update BIND9 configuration
 sudo cp dns/named.conf.local /etc/bind/
@@ -105,3 +113,5 @@ After upgrading, you **must** customize these placeholder values:
 ---
 
 For detailed upgrade instructions, see the README.md file in each service directory.
+
+
