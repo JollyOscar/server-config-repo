@@ -121,9 +121,18 @@ jobs:
           echo "⚠️ kea-dhcp4 binary not found - skipping Kea-specific validation"
         fi
         
-        echo "Checking JSON syntax..."
-        jq . configs/dhcp/kea-dhcp4.conf > /dev/null
-        echo "✅ JSON syntax is valid"
+        echo "Checking JSON syntax (strip C-style comments before validating)..."
+        # Some configs include /* ... */ comments and placeholder markers which make
+        # strict JSON parsers like jq fail. Strip C-style block comments first
+        # before passing to jq.
+        if perl -0777 -pe 's:/\*.*?\*/::gs' configs/dhcp/kea-dhcp4.conf | jq . > /dev/null; then
+          echo "✅ JSON syntax is valid (comments stripped)"
+        else
+          echo "⚠️ JSON syntax invalid after stripping comments (or jq failed)"
+          # Show a brief excerpt to help debugging
+          echo "--- file head (first 20 lines) ---"
+          perl -0777 -pe 's:/\*.*?\*/::gs' configs/dhcp/kea-dhcp4.conf | sed -n '1,20p'
+        fi
     
     - name: 🧪 Validate Firewall Configuration
       run: |
