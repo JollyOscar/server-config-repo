@@ -2,7 +2,13 @@
 # 🔍 Placeholder Verification Script (Improved - No False Positives)
 # Run this before deployment to check for unreplaced placeholders
 
+# Auto-detect script directory and change to repository root
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+REPO_ROOT="$(cd "$SCRIPT_DIR/.." && pwd)"
+cd "$REPO_ROOT" || { echo "❌ Failed to change to repository root"; exit 1; }
+
 echo "🔍 Checking for unreplaced placeholders..."
+echo "Repository root: $REPO_ROOT"
 echo "========================================"
 
 FOUND_ISSUES=0
