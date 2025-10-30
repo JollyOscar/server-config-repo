@@ -23,7 +23,7 @@ free -h
 
 echo ""
 echo "1.4 Checking network interfaces..."
-ip addr show | grep -E "(ens18|ens19|inet )"
+ip addr show | grep -E "(ens33|ens37|inet )"
 
 # 🛡️ TEST SUITE 2: SECURITY VALIDATION
 echo ""
@@ -184,7 +184,7 @@ ps aux --sort=-%mem | head -6
 echo ""
 echo "7.2 Network Statistics..."
 echo "Network interface statistics:"
-cat /proc/net/dev | grep -E "(ens18|ens19)" || echo "Network interfaces not found"
+cat /proc/net/dev | grep -E "(ens33|ens37)" || echo "Network interfaces not found"
 
 echo ""
 echo "7.3 System Load Average..."
@@ -254,8 +254,8 @@ done
 
 echo ""
 echo "🔧 Network Configuration:"
-echo "WAN Interface (ens18): $(ip addr show ens18 2>/dev/null | grep "inet " | awk '{print $2}' || echo "Not configured")"
-echo "LAN Interface (ens19): $(ip addr show ens19 2>/dev/null | grep "inet " | awk '{print $2}' || echo "Not configured")"
+echo "WAN Interface (ens33): $(ip addr show ens33 2>/dev/null | grep "inet " | awk '{print $2}' || echo "Not configured")"
+echo "LAN Interface (ens37): $(ip addr show ens37 2>/dev/null | grep "inet " | awk '{print $2}' || echo "Not configured")"
 
 echo ""
 if $all_good; then
