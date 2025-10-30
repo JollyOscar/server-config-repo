@@ -48,6 +48,27 @@ network:
 sudo netplan apply
 ```
 
+**D. Verify Your Interface Names Match Your Configs:**
+
+It's critical that the interface names in your Netplan config match those used in nftables and DHCP configs.
+
+```bash
+# Show all network interfaces
+ip link show
+
+# Common interface names:
+# - ens18, ens19 (typical for VMs)
+# - ens33, ens37 (VMware Workstation)
+# - eth0, eth1 (older naming)
+# - enp0s3, enp0s8 (VirtualBox)
+```
+
+**If your interface names are different, update them in these files:**
+
+- `configs/fw/nftables.conf` (WAN_IF and LAN_IF)
+- `configs/dhcp/kea-dhcp4.conf` (interfaces array)
+- `/etc/netplan/00-installer-config.yaml` (this file)
+
 ### 1.4. Verify Network and Clone Repository
 
 **A. Verify Connectivity:**
@@ -122,7 +143,37 @@ sudo cp configs/hardening/sshd_config /etc/ssh/
 # Test and restart SSH
 sudo sshd -t && sudo systemctl restart sshd
 ```
-> **🚨 WARNING:** Do not proceed unless you have configured your SSH keys. You may lock yourself out.
+
+> **🚨 CRITICAL:** Before restarting SSH, ensure you understand the `AllowUsers` configuration!
+
+**C. Configure AllowUsers to Prevent Lockout:**
+
+The hardened `sshd_config` contains a line like:
+
+```text
+AllowUsers yourusername@192.168.1.0/24
+```
+
+**You MUST replace `yourusername` with your actual Linux username.** Find your username with:
+
+```bash
+whoami
+```
+
+Then edit the config:
+
+```bash
+sudo nano /etc/ssh/sshd_config
+# Find the AllowUsers line and replace 'yourusername' with your actual username
+# Example: AllowUsers alice@192.168.1.0/24
+```
+
+**If you skip this step, you will be locked out after SSH restarts!**
+
+If you do get locked out:
+1. Access the server console directly (hypervisor console or physical keyboard)
+2. Fix the `AllowUsers` line in `/etc/ssh/sshd_config`
+3. Run `sudo systemctl restart sshd`
 
 ### 3.3. Configure DNS (BIND9)
 
@@ -204,7 +255,35 @@ sudo systemctl enable nftables
 
 ---
 
-## 4. Final Verification
+## 4. Troubleshooting Common Issues
+
+### Placeholder Verification Script Reports False Positives
+
+If `scripts/verify-placeholders.sh` reports warnings about placeholders like `192.0.2.x`, `198.51.100.x`, or similar patterns, these may be **RFC documentation addresses** used as examples, not actual placeholders you need to replace.
+
+**Common false positives:**
+- `192.0.2.0/24` - RFC 5737 documentation prefix (TEST-NET-1)
+- `198.51.100.0/24` - RFC 5737 documentation prefix (TEST-NET-2)
+- `203.0.113.0/24` - RFC 5737 documentation prefix (TEST-NET-3)
+
+**When to ignore these warnings:**
+- If the address appears in a comment or documentation section
+- If it's used as an example in a template file you're not deploying
+- If you've already customized that config section with your real values
+
+**When NOT to ignore:**
+- If the address appears in an active configuration you're deploying
+- If you're unsure whether it's documentation or production config
+
+**How to verify:**
+1. Check the file and line number reported by the script
+2. Look at the context - is it in a comment or actual config?
+3. If it's actual config, replace it with your production value
+4. If it's a comment/example, you can safely ignore the warning
+
+---
+
+## 5. Final Verification
 
 After deploying all services, run the comprehensive test script to ensure everything is working correctly.
 

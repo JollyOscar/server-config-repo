@@ -146,8 +146,35 @@ echo "Configuring BIND9 DNS service..."
 
 sudo cp /etc/bind/named.conf.local /etc/bind/named.conf.local.backup
 sudo cp ./configs/dns/named.conf.local /etc/bind/
-sudo cp ./configs/dns/db.forward-dns.template /etc/bind/
-sudo cp ./configs/dns/db.reverse-dns.template /etc/bind/
+
+# Copy zone files - prefer clean files over templates
+if [ -f "./configs/dns/db.mycorp.lan" ]; then
+    echo "Found clean forward zone file (db.mycorp.lan), copying..."
+    sudo cp ./configs/dns/db.mycorp.lan /etc/bind/
+    FORWARD_ZONE_FILE="db.mycorp.lan"
+elif [ -f "./configs/dns/db.forward-dns.template" ]; then
+    echo "⚠️  WARNING: Using template file db.forward-dns.template"
+    echo "⚠️  You should rename and customize this file first!"
+    sudo cp ./configs/dns/db.forward-dns.template /etc/bind/
+    FORWARD_ZONE_FILE="db.forward-dns.template"
+else
+    echo "❌ No forward zone file found"
+    exit 1
+fi
+
+if [ -f "./configs/dns/db.10.207.0" ]; then
+    echo "Found clean reverse zone file (db.10.207.0), copying..."
+    sudo cp ./configs/dns/db.10.207.0 /etc/bind/
+    REVERSE_ZONE_FILE="db.10.207.0"
+elif [ -f "./configs/dns/db.reverse-dns.template" ]; then
+    echo "⚠️  WARNING: Using template file db.reverse-dns.template"
+    echo "⚠️  You should rename and customize this file first!"
+    sudo cp ./configs/dns/db.reverse-dns.template /etc/bind/
+    REVERSE_ZONE_FILE="db.reverse-dns.template"
+else
+    echo "❌ No reverse zone file found"
+    exit 1
+fi
 
 echo "Setting BIND9 file permissions..."
 sudo chown bind:bind /etc/bind/db.*
@@ -155,8 +182,8 @@ sudo chmod 644 /etc/bind/db.*
 
 echo "Testing BIND9 configuration..."
 sudo named-checkconf /etc/bind/named.conf.local
-sudo named-checkzone mycorp.lan /etc/bind/db.forward-dns.template
-sudo named-checkzone 0.207.10.in-addr.arpa /etc/bind/db.reverse-dns.template
+sudo named-checkzone mycorp.lan "/etc/bind/$FORWARD_ZONE_FILE"
+sudo named-checkzone 0.207.10.in-addr.arpa "/etc/bind/$REVERSE_ZONE_FILE"
 
 if [ $? -eq 0 ]; then
     echo "✅ DNS configuration valid"

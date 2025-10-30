@@ -74,6 +74,15 @@ The DHCP server configuration contains an example static IP reservation. You mus
 ## 3. Verification
 After replacing placeholders, run the verification script to check your work.
 
+**First, make the scripts executable:**
+
+```bash
+# On Linux/WSL:
+chmod +x scripts/*.sh
+```
+
+**Then run the verification:**
+
 ```bash
 # On Linux/WSL:
 bash scripts/verify-placeholders.sh
