@@ -23,21 +23,21 @@ jobs:
         echo "🔍 Auditing SSH configuration..."
         
         # Check for secure SSH settings
-        if grep -q "PermitRootLogin no" hardening/sshd_config; then
+        if grep -q "PermitRootLogin no" configs/hardening/sshd_config; then
           echo "✅ Root login disabled"
         else
           echo "❌ Root login not properly disabled"
           exit 1
         fi
         
-        if grep -q "PasswordAuthentication no" hardening/sshd_config; then
+        if grep -q "PasswordAuthentication no" configs/hardening/sshd_config; then
           echo "✅ Password authentication disabled"
         else
           echo "❌ Password authentication not disabled"
           exit 1
         fi
         
-        if grep -q "Port 2222" hardening/sshd_config; then
+        if grep -q "Port 2222" configs/hardening/sshd_config; then
           echo "✅ SSH running on non-standard port"
         else
           echo "⚠️  SSH port not changed from default"
@@ -48,7 +48,7 @@ jobs:
         echo "🔍 Auditing firewall configuration..."
         
         # Check for default deny policy
-        if grep -q "policy drop" fw/nftables.conf; then
+        if grep -q "policy drop" configs/fw/nftables.conf; then
           echo "✅ Default deny policy configured"
         else
           echo "❌ Default deny policy missing"
@@ -56,14 +56,14 @@ jobs:
         fi
         
         # Check for rate limiting
-        if grep -q "limit rate" fw/nftables.conf; then
+        if grep -q "limit rate" configs/fw/nftables.conf; then
           echo "✅ Rate limiting configured"
         else
           echo "⚠️  Rate limiting not found"
         fi
         
         # Check for logging
-        if grep -q "log prefix" fw/nftables.conf; then
+        if grep -q "log prefix" configs/fw/nftables.conf; then
           echo "✅ Logging configured"
         else
           echo "⚠️  Logging not configured"
@@ -74,14 +74,14 @@ jobs:
         echo "🔍 Auditing DNS configuration..."
         
         # Check for query restrictions
-        if grep -q "allow-query.*10.207.0.0/24" dns/named.conf.local; then
+        if grep -q "allow-query.*10.207.0.0/24" configs/dns/named.conf.local; then
           echo "✅ DNS queries restricted to local network"
         else
           echo "⚠️  DNS query restrictions not found"
         fi
         
         # Check for transfer restrictions
-        if grep -q "allow-transfer.*none" dns/named.conf.local; then
+        if grep -q "allow-transfer.*none" configs/dns/named.conf.local; then
           echo "✅ Zone transfers disabled"
         else
           echo "❌ Zone transfers not properly restricted"
@@ -92,7 +92,7 @@ jobs:
         echo "🔍 Auditing system hardening..."
         
         # Check for IP forwarding (required for router)
-        if grep -q "net.ipv4.ip_forward = 1" hardening/sysctl-security.conf; then
+        if grep -q "net.ipv4.ip_forward = 1" configs/hardening/sysctl-security.conf; then
           echo "✅ IP forwarding enabled (required for routing)"
         else
           echo "❌ IP forwarding not configured"
