@@ -1,27 +1,27 @@
 #!/bin/bash
-# 🚨 CRITICAL SECURITY WARNING: This script contains placeholders!
-# ⚠️  DO NOT RUN without replacing ALL placeholder values first!
-# 📖 See PLACEHOLDERS-GUIDE.md for complete instructions
+# CRITICAL SECURITY WARNING: This script contains placeholders!
+# WARNING: DO NOT RUN without replacing ALL placeholder values first!
+# See PLACEHOLDERS-GUIDE.md for complete instructions
 #
 # Security Hardening Script for Network Appliance
 # Run with sudo privileges AFTER replacing placeholders
 
 set -euo pipefail
 
-echo "🔒 Starting security hardening process..."
+echo "Starting security hardening process..."
 
 # Check if running as root
 if [[ $EUID -ne 0 ]]; then
-   echo "❌ This script must be run as root (use sudo)"
+   echo "ERROR: This script must be run as root (use sudo)"
    exit 1
 fi
 
-# ⚠️  CRITICAL VARIABLES - REPLACE THESE WITH YOUR ACTUAL VALUES BEFORE RUNNING!
-ADMIN_USER="admin"                    # ⚠️  REPLACE: Your actual admin username
-SSH_PUBLIC_KEY_URL="https://github.com/YOUR_USERNAME.keys"  # ⚠️  REPLACE: Your GitHub username
-FAIL2BAN_EMAIL="admin@mycorp.lan"     # ⚠️  REPLACE: Your actual email address
+# WARNING: CRITICAL VARIABLES - REPLACE THESE WITH YOUR ACTUAL VALUES BEFORE RUNNING!
+ADMIN_USER="admin"                    # WARNING: REPLACE: Your actual admin username
+SSH_PUBLIC_KEY_URL="https://github.com/YOUR_USERNAME.keys"  # WARNING: REPLACE: Your GitHub username
+FAIL2BAN_EMAIL="admin@mycorp.lan"     # WARNING: REPLACE: Your actual email address
 
-echo "📋 Hardening checklist:"
+echo "Hardening checklist:"
 echo "  - Update system packages"
 echo "  - Configure automatic security updates"
 echo "  - Install and configure fail2ban"
@@ -30,24 +30,24 @@ echo "  - Apply kernel security parameters"
 echo "  - Configure log monitoring"
 
 # Update system
-echo "🔄 Updating system packages..."
+echo "Updating system packages..."
 apt update && apt upgrade -y
 
 # Install security packages
-echo "📦 Installing security packages..."
+echo "Installing security packages..."
 apt install -y fail2ban ufw logwatch rkhunter chkrootkit aide
 
 # Configure fail2ban
-echo "🛡️  Configuring fail2ban..."
+echo "Configuring fail2ban..."
 
 # Deploy custom user rules
 if [ -f "/opt/server-config-repo/configs/hardening/user.rules" ]; then
-    echo "📋 Deploying custom fail2ban filter rules..."
+    echo "Deploying custom fail2ban filter rules..."
     cp /opt/server-config-repo/configs/hardening/user.rules /etc/fail2ban/filter.d/
     chown root:root /etc/fail2ban/filter.d/user.rules
     chmod 644 /etc/fail2ban/filter.d/user.rules
 else
-    echo "⚠️  Warning: user.rules not found, using default fail2ban filters"
+    echo "WARNING: user.rules not found, using default fail2ban filters"
 fi
 
 cat > /etc/fail2ban/jail.local << EOF
@@ -82,14 +82,14 @@ systemctl restart fail2ban
 
 # Create admin user if it doesn't exist
 if ! id "$ADMIN_USER" &>/dev/null; then
-    echo "👤 Creating admin user: $ADMIN_USER"
+    echo "Creating admin user: $ADMIN_USER"
     useradd -m -s /bin/bash -G sudo "$ADMIN_USER"
-    echo "⚠️  Please set password for $ADMIN_USER:"
+    echo "WARNING: Please set password for $ADMIN_USER:"
     passwd "$ADMIN_USER"
 fi
 
 # Set up SSH key authentication
-echo "🔑 Setting up SSH key authentication..."
+echo "Setting up SSH key authentication..."
 USER_HOME="/home/$ADMIN_USER"
 SSH_DIR="$USER_HOME/.ssh"
 
@@ -97,27 +97,27 @@ mkdir -p "$SSH_DIR"
 chmod 700 "$SSH_DIR"
 
 # Download SSH keys (replace URL with your actual keys)
-echo "📥 Downloading SSH public keys..."
-echo "⚠️  Replace SSH_PUBLIC_KEY_URL with your actual GitHub keys URL"
-# curl -s "$SSH_PUBLIC_KEY_URL" > "$SSH_DIR/authorized_keys" || echo "⚠️  Manual key setup required"
+echo "Downloading SSH public keys..."
+echo "WARNING: Replace SSH_PUBLIC_KEY_URL with your actual GitHub keys URL"
+# curl -s "$SSH_PUBLIC_KEY_URL" > "$SSH_DIR/authorized_keys" || echo "WARNING: Manual key setup required"
 
 # Create example authorized_keys file
 cat > "$SSH_DIR/authorized_keys" << EOF
-# ⚠️  ADD YOUR SSH PUBLIC KEYS HERE BEFORE RUNNING THIS SCRIPT!
+# WARNING: ADD YOUR SSH PUBLIC KEYS HERE BEFORE RUNNING THIS SCRIPT!
 # Example: ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAAB... user@hostname
-# ⚠️  You can get your keys from: https://github.com/YOUR_USERNAME.keys (replace YOUR_USERNAME)
+# WARNING: You can get your keys from: https://github.com/YOUR_USERNAME.keys (replace YOUR_USERNAME)
 EOF
 
 chmod 600 "$SSH_DIR/authorized_keys"
 chown -R "$ADMIN_USER:$ADMIN_USER" "$SSH_DIR"
 
 # Apply sysctl security settings
-echo "⚙️  Applying kernel security parameters..."
+echo "Applying kernel security parameters..."
 cp /opt/server-config-repo/configs/hardening/sysctl-security.conf /etc/sysctl.d/99-security.conf
 sysctl -p /etc/sysctl.d/99-security.conf
 
 # Configure log rotation and monitoring
-echo "📝 Configuring log monitoring..."
+echo "Configuring log monitoring..."
 cat > /etc/logrotate.d/security-logs << EOF
 /var/log/auth.log /var/log/syslog /var/log/kern.log {
     daily
@@ -131,15 +131,15 @@ cat > /etc/logrotate.d/security-logs << EOF
 EOF
 
 # Initialize AIDE database
-echo "🔍 Initializing file integrity monitoring..."
+echo "Initializing file integrity monitoring..."
 # AIDE initialization disabled for deployment speed (takes 20-30 minutes)
 # Run manually after deployment: sudo aideinit
 # aideinit
 # mv /var/lib/aide/aide.db.new /var/lib/aide/aide.db
-echo "⚠️  AIDE initialization disabled (run 'sudo aideinit' manually after deployment)"
+echo "WARNING: AIDE initialization disabled (run 'sudo aideinit' manually after deployment)"
 
 # Schedule security checks
-echo "⏰ Setting up automated security checks..."
+echo "Setting up automated security checks..."
 cat > /etc/cron.daily/security-check << 'EOF'
 #!/bin/bash
 # Daily security checks
@@ -163,7 +163,7 @@ EOF
 
 chmod +x /etc/cron.daily/security-check
 
-echo "✅ Security hardening completed!"
+echo "Security hardening completed!"
 echo ""
 echo "🔧 Manual steps required:"
 echo "1. Add your SSH public keys to /home/$ADMIN_USER/.ssh/authorized_keys"
