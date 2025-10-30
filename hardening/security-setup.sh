@@ -108,8 +108,11 @@ EOF
 
 # Initialize AIDE database
 echo "🔍 Initializing file integrity monitoring..."
-aideinit
-mv /var/lib/aide/aide.db.new /var/lib/aide/aide.db
+# AIDE initialization disabled for deployment speed (takes 20-30 minutes)
+# Run manually after deployment: sudo aideinit
+# aideinit
+# mv /var/lib/aide/aide.db.new /var/lib/aide/aide.db
+echo "⚠️  AIDE initialization disabled (run 'sudo aideinit' manually after deployment)"
 
 # Schedule security checks
 echo "⏰ Setting up automated security checks..."
