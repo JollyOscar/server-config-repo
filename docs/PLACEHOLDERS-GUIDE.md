@@ -12,10 +12,10 @@ Before running any deployment scripts, replace these critical placeholders:
 
 | File | Placeholder | What to Replace |
 |------|------------|-----------------|
-| `dhcp/kea-dhcp4.conf` | `"ens37"` | Your actual LAN interface name |
-| `fw/nftables.conf` | `ens33`, `ens37` | Your actual WAN/LAN interface names |
-| `fw/nftables.conf` | `10.207.0.0/24` | Your internal network subnet |
-| `fw/nftables.conf` | `10.207.0.250` | Your appliance/gateway IP |
+| `configs/dhcp/kea-dhcp4.conf` | `"ens37"` | Your actual LAN interface name |
+| `configs/fw/nftables.conf` | `ens33`, `ens37` | Your actual WAN/LAN interface names |
+| `configs/fw/nftables.conf` | `10.207.0.0/24` | Your internal network subnet |
+| `configs/fw/nftables.conf` | `10.207.0.250` | Your appliance/gateway IP |
 
 **How to find your interface names:**
 ```bash
@@ -26,10 +26,10 @@ ip -br addr show
 
 | File | Placeholder | What to Replace |
 |------|------------|-----------------|
-| `dns/db.mycorp.lan` | `mycorp.lan` | Your actual domain name |
-| `dns/db.mycorp.lan` | All IP addresses | Your actual server IPs |
-| `dns/db.mycorp.lan` | Hostnames | Your actual server names |
-| `dns/db.10.207.0` | All entries | Your actual reverse DNS entries |
+| `configs/dns/db.mycorp.lan` | `mycorp.lan` | Your actual domain name |
+| `configs/dns/db.mycorp.lan` | All IP addresses | Your actual server IPs |
+| `configs/dns/db.mycorp.lan` | Hostnames | Your actual server names |
+| `configs/dns/db.10.207.0` | All entries | Your actual reverse DNS entries |
 
 **Required Actions:**
 1. **Change filename:** Rename `db.mycorp.lan` to `db.yourdomain.com`
@@ -40,18 +40,18 @@ ip -br addr show
 
 | File | Placeholder | What to Replace |
 |------|------------|-----------------|
-| `hardening/sshd_config` | `JollyOscar` | Your actual username |
-| `hardening/security-setup.sh` | `YOUR_USERNAME` | Your GitHub username |
-| `hardening/security-setup.sh` | `admin@mycorp.lan` | Your actual email |
-| `hardening/security-setup.sh` | `"admin"` | Your actual admin username |
+| `configs/hardening/sshd_config` | `JollyOscar` | Your actual username |
+| `configs/hardening/security-setup.sh` | `YOUR_USERNAME` | Your GitHub username |
+| `configs/hardening/security-setup.sh` | `admin@mycorp.lan` | Your actual email |
+| `configs/hardening/security-setup.sh` | `"admin"` | Your actual admin username |
 
 ### 4. 📍 DHCP Reservations
 
 | File | Placeholder | What to Replace |
 |------|------------|-----------------|
-| `dhcp/kea-dhcp4.conf` | `aa:bb:cc:dd:ee:ff` | Actual MAC addresses |
-| `dhcp/kea-dhcp4.conf` | `server.mycorp.lan` | Your actual hostnames |
-| `dhcp/kea-dhcp4.conf` | `mycorp.lan` | Your actual domain |
+| `configs/dhcp/kea-dhcp4.conf` | `aa:bb:cc:dd:ee:ff` | Actual MAC addresses |
+| `configs/dhcp/kea-dhcp4.conf` | `server.mycorp.lan` | Your actual hostnames |
+| `configs/dhcp/kea-dhcp4.conf` | `mycorp.lan` | Your actual domain |
 
 **How to find MAC addresses:**
 ```bash
@@ -102,20 +102,20 @@ grep -r "aa:bb:cc:dd:ee:ff" .
 ```bash
 # Compare with your actual interfaces
 ip -br addr show
-grep -r "ens33\|ens37" dhcp/ fw/
+grep -r "ens33\|ens37" configs/dhcp/ configs/fw/
 ```
 
 ### 3. Test Configuration Syntax
 ```bash
 # Test DHCP config
-sudo kea-dhcp4 -t dhcp/kea-dhcp4.conf
+sudo kea-dhcp4 -t configs/dhcp/kea-dhcp4.conf
 
 # Test DNS zones (after customization)
-sudo named-checkzone yourdomain.com dns/db.yourdomain.com
-sudo named-checkzone 10.207.0.in-addr.arpa dns/db.10.207.0
+sudo named-checkzone yourdomain.com configs/dns/db.yourdomain.com
+sudo named-checkzone 10.207.0.in-addr.arpa configs/dns/db.10.207.0
 
 # Test nftables config
-sudo nft -c -f fw/nftables.conf
+sudo nft -c -f configs/fw/nftables.conf
 ```
 
 ## 🚀 Deployment Order
@@ -124,9 +124,9 @@ After replacing all placeholders:
 
 1. **Verify Prerequisites** (see README.md)
 2. **Run Replacement Verification** (commands above)
-3. **Update SSH Configuration** (`hardening/sshd_config`)
-4. **Execute Deployment** (`sudo ./deploy-complete.sh`)
-5. **Run Tests** (`sudo ./test-complete.sh`)
+3. **Update SSH Configuration** (`configs/hardening/sshd_config`)
+4. **Execute Deployment** (`sudo ./scripts/deploy-complete.sh`)
+5. **Run Tests** (`sudo ./scripts/test-complete.sh`)
 
 ## ⚠️  Common Mistakes
 

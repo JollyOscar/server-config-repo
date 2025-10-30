@@ -49,11 +49,11 @@ Write-Host "----------------------"
 
 # Check interface consistency
 Write-Host "Checking interface name consistency..."
-$nftablesContent = Get-Content "fw\nftables.conf" -ErrorAction SilentlyContinue
+$nftablesContent = Get-Content "..\configs\fw\nftables.conf" -ErrorAction SilentlyContinue
 $wanIF = ($nftablesContent | Select-String "define WAN_IF").ToString().Split('=')[1].Trim()
 $lanIF = ($nftablesContent | Select-String "define LAN_IF").ToString().Split('=')[1].Trim()
 
-$dhcpContent = Get-Content "dhcp\kea-dhcp4.conf" -ErrorAction SilentlyContinue
+$dhcpContent = Get-Content "..\configs\dhcp\kea-dhcp4.conf" -ErrorAction SilentlyContinue
 $dhcpIF = ($dhcpContent | Select-String '"ens[0-9]+"').Matches.Value.Trim('"')
 
 if ($lanIF -ne $dhcpIF) {
@@ -67,7 +67,7 @@ if ($lanIF -ne $dhcpIF) {
 
 Write-Host ""
 Write-Host "Checking SSH username configuration..."
-$sshdContent = Get-Content "hardening\sshd_config" -ErrorAction SilentlyContinue
+$sshdContent = Get-Content "..\configs\hardening\sshd_config" -ErrorAction SilentlyContinue
 $sshUser = ($sshdContent | Select-String "AllowUsers").ToString().Split(' ')[1].Trim()
 if ($sshUser -eq "YOUR_USERNAME_HERE" -or $sshUser -eq "JollyOscar") {
     Write-Host "❌ SSH username needs updating in hardening/sshd_config:" -ForegroundColor Red

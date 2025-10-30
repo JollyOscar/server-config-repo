@@ -77,14 +77,14 @@ echo "-------------------------------"
 echo "CRITICAL: Applying security hardening FIRST..."
 
 echo "Making security setup script executable..."
-sudo chmod +x ./hardening/security-setup.sh
+sudo chmod +x ./configs/hardening/security-setup.sh
 
 echo "Running comprehensive security hardening..."
-sudo ./hardening/security-setup.sh
+sudo ./configs/hardening/security-setup.sh
 
 echo "Applying SSH hardening (Ubuntu-aligned)..."
 sudo cp /etc/ssh/sshd_config /etc/ssh/sshd_config.backup
-sudo cp ./hardening/sshd_config /etc/ssh/
+sudo cp ./configs/hardening/sshd_config /etc/ssh/
 
 echo "Testing SSH configuration..."
 sudo sshd -t
@@ -117,9 +117,9 @@ echo "✅ systemd-resolved configured"
 echo "Configuring BIND9 DNS service..."
 
 sudo cp /etc/bind/named.conf.local /etc/bind/named.conf.local.backup
-sudo cp ./dns/named.conf.local /etc/bind/
-sudo cp ./dns/db.mycorp.lan /etc/bind/
-sudo cp ./dns/db.10.207.0 /etc/bind/
+sudo cp ./configs/dns/named.conf.local /etc/bind/
+sudo cp ./configs/dns/db.mycorp.lan /etc/bind/
+sudo cp ./configs/dns/db.10.207.0 /etc/bind/
 
 echo "Setting BIND9 file permissions..."
 sudo chown bind:bind /etc/bind/db.*
@@ -146,7 +146,7 @@ echo "-----------------------------------"
 echo "Configuring Kea DHCP service..."
 
 sudo cp /etc/kea/kea-dhcp4.conf /etc/kea/kea-dhcp4.conf.backup
-sudo cp ./dhcp/kea-dhcp4.conf /etc/kea/
+sudo cp ./configs/dhcp/kea-dhcp4.conf /etc/kea/
 
 echo "Testing Kea DHCP configuration..."
 sudo kea-dhcp4 -t /etc/kea/kea-dhcp4.conf
@@ -171,7 +171,7 @@ echo "net.ipv4.ip_forward=1" | sudo tee /etc/sysctl.d/99-ipforward.conf
 sudo sysctl -p /etc/sysctl.d/99-ipforward.conf
 
 sudo cp /etc/nftables.conf /etc/nftables.conf.backup
-sudo cp ./fw/nftables.conf /etc/nftables.conf
+sudo cp ./configs/fw/nftables.conf /etc/nftables.conf
 
 echo "Testing nftables configuration..."
 sudo nft -c -f /etc/nftables.conf
@@ -227,7 +227,7 @@ echo "Setting up monitoring and maintenance..."
 
 echo "Creating maintenance scripts..."
 sudo mkdir -p /opt/maintenance
-sudo cp ./hardening/security-setup.sh /opt/maintenance/
+sudo cp ./configs/hardening/security-setup.sh /opt/maintenance/
 sudo chmod +x /opt/maintenance/*
 
 echo "Setting up log rotation..."

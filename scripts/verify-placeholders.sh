@@ -47,9 +47,9 @@ echo "----------------------"
 
 # Check interface consistency
 echo "Checking interface name consistency..."
-WAN_IF=$(grep "define WAN_IF" fw/nftables.conf | cut -d'=' -f2 | tr -d ' ')
-LAN_IF=$(grep "define LAN_IF" fw/nftables.conf | cut -d'=' -f2 | tr -d ' ')
-DHCP_IF=$(grep '"interfaces"' -A1 dhcp/kea-dhcp4.conf | grep '"' | tr -d ' "[]')
+WAN_IF=$(grep "define WAN_IF" ../configs/fw/nftables.conf | cut -d'=' -f2 | tr -d ' ')
+LAN_IF=$(grep "define LAN_IF" ../configs/fw/nftables.conf | cut -d'=' -f2 | tr -d ' ')
+DHCP_IF=$(grep '"interfaces"' -A1 ../configs/dhcp/kea-dhcp4.conf | grep '"' | tr -d ' "[]')
 
 if [ "$LAN_IF" != "$DHCP_IF" ]; then
     echo "❌ Interface mismatch:"
@@ -62,7 +62,7 @@ fi
 
 echo ""
 echo "Checking SSH username configuration..."
-SSH_USER=$(grep "AllowUsers" hardening/sshd_config | cut -d' ' -f2)
+SSH_USER=$(grep "AllowUsers" ../configs/hardening/sshd_config | cut -d' ' -f2)
 if [ "$SSH_USER" = "YOUR_USERNAME_HERE" ] || [ "$SSH_USER" = "JollyOscar" ]; then
     echo "❌ SSH username needs updating in hardening/sshd_config:"
     echo "   Current: $SSH_USER"
