@@ -65,8 +65,8 @@ echo "✅ named.conf syntax check passed"
 
 echo ""
 echo "3.3 Zone File Validation..."
-sudo named-checkzone mycorp.lan /etc/bind/db.mycorp.lan
-sudo named-checkzone 0.207.10.in-addr.arpa /etc/bind/db.10.207.0
+sudo named-checkzone mycorp.lan /etc/bind/db.forward-dns.template
+sudo named-checkzone 0.207.10.in-addr.arpa /etc/bind/db.reverse-dns.template
 
 echo ""
 echo "3.4 DNS Query Tests..."

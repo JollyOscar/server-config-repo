@@ -26,15 +26,18 @@ ip -br addr show
 
 | File | Placeholder | What to Replace |
 |------|------------|-----------------|
-| `configs/dns/db.mycorp.lan` | `mycorp.lan` | Your actual domain name |
-| `configs/dns/db.mycorp.lan` | All IP addresses | Your actual server IPs |
-| `configs/dns/db.mycorp.lan` | Hostnames | Your actual server names |
-| `configs/dns/db.10.207.0` | All entries | Your actual reverse DNS entries |
+| `configs/dns/db.forward-dns.template` | `mycorp.lan` | Your actual domain name |
+| `configs/dns/db.forward-dns.template` | All IP addresses | Your actual server IPs |
+| `configs/dns/db.forward-dns.template` | Hostnames | Your actual server names |
+| `configs/dns/db.reverse-dns.template` | All entries | Your actual reverse DNS entries |
 
-**Required Actions:**
-1. **Change filename:** Rename `db.mycorp.lan` to `db.yourdomain.com`
-2. **Update zone references:** Edit `dns/named.conf.local` to match new filename
-3. **Change subnet file:** If not using 10.207.0.x, rename `db.10.207.0` accordingly
+> [!IMPORTANT]
+> When you change these filenames (e.g., `db.mycorp.lan` to `db.yourdomain.com`), you **must** also update the corresponding `file` path in `configs/dns/named.conf.local` to match. The deployment script **does not** do this for you.
+>
+> **Example Workflow:**
+> 1. **Change filename:** Rename `db.forward-dns.template` to `db.yourdomain.com`
+> 2. **Update `named.conf.local`:** Change the `file` path in the `zone "yourdomain.com"` block to point to your newly named file.
+> 3. **Change subnet file:** If not using 10.207.0.x, rename `db.reverse-dns.template` accordingly and update the corresponding `file` path in `named.conf.local`.
 
 ### 3. 🔒 Security Configuration
 
@@ -203,7 +206,7 @@ sudo kea-dhcp4 -t configs/dhcp/kea-dhcp4.conf
 
 # Test DNS zones (after customization)
 sudo named-checkzone yourdomain.com configs/dns/db.yourdomain.com
-sudo named-checkzone 10.207.0.in-addr.arpa configs/dns/db.10.207.0
+sudo named-checkzone 10.207.0.in-addr.arpa configs/dns/db.reverse-dns.template
 
 # Test nftables config
 sudo nft -c -f configs/fw/nftables.conf

@@ -55,7 +55,7 @@ MYCORP_IN_CONFIG=$(grep -r "mycorp.lan" \
 if [ "$MYCORP_IN_CONFIG" -gt 0 ]; then
     echo "⚠️  Found 'mycorp.lan' in $MYCORP_IN_CONFIG files"
     echo "   ℹ️  This is OK for testing! Change later if needed."
-    echo "   📖 To customize: edit dns/db.mycorp.lan, dns/db.10.207.0, dns/named.conf.local"
+    echo "   📖 To customize: edit configs/dns/db.forward-dns.template, configs/dns/db.reverse-dns.template, configs/dns/named.conf.local"
 else
     echo "✅ Custom domain configured"
 fi

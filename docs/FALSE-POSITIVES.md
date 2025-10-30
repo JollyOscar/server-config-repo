@@ -29,8 +29,8 @@ The default domain name is `mycorp.lan` which works perfectly for testing.
 
 **How to Fix (Optional):**
 Edit these files if you want a custom domain:
-- `configs/dns/db.mycorp.lan`
-- `configs/dns/db.10.207.0`
+- `configs/dns/db.forward-dns.template`
+- `configs/dns/db.reverse-dns.template`
 - `configs/dns/named.conf.local`
 - `configs/dhcp/kea-dhcp4.conf`
 

@@ -180,8 +180,8 @@ sudo cp /etc/bind/named.conf.local /etc/bind/named.conf.local.backup
 
 # Deploy new configuration
 sudo cp ./dns/named.conf.local /etc/bind/
-sudo cp ./dns/db.mycorp.lan /etc/bind/
-sudo cp ./dns/db.10.207.0 /etc/bind/
+sudo cp ./configs/dns/db.forward-dns.template /etc/bind/
+sudo cp ./configs/dns/db.reverse-dns.template /etc/bind/
 
 # Set permissions
 sudo chown bind:bind /etc/bind/db.*
@@ -189,7 +189,7 @@ sudo chmod 644 /etc/bind/db.*
 
 # Test and restart
 sudo named-checkconf
-sudo named-checkzone mycorp.lan /etc/bind/db.mycorp.lan
+sudo named-checkzone 0.207.10.in-addr.arpa /etc/bind/db.reverse-dns.template
 sudo systemctl restart bind9
 sudo systemctl enable bind9
 ```

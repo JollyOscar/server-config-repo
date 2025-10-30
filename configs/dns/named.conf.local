@@ -5,12 +5,12 @@
 
 zone "mycorp.lan" {
     type master;
-    file "/etc/bind/db.mycorp.lan";
+    file "/etc/bind/db.forward-dns.template";
     allow-update { none; };
 };
 
 zone "0.207.10.in-addr.arpa" {
     type master;
-    file "/etc/bind/db.10.207.0";
+    file "/etc/bind/db.reverse-dns.template";
     allow-update { none; };
 };

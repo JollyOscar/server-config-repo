@@ -146,8 +146,8 @@ echo "Configuring BIND9 DNS service..."
 
 sudo cp /etc/bind/named.conf.local /etc/bind/named.conf.local.backup
 sudo cp ./configs/dns/named.conf.local /etc/bind/
-sudo cp ./configs/dns/db.mycorp.lan /etc/bind/
-sudo cp ./configs/dns/db.10.207.0 /etc/bind/
+sudo cp ./configs/dns/db.forward-dns.template /etc/bind/
+sudo cp ./configs/dns/db.reverse-dns.template /etc/bind/
 
 echo "Setting BIND9 file permissions..."
 sudo chown bind:bind /etc/bind/db.*
@@ -155,8 +155,8 @@ sudo chmod 644 /etc/bind/db.*
 
 echo "Testing BIND9 configuration..."
 sudo named-checkconf /etc/bind/named.conf.local
-sudo named-checkzone mycorp.lan /etc/bind/db.mycorp.lan
-sudo named-checkzone 0.207.10.in-addr.arpa /etc/bind/db.10.207.0
+sudo named-checkzone mycorp.lan /etc/bind/db.forward-dns.template
+sudo named-checkzone 0.207.10.in-addr.arpa /etc/bind/db.reverse-dns.template
 
 if [ $? -eq 0 ]; then
     echo "✅ DNS configuration valid"
