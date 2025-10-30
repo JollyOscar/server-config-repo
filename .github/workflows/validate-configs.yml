@@ -121,11 +121,11 @@ jobs:
           echo "⚠️ kea-dhcp4 binary not found - skipping Kea-specific validation"
         fi
         
-        echo "Checking JSON syntax..."
-        jq . dhcp/kea-dhcp4.conf > /dev/null
-        echo "✅ JSON syntax is valid"
-        
-    - name: 🧪 Validate Firewall Configuration
+  echo "Checking JSON syntax..."
+  jq . configs/dhcp/kea-dhcp4.conf > /dev/null
+  echo "✅ JSON syntax is valid"
+    
+- name: 🧪 Validate Firewall Configuration
       run: |
         echo "Validating nftables configuration..."
         # Create temporary file with corrected variables for testing
