@@ -17,7 +17,7 @@ LogLevel INFO
 
 # Authentication
 PermitRootLogin no
-PasswordAuthentication yes
+PasswordAuthentication no
 ChallengeResponseAuthentication no
 UsePAM yes
 
