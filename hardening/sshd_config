@@ -22,7 +22,7 @@ ChallengeResponseAuthentication no
 UsePAM yes
 
 # Allow only specific users
-AllowUsers your_username
+AllowUsers JollyOscar
 
 # Key based authentication
 PubkeyAuthentication yes
