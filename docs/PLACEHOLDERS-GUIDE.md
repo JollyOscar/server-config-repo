@@ -47,7 +47,7 @@ To avoid getting locked out of your server, you must specify which user is allow
 
 | File | Placeholder | What to Change |
 | :--- | :--- | :--- |
-| `configs/hardening/sshd_config` | `AllowUsers JollyOscar` | Replace `JollyOscar` with your actual username. |
+| `configs/hardening/sshd_config` | `AllowUsers YOUR_USERNAME` | Replace `YOUR_USERNAME` with your actual username. |
 | `configs/hardening/security-setup.sh` | `YOUR_USERNAME` | Your GitHub username, used to fetch public keys. |
 
 ### Domain Name (`mycorp.lan`)

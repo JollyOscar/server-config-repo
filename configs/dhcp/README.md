@@ -9,7 +9,7 @@
 
 | 📊 **Network Configuration** | ⚡ **Technology Stack** |
 |:---|:---|
-| 🌐 **Interface**: `ens19` (LAN) | 🚀 **Server**: Kea DHCP 2.4+ |
+| 🌐 **Interface**: `ens37` (LAN) | 🚀 **Server**: Kea DHCP 2.4+ |
 | 🏠 **Subnet**: `10.207.0.0/24` | 📝 **Format**: Modern JSON Configuration |
 | 📡 **DHCP Range**: `10.207.0.100-200` | 🔄 **Migration**: ISC DHCP → Kea DHCP |
 | 🚪 **Gateway**: `10.207.0.250` | 🎛️ **Management**: RESTful API Support |
@@ -24,8 +24,8 @@
 
 ```bash
 # 🎯 Complete DHCP deployment
-sudo apt install -y kea-dhcp4 kea-ctrl-agent && \
-sudo cp /opt/server-config-repo/dhcp/kea-dhcp4.conf /etc/kea/ && \
+sudo apt install -y kea-dhcp4-server kea-ctrl-agent && \
+sudo cp /opt/server-config-repo/configs/dhcp/kea-dhcp4.conf /etc/kea/ && \
 sudo systemctl enable --now kea-dhcp4
 ```
 
@@ -37,7 +37,7 @@ sudo systemctl enable --now kea-dhcp4
 
 ```bash
 # 📥 Install Kea DHCP Server
-sudo apt install -y kea-dhcp4 kea-ctrl-agent
+sudo apt install -y kea-dhcp4-server kea-ctrl-agent
 
 # 🛑 Stop legacy ISC DHCP (if present)
 sudo systemctl stop isc-dhcp-server 2>/dev/null || true
@@ -51,7 +51,7 @@ sudo systemctl disable isc-dhcp-server 2>/dev/null || true
 sudo cp /etc/kea/kea-dhcp4.conf /etc/kea/kea-dhcp4.conf.bak
 
 # 📋 Deploy custom configuration
-sudo cp /opt/server-config-repo/dhcp/kea-dhcp4.conf /etc/kea/
+sudo cp /opt/server-config-repo/configs/dhcp/kea-dhcp4.conf /etc/kea/
 sudo chown root:root /etc/kea/kea-dhcp4.conf
 sudo chmod 644 /etc/kea/kea-dhcp4.conf
 ```
@@ -77,7 +77,7 @@ sudo systemctl status kea-dhcp4
 - **MAC Address**: Replace `aa:bb:cc:dd:ee:ff` in reservations with actual MAC addresses
 - **Hostnames**: Replace `server.mycorp.lan` with your actual server names  
 - **Domain**: Replace `mycorp.lan` with your actual domain name
-- **Interface**: Replace `ens19` with your actual LAN interface name
+- **Interface**: Replace `ens37` with your actual LAN interface name
 - **IP Range**: Adjust `10.207.0.100 - 10.207.0.200` if needed
 
 ## 2. Applying Configuration to a New Server (Recovery)
@@ -85,7 +85,7 @@ sudo systemctl status kea-dhcp4
 1. **Copy configuration file:**
 
     ```bash
-    sudo cp /opt/server-config-repo/dhcp/kea-dhcp4.conf /etc/kea/
+    sudo cp /opt/server-config-repo/configs/dhcp/kea-dhcp4.conf /etc/kea/
     ```
 
 2. **Restart the service:** `sudo systemctl restart kea-dhcp4`.

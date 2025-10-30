@@ -80,7 +80,7 @@ Having an `options {}` block in both files causes a redefinition error.
 **Severity:** Critical
 **Symptom:** systemd reported 'Service kea-dhcp4.service not found'.
 **Impact:** Phase 6 failed; the DHCP service would not start.
-**Fix:** The service name was corrected to `kea-dhcp4-server.service`.
+**Fix:** The service name was corrected to `kea-dhcp4.service` (package is `kea-dhcp4-server`, but service is `kea-dhcp4`).
 **Status:** ✅ Fixed
 
 ### Issue #22: Deploy Script Copies Broken Config Files
@@ -203,7 +203,7 @@ After applying all fixes, verify:
 - [ ] Kea config validates: `sudo kea-dhcp4 -t /etc/kea/kea-dhcp4.conf`
 - [ ] nftables config validates: `sudo nft -c -f /etc/nftables.conf`
 - [ ] All packages install: `sudo apt install openssh-server bind9 kea-dhcp4-server nftables fail2ban`
-- [ ] All services start: `systemctl status bind9 kea-dhcp4-server nftables fail2ban ssh`
+- [ ] All services start: `systemctl status bind9 kea-dhcp4 nftables fail2ban ssh`
 - [ ] DNS resolves internal: `nslookup gateway.mycorp.lan 127.0.0.1`
 - [ ] DNS resolves external: `nslookup google.com 127.0.0.1`
 - [ ] DHCP listens: `sudo netstat -ulnp | grep :67`

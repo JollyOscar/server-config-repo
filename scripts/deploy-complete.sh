@@ -208,8 +208,8 @@ sudo kea-dhcp4 -t /etc/kea/kea-dhcp4.conf
 
 if [ $? -eq 0 ]; then
     echo "✅ DHCP configuration valid"
-    sudo systemctl restart kea-dhcp4-server
-    sudo systemctl enable kea-dhcp4-server
+    sudo systemctl restart kea-dhcp4
+    sudo systemctl enable kea-dhcp4
 else
     echo "❌ DHCP configuration invalid"
     exit 1
@@ -309,8 +309,8 @@ echo "3. Monitor logs for any issues"
 echo "4. Set up regular backups"
 echo ""
 echo "📊 Service Status Summary:"
-systemctl status ssh bind9 kea-dhcp4-server nftables --no-pager -l
+systemctl status ssh bind9 kea-dhcp4 nftables --no-pager -l
 echo ""
-echo "🔧 For troubleshooting, see: /opt/server-config-repo/hardening/DEPLOYMENT.md"
+echo "🔧 For troubleshooting, see: /opt/server-config-repo/configs/hardening/DEPLOYMENT.md"
 echo ""
 echo "🚀 Your network appliance is ready for production!"

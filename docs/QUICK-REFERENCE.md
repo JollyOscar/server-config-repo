@@ -26,16 +26,16 @@ sudo bash scripts/test-complete.sh
 
 ```bash
 # Check status of all key services
-sudo systemctl status sshd bind9 kea-dhcp4-server nftables
+sudo systemctl status sshd bind9 kea-dhcp4 nftables
 
 # Restart a specific service
 sudo systemctl restart bind9
-sudo systemctl restart kea-dhcp4-server
+sudo systemctl restart kea-dhcp4
 sudo systemctl restart nftables
 
 # View live logs for a service
 sudo journalctl -u bind9 -f
-sudo journalctl -u kea-dhcp4-server -f
+sudo journalctl -u kea-dhcp4 -f
 ```
 
 ### Security & Auditing
@@ -113,4 +113,4 @@ sudo sshd -t
     # From a client on the LAN
     nslookup google.com 10.207.0.250
     ```
-4. **Check Service Status**: Ensure `bind9`, `kea-dhcp4-server`, and `nftables` are all active.
+4. **Check Service Status**: Ensure `bind9`, `kea-dhcp4`, and `nftables` are all active.

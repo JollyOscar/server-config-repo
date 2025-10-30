@@ -41,7 +41,7 @@ This script will:
 
 ```bash
 sudo cp /etc/ssh/sshd_config /etc/ssh/sshd_config.bak
-sudo cp /opt/server-config-repo/hardening/sshd_config /etc/ssh/
+sudo cp /opt/server-config-repo/configs/hardening/sshd_config /etc/ssh/
 sudo systemctl restart sshd
 ```
 
@@ -69,7 +69,7 @@ sudo ufw limit ssh
 Uncomment the Banner line in sshd_config and copy the banner file:
 
 ```bash
-sudo cp /opt/server-config-repo/hardening/issue.net /etc/
+sudo cp /opt/server-config-repo/configs/hardening/issue.net /etc/
 ```
 
 ### 2. Restart the SSH service

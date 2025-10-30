@@ -30,14 +30,14 @@ This file defines the internal zones and configures recursive lookup behavior us
 
     ```bash
     sudo cp /etc/bind/named.conf.local /etc/bind/named.conf.local.bak
-    sudo cp /opt/server-config-repo/dns/named.conf.local /etc/bind/
+    sudo cp /opt/server-config-repo/configs/dns/named.conf.local /etc/bind/
     ```
 
 2. **Apply zone files:**
 
     ```bash
-    sudo cp /opt/server-config-repo/dns/db.mycorp.lan /etc/bind/
-    sudo cp /opt/server-config-repo/dns/db.10.207.0 /etc/bind/
+    sudo cp /opt/server-config-repo/configs/dns/db.forward-dns.template /etc/bind/db.mycorp.lan
+    sudo cp /opt/server-config-repo/configs/dns/db.reverse-dns.template /etc/bind/db.10.207.0
     sudo chown bind:bind /etc/bind/db.*
     sudo chmod 644 /etc/bind/db.*
     ```
@@ -92,8 +92,8 @@ sudo systemctl restart bind9
 1. **Copy all configuration files:**
 
     ```bash
-    sudo cp /opt/server-config-repo/dns/named.conf.local /etc/bind/
-    # If zone files were in repo: sudo cp /opt/server-config-repo/dns/db.* /etc/bind/
+    sudo cp /opt/server-config-repo/configs/dns/named.conf.local /etc/bind/
+    # If zone files were in repo: sudo cp /opt/server-config-repo/configs/dns/db.* /etc/bind/
     ```
 
 2. **Set ownership:** `sudo chown -R bind:bind /etc/bind/`.

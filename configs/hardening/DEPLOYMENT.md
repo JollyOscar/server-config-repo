@@ -26,10 +26,10 @@ sudo apt-get install openssh-server ufw
 
 ```bash
 # Copy the hardened configuration
-sudo cp /opt/server-config-repo/hardening/sshd_config /etc/ssh/
+sudo cp /opt/server-config-repo/configs/hardening/sshd_config /etc/ssh/
 
 # Optional: Enable login banner
-sudo cp /opt/server-config-repo/hardening/issue.net /etc/
+sudo cp /opt/server-config-repo/configs/hardening/issue.net /etc/
 # Then uncomment the Banner line in /etc/ssh/sshd_config
 ```
 

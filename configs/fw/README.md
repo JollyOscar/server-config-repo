@@ -47,7 +47,7 @@ The nftables configuration provides:
 3. **Apply the nftables configuration:**
 
     ```bash
-    sudo cp /opt/server-config-repo/fw/nftables.conf /etc/nftables.conf
+    sudo cp /opt/server-config-repo/configs/fw/nftables.conf /etc/nftables.conf
     sudo chmod 644 /etc/nftables.conf
     ```
 

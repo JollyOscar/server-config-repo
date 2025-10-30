@@ -278,7 +278,7 @@ fi
 
 echo ""
 echo "📚 For troubleshooting assistance:"
-echo "   - Check /opt/server-config-repo/hardening/DEPLOYMENT.md"
+echo "   - Check /opt/server-config-repo/configs/hardening/DEPLOYMENT.md"
 echo "   - Review service logs with: sudo journalctl -u <service-name>"
 echo "   - Validate configurations in /opt/server-config-repo/"
 echo ""

@@ -229,8 +229,8 @@ sudo cp configs/dhcp/kea-dhcp4.conf /etc/kea/
 
 # Test and restart Kea
 sudo kea-dhcp4 -t /etc/kea/kea-dhcp4.conf
-sudo systemctl restart kea-dhcp4-server
-sudo systemctl enable kea-dhcp4-server
+sudo systemctl restart kea-dhcp4
+sudo systemctl enable kea-dhcp4
 ```
 
 ### 3.5. Configure Firewall (nftables)
