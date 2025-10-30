@@ -99,7 +99,7 @@ jobs:
         fi
         
         # Check for security parameters
-        if grep -q "net.ipv4.tcp_syncookies = 1" hardening/sysctl-security.conf; then
+        if grep -q "net.ipv4.tcp_syncookies = 1" configs/hardening/sysctl-security.conf; then
           echo "✅ SYN cookies enabled"
         else
           echo "❌ SYN cookies not enabled"

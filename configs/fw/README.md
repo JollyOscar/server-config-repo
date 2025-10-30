@@ -10,8 +10,8 @@
 
 | 🛡️ **Security Features** | 🌐 **Network Services** |
 |:---|:---|
-| 🚫 **Default Deny**: Explicit allow rules only | � **NAT/Masquerading**: LAN → Internet |
-| � **Stateful Tracking**: Connection state awareness | 🎯 **Interface Separation**: WAN/LAN isolation |
+| 🚫 **Default Deny**: Explicit allow rules only | 🌐 **NAT/Masquerading**: LAN → Internet |
+| 🔄 **Stateful Tracking**: Connection state awareness | 🎯 **Interface Separation**: WAN/LAN isolation |
 | 🚨 **Rate Limiting**: DoS/DDoS protection | ⚡ **Performance Optimized**: Hardware acceleration |
 | 📊 **Comprehensive Logging**: Security monitoring | 🔧 **Easy Management**: Modern nftables syntax |
 

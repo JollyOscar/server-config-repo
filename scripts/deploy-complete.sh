@@ -47,7 +47,7 @@ echo "✅ Root/sudo privileges available"
 echo ""
 read -p "Press Enter when pre-deployment checklist is complete..."
 
-# � PLACEHOLDER VERIFICATION
+# 🔍 PLACEHOLDER VERIFICATION
 echo ""
 echo "🔍 PLACEHOLDER VERIFICATION"
 echo "---------------------------"
@@ -67,7 +67,7 @@ fi
 echo ""
 read -p "Press Enter to continue with deployment..."
 
-# �🔄 PHASE 2: SYSTEM PREPARATION
+# 🔄 PHASE 2: SYSTEM PREPARATION
 echo ""
 echo "🔄 PHASE 2: SYSTEM PREPARATION"
 echo "------------------------------"

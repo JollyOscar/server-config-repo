@@ -15,7 +15,7 @@ jobs:
     - name: 📥 Checkout Repository
       uses: actions/checkout@v4
       
-    - name: � Debug Repository Contents
+    - name: 🔍 Debug Repository Contents
       run: |
         echo "Repository structure:"
         find . -type f -name "*.conf" -o -name "*.local" | head -20
@@ -23,7 +23,7 @@ jobs:
         ls -la configs/dhcp/ || echo "DHCP directory not found"
         echo "Current working directory: $(pwd)"
       
-    - name: �🔧 Install Dependencies
+    - name: 🔧 Install Dependencies
       run: |
         # Check connectivity (informational only)
         echo "Testing basic connectivity..."

@@ -69,7 +69,7 @@ All primary configuration templates are located in the `configs/` directory.
 - **Verification**: `scripts/verify-placeholders.sh`
 - **Deployment Check**: `scripts/deploy-complete.sh`
 - **Full System Test**: `scripts/test-complete.sh`
-- **Security Setup**: `scripts/hardening/security-setup.sh`
+- **Security Setup**: `configs/hardening/security-setup.sh`
 
 ## 3. Network Layout
 

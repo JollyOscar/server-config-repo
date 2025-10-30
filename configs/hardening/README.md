@@ -22,8 +22,8 @@
 Run the automated security setup script:
 
 ```bash
-sudo chmod +x /opt/server-config-repo/hardening/security-setup.sh
-sudo /opt/server-config-repo/hardening/security-setup.sh
+sudo chmod +x /opt/server-config-repo/configs/hardening/security-setup.sh
+sudo /opt/server-config-repo/configs/hardening/security-setup.sh
 ```
 
 This script will:

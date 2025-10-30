@@ -123,11 +123,17 @@ Hardening should always be the first configuration step.
 
 **A. Run the Hardening Script:**
 
-This script configures `sysctl`, sets up AIDE, and more.
+This script configures `sysctl`, sets up AIDE, fail2ban with custom rules, and more.
 
 ```bash
-sudo bash scripts/hardening/security-setup.sh
+sudo bash configs/hardening/security-setup.sh
 ```
+
+The script automatically deploys:
+- System kernel security parameters (`sysctl-security.conf`)
+- Custom fail2ban intrusion detection rules (`user.rules`)
+- SSH hardening configurations
+- Security monitoring tools (AIDE, rkhunter)
 
 **B. Deploy SSH Configuration:**
 

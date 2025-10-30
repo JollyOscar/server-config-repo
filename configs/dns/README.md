@@ -13,7 +13,7 @@
 | 🌐 **Domain**: `mycorp.lan` | 🚀 **Primary**: Cloudflare (`1.1.1.1`) |
 | 📍 **Zone Files**: Forward & Reverse | 🔒 **Secondary**: Google (`8.8.8.8`) |
 | 🔄 **Auto-Updates**: Dynamic records | ⚡ **Performance**: Caching enabled |
-| �️ **Security**: Rate limiting enabled | 🎯 **Reliability**: Multi-server fallback |
+| 🏗️ **Security**: Rate limiting enabled | 🎯 **Reliability**: Multi-server fallback |
 
 > 🆕 **Configuration Update**: Replaced incorrect `resolv.conf` with `named.conf.local` for proper BIND9 configuration.
 
