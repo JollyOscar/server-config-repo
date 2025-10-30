@@ -1,0 +1,33 @@
+options {
+    directory "/var/cache/bind";
+    
+    // Recursion settings
+    recursion yes;
+    allow-query { localhost; 10.207.0.0/24; };
+    allow-recursion { localhost; 10.207.0.0/24; };
+    allow-transfer { none; };
+    
+    // Forwarders for external DNS
+    forwarders {
+        8.8.8.8;
+        1.1.1.1;
+        9.9.9.9;
+    };
+    
+    // Network interface binding
+    listen-on port 53 { 127.0.0.1; 10.207.0.250; };
+    listen-on-v6 { none; };
+    
+    // Security settings
+    version "DNS Server";
+    
+    // Rate limiting
+    rate-limit {
+        responses-per-second 10;
+        window 5;
+    };
+    
+    // DNSSEC
+    dnssec-validation auto;
+    auth-nxdomain no;
+};
