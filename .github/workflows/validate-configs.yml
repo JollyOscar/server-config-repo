@@ -121,15 +121,15 @@ jobs:
           echo "⚠️ kea-dhcp4 binary not found - skipping Kea-specific validation"
         fi
         
-  echo "Checking JSON syntax..."
-  jq . configs/dhcp/kea-dhcp4.conf > /dev/null
-  echo "✅ JSON syntax is valid"
+        echo "Checking JSON syntax..."
+        jq . configs/dhcp/kea-dhcp4.conf > /dev/null
+        echo "✅ JSON syntax is valid"
     
-- name: 🧪 Validate Firewall Configuration
+    - name: 🧪 Validate Firewall Configuration
       run: |
         echo "Validating nftables configuration..."
         # Create temporary file with corrected variables for testing
-        sed 's/define WAN_IF = "ens18"/define WAN_IF = "eth0"/' fw/nftables.conf > /tmp/nftables-test.conf
+        sed 's/define WAN_IF = "ens18"/define WAN_IF = "eth0"/' configs/fw/nftables.conf > /tmp/nftables-test.conf
         sed -i 's/define LAN_IF = "ens19"/define LAN_IF = "eth1"/' /tmp/nftables-test.conf
         
         # Try to validate with nftables
@@ -139,18 +139,18 @@ jobs:
           echo "⚠️ nftables validation failed - this may be due to runner limitations"
           echo "Checking basic syntax..."
           # Basic syntax check - look for common issues
-          grep -E "(table|chain|rule)" fw/nftables.conf > /dev/null && echo "✅ Basic syntax appears correct"
+          grep -E "(table|chain|rule)" configs/fw/nftables.conf > /dev/null && echo "✅ Basic syntax appears correct"
         fi
         
     - name: 🧪 Validate SSH Configuration
       run: |
         echo "Validating SSH configuration..."
-        if sudo sshd -t -f hardening/sshd_config 2>&1; then
+        if sudo sshd -t -f configs/hardening/sshd_config 2>&1; then
           echo "✅ SSH configuration is valid"
         else
           echo "⚠️ SSH validation failed - this may be due to CI environment limitations"
           echo "Checking basic SSH syntax..."
-          grep -E "(Port|PermitRootLogin|PasswordAuthentication)" hardening/sshd_config && echo "✅ Basic SSH settings found"
+          grep -E "(Port|PermitRootLogin|PasswordAuthentication)" configs/hardening/sshd_config && echo "✅ Basic SSH settings found"
         fi
         
     - name: 📊 Configuration Summary

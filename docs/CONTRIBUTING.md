@@ -1,175 +1,68 @@
-# 🤝 **Contributing to Server Configuration Repository**
+# How to Contribute
 
-[![Welcome](https://img.shields.io/badge/Contributors-Welcome!-success?style=for-the-badge&logo=github&logoColor=white)](../../contributors)
-[![Code of Conduct](https://img.shields.io/badge/Code%20of%20Conduct-Respectful-blue?style=for-the-badge&logo=heart&logoColor=white)](#code-of-conduct)
-[![License](https://img.shields.io/badge/License-Private-red?style=for-the-badge&logo=lock&logoColor=white)](./LICENSE)
+We welcome contributions to improve this repository!
+Whether you're fixing a bug, adding a feature, or improving documentation, your help is appreciated.
 
----
+## 💡 Getting Started
 
-## 🎯 **Project Mission**
+- **Report a Bug**: If you find a problem, please [open an issue](https://github.com/JollyOscar/server-config-repo/issues) and provide as much detail as possible, including steps to reproduce the error.
+- **Suggest an Enhancement**: Have an idea for a new feature or an improvement to an existing one? [Open an issue](https://github.com/JollyOscar/server-config-repo/issues) to start a discussion.
 
-<table>
-<tr>
-<td width="50%">
+## 🚀 Making a Contribution
 
-### 🌐 **Core Services**
-- 🌍 **DNS** (BIND9) - Name Resolution
-- 📡 **DHCP** (Kea) - IP Management
-- 🔥 **Firewall** (nftables) - Network Security
-- 🛡️ **Hardening** - Baseline Security
+If you're ready to contribute code or documentation, please follow these steps:
 
-</td>
-<td width="50%">
+1. **Fork the Repository**: Create your own copy of the project.
+2. **Create a Branch**: Make a new branch for your changes.
+    ```bash
+    git checkout -b feature/my-new-feature
+    ```
+3. **Make Your Changes**: Edit the files and test your changes thoroughly.
+4. **Commit Your Work**: Write a clear, concise commit message.
+    ```bash
+    git commit -am 'Add new feature: Description of changes'
+    ```
+5. **Push to Your Branch**:
+    ```bash
+    git push origin feature/my-new-feature
+    ```
+6. **Open a Pull Request**: Submit a pull request from your forked repository to the `main` branch of the original repository.
 
-### 🎯 **Objectives**
-- ✅ **Production-Ready** configurations
-- 🔒 **Security-First** approach
-- 📚 **Well-Documented** solutions
-- 🚀 **Easy Deployment** processes
+## ✅ Contribution Guidelines
 
-</td>
-</tr>
-</table>
+- **Maintain Security**: Do not introduce changes that weaken the security posture. All contributions must align with the [Security Policy](SECURITY.md).
+- **Update Documentation**: If you change a configuration, you **must** update the corresponding documentation (`README.md`, guides, etc.).
+- **Test Your Changes**: Before submitting a pull request, validate your configurations using the provided tools.
+- **Keep it Clean**: Ensure your code and documentation are well-formatted and easy to read.
 
-## 🤝 How to Contribute
+## 🛠️ Development and Testing
 
-### Reporting Issues
-- Use GitHub Issues to report bugs or suggest improvements
-- Include relevant configuration details and error messages
-- Describe your network environment and use case
-
-### Suggesting Enhancements
-- Propose new features or security improvements via GitHub Issues
-- Explain the use case and expected benefits
-- Consider backward compatibility
-
-### Code Contributions
-1. **Fork** the repository
-2. **Create** a feature branch (`git checkout -b feature/improvement-name`)
-3. **Test** your changes thoroughly
-4. **Commit** your changes (`git commit -m 'Add security improvement'`)
-5. **Push** to the branch (`git push origin feature/improvement-name`)
-6. **Create** a Pull Request
-
-## 📋 Contribution Guidelines
-
-### Configuration Changes
-- **Test all changes** in isolated environments first
-- **Validate syntax** using appropriate tools (named-checkconf, nft -c, etc.)
-- **Update documentation** to reflect configuration changes
-- **Maintain security** - never weaken existing security measures
-
-### Documentation
-- Update relevant README files when changing configurations
-- Use clear, concise language
-- Include examples and customization instructions
-- Mark placeholder values clearly
-
-### Security Considerations
-- **Review security implications** of all changes
-- **Follow security best practices** for network services
-- **Test security configurations** before proposing changes
-- **Document security features** and their purposes
-
-## 🔧 Development Setup
+To test your changes locally, you'll need the appropriate validation tools.
 
 ### Prerequisites
+
 ```bash
-# Install validation tools
-sudo apt install -y bind9-utils kea-dhcp4 nftables
+# Install validation tools for Debian/Ubuntu
+sudo apt update
+sudo apt install -y bind9-utils kea-dhcp4-server nftables openssh-server
 ```
 
-### Testing Changes
+### Validation Commands
+
+Run these commands from the root of the repository to test the configuration files.
+
 ```bash
 # Validate DNS configuration
-named-checkconf dns/named.conf.local
-named-checkzone mycorp.lan configs/dns/db.forward-dns.template
+sudo named-checkconf configs/dns/named.conf.local
 
-# Validate DHCP configuration  
-kea-dhcp4 -t dhcp/kea-dhcp4.conf
+# Validate DHCP configuration
+sudo kea-dhcp4 -t configs/dhcp/kea-dhcp4.conf
 
-# Validate firewall rules
-sudo nft -c -f fw/nftables.conf
+# Validate Firewall rules
+sudo nft -c -f configs/fw/nftables.conf
 
 # Validate SSH configuration
-sudo sshd -t -f hardening/sshd_config
+sudo sshd -t -f configs/hardening/sshd_config
 ```
 
-## 📊 Quality Standards
-
-### Configuration Files
-- Use proper syntax and formatting
-- Include helpful comments
-- Follow service-specific best practices
-- Maintain consistency across configurations
-
-### Documentation  
-- Keep README files up to date
-- Use clear headings and structure
-- Include troubleshooting information
-- Provide customization guidance
-
-### Security
-- Apply security hardening principles
-- Use least privilege access
-- Implement defense in depth
-- Document security features
-
-## 🚦 Pull Request Process
-
-1. **Ensure** all validations pass (run GitHub Actions locally if possible)
-2. **Update** documentation for any configuration changes
-3. **Include** clear description of changes and rationale
-4. **Test** configurations in representative environment
-5. **Request** review from repository maintainers
-
-### PR Requirements
-- [ ] All configuration files validate successfully
-- [ ] Documentation updated
-- [ ] Security implications considered
-- [ ] Changes tested in safe environment
-- [ ] Clear commit messages
-
-## 🎨 Style Guide
-
-### Configuration Files
-- Use consistent indentation (2 spaces for JSON, tabs for others as appropriate)
-- Include descriptive comments
-- Group related settings logically
-- Use meaningful variable/option names
-
-### Documentation
-- Use markdown formatting consistently
-- Include code examples in fenced blocks
-- Use emoji icons sparingly for visual organization
-- Write in clear, professional language
-
-## 🔒 Security
-
-- Never commit secrets, passwords, or private keys
-- Use placeholder values for sensitive configuration
-- Test security configurations thoroughly
-- Report security issues responsibly (see SECURITY.md)
-
-## 🏷️ Labeling
-
-Use these labels for issues and PRs:
-- `bug` - Bug reports or fixes
-- `enhancement` - New features or improvements
-- `documentation` - Documentation changes
-- `security` - Security-related changes
-- `configuration` - Service configuration changes
-
-## 📞 Questions?
-
-- **General questions**: Create a GitHub Issue
-- **Security concerns**: See SECURITY.md
-- **Contact maintainer**: @JollyOscar
-
-## 📄 License
-
-This project contains configuration files for private use. By contributing, you agree that your contributions will be used under the same terms as the existing project.
-
----
-
-Thank you for helping to improve this network appliance configuration repository! 🚀
+Thank you for contributing!

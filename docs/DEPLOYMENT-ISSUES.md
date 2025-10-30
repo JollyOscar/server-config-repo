@@ -1,6 +1,7 @@
 # Deployment Issues Found and Fixed
 
 This document tracks all issues discovered during comprehensive Ubuntu 24.04 deployment testing and their resolutions.
+These issues have been fixed in the current version of the repository.
 
 ## Summary
 
@@ -8,7 +9,7 @@ This document tracks all issues discovered during comprehensive Ubuntu 24.04 dep
 **Total Issues Fixed:** 22
 **Success Rate:** 100%
 
-All issues have been resolved in the Post-Testing branch.
+All issues have been resolved in the `Post-Testing` branch.
 
 ---
 
@@ -16,81 +17,79 @@ All issues have been resolved in the Post-Testing branch.
 
 ### Issue #1: Corrupted SSH Configuration
 
-**File:** `hardening/sshd_config`
+**File:** `configs/hardening/sshd_config`
 **Severity:** Critical
-**Symptom:** SSH configuration has 682 lines of duplicated content, syntax errors like `AddressFamily inet#`
-**Impact:** Phase 4 (SSH hardening) fails completely, SSH service won't start
-**Fix:** Complete file rewrite with clean Ubuntu 24.04 compatible configuration
+**Symptom:** SSH configuration had duplicated content and syntax errors.
+**Impact:** Phase 4 (SSH hardening) failed completely; the SSH service would not start.
+**Fix:** Complete file rewrite with a clean, Ubuntu 24.04 compatible configuration.
 **Status:** ✅ Fixed
 
 ### Issue #2 & #3: BIND9 Duplicate Options Block
 
-**Files:** `dns/named.conf.local`, `dns/named.conf.options`
+**Files:** `configs/dns/named.conf.local`
 **Severity:** Critical
-**Symptom:** "'options' redefined near 'options'" error
-**Impact:** Phase 5 (DNS) fails, BIND9 won't start
-**Root Cause:** Ubuntu's `/etc/bind/named.conf` includes BOTH named.conf.options and named.conf.local.
-Having options block in both causes redefinition error.
-**Fix:**
-- Moved all `options {}` content to `dns/named.conf.options`
-- Left only zone definitions in `dns/named.conf.local`
+**Symptom:** BIND9 reported an "'options' redefined" error.
+**Impact:** Phase 5 (DNS) failed; BIND9 would not start.
+**Root Cause:** Ubuntu's default `/etc/bind/named.conf` includes both `named.conf.options` and `named.conf.local`.
+Having an `options {}` block in both files causes a redefinition error.
+**Fix:** The `options {}` block was removed from `named.conf.local`, and all necessary options were consolidated, ensuring no conflict.
 **Status:** ✅ Fixed
 
 ### Issue #4: AIDE Initialization Hangs Deployment
 
-**File:** `hardening/security-setup.sh`
+**File:** `scripts/hardening/security-setup.sh`
 **Severity:** Critical
-**Symptom:** Deployment appears frozen at "Initializing file integrity monitoring"
-**Impact:** Makes testing impossible, users think deployment failed
-**Root Cause:** `aideinit` command runs synchronously and takes 20-30 minutes
-**Fix:** Commented out AIDE initialization with instructions to run manually: `sudo aideinit`
+**Symptom:** The deployment script appeared to freeze at "Initializing file integrity monitoring."
+**Impact:** Made automated testing impossible as it appeared the deployment had failed.
+**Root Cause:** The `aideinit` command runs synchronously and can take over 20 minutes to complete.
+**Fix:** AIDE initialization is now an optional, manual step with clear instructions provided in the script.
 **Status:** ✅ Fixed
 
 ### Issue #9: systemd-resolved Port 53 Conflict
 
-**File:** `deploy-complete.sh`
+**File:** `scripts/deploy-complete.sh`
 **Severity:** Critical
-**Symptom:** BIND9 fails to bind to port 53
-**Impact:** DNS service won't start
-**Root Cause:** Ubuntu's systemd-resolved listens on port 53 by default
-**Fix:** Added configuration to disable DNSStubListener in systemd-resolved
+**Symptom:** BIND9 failed to bind to port 53.
+**Impact:** The DNS service would not start.
+**Root Cause:** Ubuntu's `systemd-resolved` service listens on port 53 by default.
+**Fix:** The deployment process now correctly disables the `systemd-resolved` stub listener to free up port 53 for BIND9.
 **Status:** ✅ Fixed
 
 ### Issue #17: nftables Quoted Define Statements
 
-**File:** `fw/nftables.conf`
+**File:** `configs/fw/nftables.conf`
 **Severity:** Critical
-**Symptom:** "Could not resolve hostname: Name or service not known" error
-**Impact:** Phase 7 (Firewall) fails, no NAT/routing configured
-**Root Cause:** nftables interprets quoted values as hostnames requiring DNS resolution
-**Fix:** Removed quotes from ALL define statements (e.g., `define LAN_NET = 10.207.0.0/24`)
+**Symptom:** nftables reported a "Could not resolve hostname" error.
+**Impact:** Phase 7 (Firewall) failed, preventing NAT and routing from being configured.
+**Root Cause:** nftables interprets quoted values in `define` statements as hostnames that require DNS resolution.
+**Fix:** Quotes were removed from all `define` statements (e.g., `define LAN_NET = 10.207.0.0/24`).
 **Status:** ✅ Fixed
 
 ### Issue #19: Wrong Kea DHCP Package Name
 
-**File:** `deploy-complete.sh`
+**File:** `scripts/deploy-complete.sh`
 **Severity:** Critical
-**Symptom:** Package 'kea-dhcp4' not found
-**Impact:** Phase 2 fails, DHCP server not installed
-**Fix:** Changed package name to `kea-dhcp4-server`
+**Symptom:** The package manager reported 'Package kea-dhcp4 not found'.
+**Impact:** Phase 2 failed; the DHCP server was not installed.
+**Fix:** The package name was corrected to `kea-dhcp4-server`.
 **Status:** ✅ Fixed
 
 ### Issue #20: Wrong Kea DHCP Service Name
 
-**File:** `deploy-complete.sh`
+**File:** `scripts/deploy-complete.sh`
 **Severity:** Critical
-**Symptom:** Service 'kea-dhcp4.service' not found
-**Impact:** Phase 6 fails, DHCP service won't start
-**Fix:** Changed service name to `kea-dhcp4-server.service`
+**Symptom:** systemd reported 'Service kea-dhcp4.service not found'.
+**Impact:** Phase 6 failed; the DHCP service would not start.
+**Fix:** The service name was corrected to `kea-dhcp4-server.service`.
 **Status:** ✅ Fixed
 
 ### Issue #22: Deploy Script Copies Broken Config Files
 
-**File:** `deploy-complete.sh`
+**File:** `scripts/deploy-complete.sh`
 **Severity:** Critical
-**Symptom:** Manual fixes get overwritten on re-deployment
-**Impact:** Cannot recover from errors, must fix source files in repo
-**Fix:** All source files in repository have been corrected
+**Symptom:** Manual fixes to configuration files were overwritten on re-deployment.
+**Impact:** It was impossible to recover from errors without fixing the source files in the repository.
+**Fix:** All source configuration files in the repository have been corrected.
 **Status:** ✅ Fixed
 
 ---
@@ -108,7 +107,7 @@ Having options block in both causes redefinition error.
 
 ### Issue #6: Hardcoded Admin Username
 
-**Files:** `hardening/sshd_config`, `hardening/security-setup.sh`
+**Files:** `configs/hardening/sshd_config`, `scripts/hardening/security-setup.sh`
 **Severity:** Medium
 **Symptom:** SSH allows user 'admin' or 'your_username' instead of actual user
 **Impact:** SSH access doesn't work for JollyOscar user
@@ -117,7 +116,7 @@ Having options block in both causes redefinition error.
 
 ### Issue #10: DNS Service Name Confusion
 
-**File:** `deploy-complete.sh`
+**File:** `scripts/deploy-complete.sh`
 **Severity:** Medium
 **Symptom:** "Refusing to operate on alias name" warning
 **Impact:** Cosmetic warning, but confusing
@@ -127,7 +126,7 @@ Having options block in both causes redefinition error.
 
 ### Issue #21: Kea Test Binary Name Wrong
 
-**File:** `deploy-complete.sh`
+**File:** `scripts/deploy-complete.sh`
 **Severity:** Medium
 **Symptom:** Command `kea-dhcp4-server -t` not found
 **Impact:** Configuration validation fails
@@ -140,7 +139,7 @@ Having options block in both causes redefinition error.
 
 ### Issue #8: Netplan File Permissions
 
-**File:** `deploy-complete.sh`
+**File:** `scripts/deploy-complete.sh`
 **Severity:** Minor
 **Symptom:** "Permissions too open" warning for netplan files
 **Impact:** Security warning only

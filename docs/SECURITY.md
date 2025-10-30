@@ -1,106 +1,61 @@
 # Security Policy
 
-## 🔒 Reporting Security Issues
+This document outlines the security policy for the `server-config-repo` project.
 
-If you discover a security vulnerability in this server configuration repository, please report it responsibly:
+## 🛡️ Security Philosophy
 
-### Private Disclosure
+The configurations in this repository are designed with a "secure-by-default" philosophy. This includes:
+- **Principle of Least Privilege**: Services and users are granted only the permissions they absolutely need.
+- **Defense in Depth**: Security is applied in layers, from the kernel and firewall to individual service configurations.
+- **Fail-Secure**: In case of a configuration error, the system is designed to default to a secure state (e.g., firewall blocking traffic).
 
-- **Email**: Create an issue in this repository with the `security` label
-- **Contact**: @JollyOscar
-- **Response Time**: We aim to respond within 48 hours
+## reporting-a-vulnerability Reporting a Vulnerability
 
-### What to Include
+We take all security vulnerabilities seriously.
+If you discover a security issue, please report it to us privately to protect the project and its users.
 
-When reporting a security issue, please include:
-- Description of the vulnerability
-- Steps to reproduce the issue
-- Potential impact assessment
-- Suggested fixes (if any)
+- **Private Disclosure**: Please create a new **private** security advisory on the repository's GitHub page.
+- **Contact**: For urgent matters, mention `@JollyOscar` in the advisory.
+- **Response Time**: We aim to provide an initial response within 48 hours.
 
-## 🛡️ Security Best Practices
+When reporting, please include:
+- A clear description of the vulnerability.
+- Step-by-step instructions to reproduce the issue.
+- The potential impact of the vulnerability.
+- Any suggested mitigations or fixes.
 
-This repository contains network infrastructure configurations. Please follow these guidelines:
+## 📝 Security Best Practices for Users
 
-### For Contributors
-- Review all configuration changes for security implications
-- Ensure no sensitive information (passwords, keys) is committed
-- Test configurations in isolated environments first
-- Follow the principle of least privilege
+- **Never Deploy to Production Blindly**: Always test configurations in a non-production environment first.
+- **Replace All Placeholders**: Before deployment, you **must** run the `verify-placeholders.sh` script and replace all default values (usernames, passwords, IPs, etc.).
+- **Keep Systems Updated**: Regularly apply security patches to the underlying operating system and all installed packages.
+- **Monitor Your System**: Actively monitor logs for suspicious activity. Tools like `fail2ban` are included but are not a substitute for vigilance.
 
-### For Users
-- **Never deploy configurations directly to production** without thorough testing
-- Replace all placeholder values with your actual configuration
-- Regularly update and patch your systems
-- Monitor logs and security alerts
-- Use strong authentication methods
+## 🔐 Implemented Security Measures
 
-## 🔧 Configuration Security
+This repository includes several built-in security features:
 
-### Default Security Measures
-This repository implements several security measures by default:
-
-- **SSH Hardening**: Key-only authentication, custom port, connection limits
-- **Firewall**: Default-deny policy with explicit allow rules and rate limiting  
-- **DNS**: Query restrictions and transfer protections
-- **System**: Kernel hardening parameters and security monitoring
-
-### Known Limitations
-- Configurations use example/placeholder values that **must** be customized
-- Some security features require additional setup (certificates, monitoring)
-- Regular security updates and maintenance are required
-
-## 📋 Security Checklist
-
-Before deploying these configurations:
-
-- [ ] Replace all placeholder values (domains, IPs, usernames)
-- [ ] Generate and install proper SSH keys
-- [ ] Customize firewall rules for your network topology
-- [ ] Set up proper DNS zone files for your domain
-- [ ] Configure monitoring and alerting
-- [ ] Test all services in isolation
-- [ ] Create backup and recovery procedures
-- [ ] Document your customizations
+- **SSH Hardening**:
+  - Key-only authentication is enforced (`PasswordAuthentication no`).
+  - Runs on a non-standard port (`2222`).
+  - Access is restricted to a specific user via `AllowUsers`.
+- **Firewall (nftables)**:
+  - A default-deny policy is used for incoming traffic.
+  - Explicit rules allow only necessary services (SSH, DNS, DHCP).
+  - Rate-limiting is applied to SSH to prevent brute-force attacks.
+- **System & Kernel Hardening**:
+  - The `security-setup.sh` script applies secure kernel parameters via `sysctl`.
+  - File integrity monitoring with `AIDE` is configured for manual runs.
+- **Service-Specific Security**:
+  - **BIND9**: Configured to prevent unauthorized zone transfers and restrict queries.
+  - **Fail2ban**: Actively monitors SSH logs and bans malicious IPs.
 
 ## 🚨 Incident Response
 
-If you suspect a security incident:
+If you suspect a security incident on a system running these configurations:
+1. **Isolate**: Disconnect the affected system from the network if possible.
+2. **Preserve**: Create snapshots or backups of the system state and logs for analysis.
+3. **Analyze**: Review system logs, firewall logs, and authentication attempts to identify the source and extent of the compromise.
+4. **Remediate**: Address the vulnerability, restore the system from a clean backup, and enhance monitoring.
 
-1. **Isolate** affected systems immediately
-2. **Document** the incident with timestamps
-3. **Analyze** logs and system state
-4. **Report** the incident through appropriate channels
-5. **Remediate** vulnerabilities
-6. **Review** and update security measures
-
-## 📊 Security Monitoring
-
-Regular security activities should include:
-
-- Review of firewall logs and blocked connections
-- Analysis of SSH authentication attempts
-- DNS query pattern analysis
-- System integrity checks (AIDE)
-- Security update reviews
-- Configuration drift detection
-
-## 🔄 Updates and Patches
-
-This repository's security considerations:
-
-- **Dependencies**: Keep all system packages updated
-- **Configurations**: Review configurations when updating services
-- **Security Tools**: Update security tools (fail2ban, AIDE) regularly
-- **Monitoring**: Review and update monitoring rules
-
-## 📞 Contact Information
-
-For security-related questions or concerns:
-- **Repository Owner**: @JollyOscar
-- **Issues**: Use GitHub Issues with `security` label
-- **Urgent Issues**: Contact repository owner directly
-
----
-
-**Note**: This is a configuration repository for private use. Adapt security measures to your specific environment and requirements.
+**This repository is for educational and template purposes. The user is ultimately responsible for the security of their own systems.**

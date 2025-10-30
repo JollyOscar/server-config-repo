@@ -1,114 +1,53 @@
 # Changelog
 
-All notable changes to this network appliance configuration repository will be documented in this file.
+All notable changes to this repository will be documented in this file.
+The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
-The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
-and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
+## [2.0.0] - 2025-10-30
 
-## [Unreleased]
+This is a major release focused on repository reorganization, CI/CD integration, and comprehensive documentation overhaul based on live deployment feedback.
 
 ### Added
 
-- Modern nftables firewall configuration with rate limiting
-- Kea DHCP server configuration (JSON format)
-- Enhanced DNS security with BIND9 rate limiting
-- Comprehensive SSH hardening configuration
-- System security hardening with kernel parameters
-- Automated security setup script
-- File integrity monitoring configuration
-- GitHub Actions workflows for validation and security auditing
-- Comprehensive documentation with customization guidance
-- Security policy and contributing guidelines
+- **CI/CD Workflows**: Added GitHub Actions for:
+  - `validate-configs.yml`: Validates syntax of Kea, BIND9, nftables, and SSH configs.
+  - `documentation-check.yml`: Lints all Markdown files.
+  - `security-audit.yml`: Performs basic security checks.
+- **Intelligent Verification**: `scripts/verify-placeholders.sh` was rewritten to be smarter, reducing false positives by ignoring comments and its own content.
+- **Extensive Documentation**: Created new guides and improved all existing ones.
+  - `docs/PLACEHOLDERS-GUIDE.md`: A detailed guide for replacing placeholder values.
+  - `docs/FALSE-POSITIVES.md`: Explains common warnings from the verification script.
+  - `docs/DEPLOYMENT-ISSUES.md`: Documents issues found and fixed during testing.
 
 ### Changed
 
-- **BREAKING**: Replaced legacy ISC DHCP with modern Kea DHCP configuration (`dhcp/kea-dhcp4.conf`)
-- **BREAKING**: Modernized DNS with BIND9 security hardening (`dns/named.conf.local`)
-- **BREAKING**: Upgraded firewall from iptables to nftables (`fw/nftables.conf`)
-- Updated all README files with proper placeholder documentation
-- Enhanced SSH configuration with modern cipher suites
-- Improved firewall rules with stateful filtering and logging
-- Updated DNS configuration with security hardening
+- **BREAKING: Repository Structure**: The entire repository was reorganized for clarity.
+  - All configuration files moved into `configs/`.
+  - All scripts moved into `scripts/`.
+  - All documentation moved into `docs/`.
+- **BREAKING: Renamed DNS Files**: Renamed DNS zone files for better comprehension.
+  - `db.mycorp.lan` -> `db.forward-dns.template`
+  - `db.10.207.0` -> `db.reverse-dns.template`
+- **Documentation Overhaul**: All `.md` files (`README.md`, `STEP-BY-STEP-GUIDE.md`, etc.) were completely rewritten for clarity, accuracy, and consistency.
+- **Kea DHCP Config**: Changed `//` comments to `/* */` block comments to be JSON compliant and pass CI validation.
+- **SSH Config**: Changed `PasswordAuthentication yes` to `no` to pass security audits.
 
 ### Fixed
 
-- Corrected DHCP configuration syntax for Kea compatibility
-- Fixed DNS zone file references and configuration paths
-- Improved firewall rule organization and security
-- Enhanced SSH security with proper authentication restrictions
+- **CI/CD Failures**: Fixed all GitHub Actions workflows by updating file paths to match the new `configs/` structure and correcting validation commands.
+- **Hardcoded Paths**: Updated all hardcoded file paths in scripts and documentation to reflect the new repository structure.
 
-### Security
+### Removed
 
-- Implemented default-deny firewall policy
-- Added rate limiting for SSH and DNS services
-- Disabled weak SSH authentication methods
-- Enhanced DNS query restrictions and transfer protections
-- Added comprehensive system hardening parameters
-- Implemented file integrity monitoring
-- Added automated security checks and reporting
+- **Root Files**: Removed all configuration, script, and documentation files from the root directory. Everything is now organized under `configs/`, `scripts/`, and `docs/`.
 
 ## [1.0.0] - 2024-10-29
 
 ### Added
 
-- Initial repository structure
-- Basic network service configurations
-- Documentation framework
-- Service-specific README files
-
----
-
-## Migration Guide
-
-### From Legacy Configurations
-
-If you're upgrading from previous versions, please note these breaking changes:
-
-#### DHCP Service Migration
-
-```bash
-# Old: ISC DHCP Server
-sudo systemctl stop isc-dhcp-server
-sudo systemctl disable isc-dhcp-server
-
-# New: Kea DHCP Server
-sudo apt install kea-dhcp4
-sudo cp dhcp/kea-dhcp4.conf /etc/kea/
-sudo systemctl enable kea-dhcp4
-sudo systemctl start kea-dhcp4
-```
-
-#### Firewall Migration
-
-```bash
-# Old: iptables rules
-sudo iptables-save > /tmp/old-rules.txt
-
-# New: nftables configuration
-sudo cp fw/nftables.conf /etc/nftables.conf
-sudo systemctl enable nftables
-sudo nft -f /etc/nftables.conf
-```
-
-#### DNS Configuration Update
-
-```bash
-# Update BIND9 configuration
-sudo cp dns/named.conf.local /etc/bind/
-sudo cp dns/db.* /etc/bind/
-sudo systemctl reload bind9
-```
-
-### Customization Requirements
-
-After upgrading, you **must** customize these placeholder values:
-
-- Replace `mycorp.lan` with your actual domain
-- Update `10.207.0.0/24` network range if different
-- Change `ens18`/`ens19` interface names to match your system
-- Set actual MAC addresses in DHCP reservations
-- Configure proper SSH public keys
-- Update admin email addresses
+- Initial repository structure with basic configurations for BIND9, Kea, nftables, and SSH.
+- Initial documentation framework and service-specific README files.
+- Basic deployment and testing scripts.
 
 ---
 
