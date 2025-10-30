@@ -119,3 +119,15 @@ sudo systemctl restart bind9
 1. **Check Logs:** `sudo journalctl -u bind9.service`.
 
 2. **Check Zone Syntax:** Use `named-checkzone` on the specific zone file to find the syntax error.
+
+This directory contains the BIND9 DNS server configuration files.
+
+### How It Works
+
+The configuration is designed to be both robust and easy to manage. It uses a template-based system that works directly with the main deployment script (`scripts/deploy-complete.sh`).
+
+1.  **Templates**: The files `db.forward-dns.template` and `db.reverse-dns.template` contain the structure for your DNS zones. You should edit these files to add, remove, or change any DNS records for your network.
+2.  **Automation**: You do **not** need to rename these template files. The `deploy-complete.sh` script automatically copies them to the correct final destination (e.g., `/etc/bind/db.mycorp.lan`) during the deployment process.
+3.  **Configuration**: The `named.conf.local` file tells the BIND9 service where to find the zone files. This file is also copied automatically by the deployment script.
+
+Your only task is to **edit the contents of the `.template` files** to match your network's requirements. The deployment script handles the rest.

@@ -26,7 +26,7 @@ sudo bash scripts/test-complete.sh
 
 ```bash
 # Check status of all key services
-sudo systemctl status sshd bind9 kea-dhcp4 nftables
+sudo systemctl status sshd bind9 kea-dhcp4 nftables fail2ban
 
 # Restart a specific service
 sudo systemctl restart bind9

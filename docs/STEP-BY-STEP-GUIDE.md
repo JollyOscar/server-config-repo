@@ -114,7 +114,7 @@ Follow these steps to deploy each service one by one.
 ### 3.1. Install Core Packages
 
 ```bash
-sudo apt install -y openssh-server bind9 kea-dhcp4-server nftables fail2ban aide rkhunter chkrootkit
+sudo apt install -y openssh-server bind9 kea-dhcp4-server kea-ctrl-agent nftables fail2ban ufw git aide rkhunter chkrootkit ufw git
 ```
 
 ### 3.2. Apply Security Hardening (Run First!)

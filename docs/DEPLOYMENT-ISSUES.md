@@ -203,7 +203,7 @@ After applying all fixes, verify:
 - [ ] Kea config validates: `sudo kea-dhcp4 -t /etc/kea/kea-dhcp4.conf`
 - [ ] nftables config validates: `sudo nft -c -f /etc/nftables.conf`
 - [ ] All packages install: `sudo apt install openssh-server bind9 kea-dhcp4-server nftables fail2ban`
-- [ ] All services start: `systemctl status bind9 kea-dhcp4 nftables fail2ban ssh`
+- [ ] All services start: `systemctl status sshd bind9 kea-dhcp4 nftables fail2ban`
 - [ ] DNS resolves internal: `nslookup gateway.mycorp.lan 127.0.0.1`
 - [ ] DNS resolves external: `nslookup google.com 127.0.0.1`
 - [ ] DHCP listens: `sudo netstat -ulnp | grep :67`

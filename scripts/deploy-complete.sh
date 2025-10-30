@@ -4,8 +4,8 @@ echo ""
 echo "🔍 PLACEHOLDER VERIFICATION (Optional)"
 echo "-------------------------------------"
 echo "Running improved placeholder check..."
-if [ -f "./verify-placeholders.sh" ]; then
-    bash ./verify-placeholders.sh
+if [ -f "./scripts/verify-placeholders.sh" ]; then
+    bash ./scripts/verify-placeholders.sh
     if [ $? -ne 0 ]; then
         echo ""
         echo "⚠️  Placeholders found - review the output above"
@@ -52,8 +52,8 @@ echo ""
 echo "🔍 PLACEHOLDER VERIFICATION"
 echo "---------------------------"
 echo "Checking for unreplaced placeholders..."
-if [ -f "./verify-placeholders.sh" ]; then
-    bash ./verify-placeholders.sh
+if [ -f "./scripts/verify-placeholders.sh" ]; then
+    bash ./scripts/verify-placeholders.sh
     if [ $? -ne 0 ]; then
         echo ""
         echo "❌ DEPLOYMENT STOPPED: Placeholders found!"
@@ -74,11 +74,8 @@ echo "------------------------------"
 echo "Updating system packages..."
 sudo apt update && sudo apt upgrade -y
 
-echo "Installing core network services..."
-sudo apt install -y openssh-server bind9 kea-dhcp4-server nftables fail2ban
-
-echo "Installing security tools..."
-sudo apt install -y ufw aide rkhunter chkrootkit git
+echo "Installing all required packages..."
+sudo apt install -y openssh-server bind9 kea-dhcp4-server kea-ctrl-agent nftables fail2ban ufw aide rkhunter chkrootkit git
 
 echo "Stopping legacy services (if present)..."
 sudo systemctl stop isc-dhcp-server 2>/dev/null || true
@@ -119,7 +116,7 @@ sudo sshd -t
 
 if [ $? -eq 0 ]; then
     echo "✅ SSH configuration valid"
-    sudo systemctl restart ssh
+    sudo systemctl restart sshd
 else
     echo "❌ SSH configuration invalid - restoring backup"
     sudo cp /etc/ssh/sshd_config.backup /etc/ssh/sshd_config
@@ -147,34 +144,13 @@ echo "Configuring BIND9 DNS service..."
 sudo cp /etc/bind/named.conf.local /etc/bind/named.conf.local.backup
 sudo cp ./configs/dns/named.conf.local /etc/bind/
 
-# Copy zone files - prefer clean files over templates
-if [ -f "./configs/dns/db.mycorp.lan" ]; then
-    echo "Found clean forward zone file (db.mycorp.lan), copying..."
-    sudo cp ./configs/dns/db.mycorp.lan /etc/bind/
-    FORWARD_ZONE_FILE="db.mycorp.lan"
-elif [ -f "./configs/dns/db.forward-dns.template" ]; then
-    echo "⚠️  WARNING: Using template file db.forward-dns.template"
-    echo "⚠️  You should rename and customize this file first!"
-    sudo cp ./configs/dns/db.forward-dns.template /etc/bind/
-    FORWARD_ZONE_FILE="db.forward-dns.template"
-else
-    echo "❌ No forward zone file found"
-    exit 1
-fi
+# Copy zone files from templates
+echo "Copying DNS zone files from templates..."
+sudo cp ./configs/dns/db.forward-dns.template /etc/bind/db.mycorp.lan
+sudo cp ./configs/dns/db.reverse-dns.template /etc/bind/db.10.207.0
 
-if [ -f "./configs/dns/db.10.207.0" ]; then
-    echo "Found clean reverse zone file (db.10.207.0), copying..."
-    sudo cp ./configs/dns/db.10.207.0 /etc/bind/
-    REVERSE_ZONE_FILE="db.10.207.0"
-elif [ -f "./configs/dns/db.reverse-dns.template" ]; then
-    echo "⚠️  WARNING: Using template file db.reverse-dns.template"
-    echo "⚠️  You should rename and customize this file first!"
-    sudo cp ./configs/dns/db.reverse-dns.template /etc/bind/
-    REVERSE_ZONE_FILE="db.reverse-dns.template"
-else
-    echo "❌ No reverse zone file found"
-    exit 1
-fi
+FORWARD_ZONE_FILE="db.mycorp.lan"
+REVERSE_ZONE_FILE="db.10.207.0"
 
 echo "Setting BIND9 file permissions..."
 sudo chown bind:bind /etc/bind/db.*
@@ -246,7 +222,7 @@ echo "🔧 PHASE 8: SERVICE VERIFICATION"
 echo "--------------------------------"
 echo "Checking all service status..."
 
-services=("ssh" "bind9" "kea-dhcp4-server" "nftables")
+services=("sshd" "bind9" "kea-dhcp4" "nftables" "fail2ban")
 for service in "${services[@]}"; do
     if systemctl is-active --quiet $service; then
         echo "✅ $service is running"
@@ -309,7 +285,7 @@ echo "3. Monitor logs for any issues"
 echo "4. Set up regular backups"
 echo ""
 echo "📊 Service Status Summary:"
-systemctl status ssh bind9 kea-dhcp4 nftables --no-pager -l
+systemctl status sshd bind9 kea-dhcp4 nftables fail2ban --no-pager -l
 echo ""
 echo "🔧 For troubleshooting, see: /opt/server-config-repo/configs/hardening/DEPLOYMENT.md"
 echo ""
