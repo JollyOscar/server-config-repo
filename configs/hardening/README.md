@@ -12,6 +12,7 @@
 |:---:|:---|:---:|:---:|
 | 🔑 **SSH Hardening** | Key-only auth, custom port, rate limiting | [`sshd_config`](./sshd_config) | ✅ Ready |
 | ⚙️ **Kernel Security** | System-level security parameters | [`sysctl-security.conf`](./sysctl-security.conf) | ✅ Ready |
+| 🛡️ **Fail2ban Rules** | Custom intrusion detection patterns | [`user.rules`](./user.rules) | ✅ Ready |
 | 🤖 **Auto Setup** | One-command security deployment | [`security-setup.sh`](./security-setup.sh) | ✅ Ready |
 | 🚨 **Login Banner** | Legal notice & deterrent | [`issue.net`](./issue.net) | ✅ Ready |
 | 📖 **Deploy Guide** | Complete deployment procedures | [`DEPLOYMENT.md`](./DEPLOYMENT.md) | ✅ Ready |

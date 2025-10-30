@@ -1,0 +1,37 @@
+# Custom fail2ban user rules for SSH hardening
+# This file contains additional security rules for the network appliance
+
+[Definition]
+
+# Custom SSH brute force protection
+# Detects multiple failed SSH login attempts
+failregex = ^%(__prefix_line)s(?:error: PAM: )?[aA]uthentication (?:failure|error|failed) for .* from <HOST>( via \S+)?\s*$
+            ^%(__prefix_line)s(?:error: )?Received disconnect from <HOST>: 3: .*: Auth fail$
+            ^%(__prefix_line)sFailed (?:password|publickey) for .* from <HOST>(?: port \d*)?(?: ssh\d*)?$
+            ^%(__prefix_line)sROOT LOGIN REFUSED.* FROM <HOST>$
+            ^%(__prefix_line)s[iI](?:llegal|nvalid) user .* from <HOST>$
+            ^%(__prefix_line)sUser .+ from <HOST> not allowed because not listed in AllowUsers$
+            ^%(__prefix_line)srefused connect from \S+ \(<HOST>\)$
+            ^%(__prefix_line)sReceived disconnect from <HOST>: 11: Bye Bye$
+            ^%(__prefix_line)sConnection closed by <HOST>$
+
+# Ignore successful logins
+ignoreregex = ^%(__prefix_line)sAccepted .* for .* from <HOST>$
+
+# Additional security rules for web services (if enabled)
+[web-attacks]
+enabled = false
+failregex = ^<HOST> -.*"(GET|POST).*HTTP.*" (4\d\d|5\d\d)
+ignoreregex = ^<HOST> -.*"(GET|POST).*(\.css|\.js|\.png|\.jpg|\.ico).*HTTP.*" 200
+
+# Prevent port scanning
+[port-scan]
+enabled = true
+failregex = ^.* kernel: \[.*\] iptables denied: .* SRC=<HOST> .*
+ignoreregex =
+
+# Rate limiting for various services
+[rate-limit]
+enabled = true
+failregex = ^.* kernel: \[.*\] nft: rate-limit: .* SRC=<HOST> .*
+ignoreregex =
