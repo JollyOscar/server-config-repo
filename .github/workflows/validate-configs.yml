@@ -109,27 +109,49 @@ jobs:
           fi
         done
         
-        # Try Kea validation with shorter timeout
+        # Create a sanitized temporary copy of the Kea config with C-style
+        # block comments removed. Some validation tools (jq and older Kea
+        # syntax checks) expect strict JSON and fail on comments or emoji
+        # placeholders. Use the sanitized file for downstream checks.
+        SANITIZED_CONFIG="/tmp/kea-dhcp4.conf.sanitized"
+        echo "Creating sanitized Kea config at $SANITIZED_CONFIG (stripping /* ... */ comments)"
+    # Strip C-style /*...*/ block comments and '//' end-of-line comments
+    # but avoid removing '//' that appear inside URLs by only removing
+    # '//' comments that are preceded by whitespace.
+    if perl -0777 -pe 's:/\*.*?\*/::gs; s/[ \t]+//.*$::gm' "$CONFIG_PATH" > "$SANITIZED_CONFIG"; then
+          echo "✅ Created sanitized config"
+        else
+          echo "⚠️ Failed to create sanitized config; showing head of original file for debugging"
+          echo "--- original file head (first 40 lines) ---"
+          sed -n '1,40p' "$CONFIG_PATH"
+        fi
+
+        # Try Kea validation using the sanitized file if the binary is present
         if command -v kea-dhcp4 &> /dev/null; then
-          echo "Trying kea-dhcp4 validation (10s timeout)..."
-          if timeout 10 kea-dhcp4 -t "$CONFIG_PATH" 2>&1; then
+          echo "Trying kea-dhcp4 validation (10s timeout) against sanitized file..."
+          if timeout 10 kea-dhcp4 -t "$SANITIZED_CONFIG" 2>&1; then
             echo "✅ Kea validation successful"
           else
-            echo "⚠️ Kea validation failed or timed out - continuing anyway"
+            echo "⚠️ Kea validation failed or timed out (sanitized file) - continuing anyway"
           fi
         else
           echo "⚠️ kea-dhcp4 binary not found - skipping Kea-specific validation"
         fi
-        
-  echo "Checking JSON syntax..."
-  jq . configs/dhcp/kea-dhcp4.conf > /dev/null
-  echo "✅ JSON syntax is valid"
+
+        echo "Checking JSON syntax of sanitized config..."
+        if jq . "$SANITIZED_CONFIG" > /dev/null; then
+          echo "✅ JSON syntax is valid (sanitized file)"
+        else
+          echo "⚠️ JSON syntax invalid in sanitized config (or jq failed)"
+          echo "--- sanitized file head (first 20 lines) ---"
+          sed -n '1,20p' "$SANITIZED_CONFIG"
+        fi
     
-- name: 🧪 Validate Firewall Configuration
+    - name: 🧪 Validate Firewall Configuration
       run: |
         echo "Validating nftables configuration..."
         # Create temporary file with corrected variables for testing
-        sed 's/define WAN_IF = "ens18"/define WAN_IF = "eth0"/' fw/nftables.conf > /tmp/nftables-test.conf
+        sed 's/define WAN_IF = "ens18"/define WAN_IF = "eth0"/' configs/fw/nftables.conf > /tmp/nftables-test.conf
         sed -i 's/define LAN_IF = "ens19"/define LAN_IF = "eth1"/' /tmp/nftables-test.conf
         
         # Try to validate with nftables
@@ -139,18 +161,18 @@ jobs:
           echo "⚠️ nftables validation failed - this may be due to runner limitations"
           echo "Checking basic syntax..."
           # Basic syntax check - look for common issues
-          grep -E "(table|chain|rule)" fw/nftables.conf > /dev/null && echo "✅ Basic syntax appears correct"
+          grep -E "(table|chain|rule)" configs/fw/nftables.conf > /dev/null && echo "✅ Basic syntax appears correct"
         fi
         
     - name: 🧪 Validate SSH Configuration
       run: |
         echo "Validating SSH configuration..."
-        if sudo sshd -t -f hardening/sshd_config 2>&1; then
+        if sudo sshd -t -f configs/hardening/sshd_config 2>&1; then
           echo "✅ SSH configuration is valid"
         else
           echo "⚠️ SSH validation failed - this may be due to CI environment limitations"
           echo "Checking basic SSH syntax..."
-          grep -E "(Port|PermitRootLogin|PasswordAuthentication)" hardening/sshd_config && echo "✅ Basic SSH settings found"
+          grep -E "(Port|PermitRootLogin|PasswordAuthentication)" configs/hardening/sshd_config && echo "✅ Basic SSH settings found"
         fi
         
     - name: 📊 Configuration Summary

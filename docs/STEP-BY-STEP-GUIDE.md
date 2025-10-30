@@ -1,228 +1,202 @@
-﻿# 🚀 Complete Step-by-Step Deployment Walkthrough
+﻿# 🚀 Step-by-Step Manual Deployment Guide
 
-This guide walks you through the complete deployment of the server-config-repo network appliance from start to finish.
+This guide provides a detailed, step-by-step walkthrough for manually deploying and configuring the network appliance.
+For a faster, automated approach, see the main `README.md`.
 
-## 📋 Prerequisites Checklist
+## 1. Initial System Preparation
 
-### 🖥️ Hardware Requirements
+### 1.1. Connect to Your Server
 
-- [ ] **Server**: Ubuntu Server LTS 24.04 installed
-- [ ] **RAM**: Minimum 2GB (4GB recommended)
-- [ ] **Storage**: Minimum 20GB free space
-- [ ] **Network**: Two network interfaces available
-- [ ] **Access**: Console or SSH access with sudo privileges
+Connect to your newly installed Ubuntu 24.04 server via SSH or direct console access.
 
-### 🌐 Network Configuration
+### 1.2. Update System Packages
 
-- [ ] **WAN Interface** (`ens18`): Connected to upstream router/internet
-- [ ] **LAN Interface** (`ens19`): Connected to internal network
-- [ ] **IP Planning**: Internal network will use `10.207.0.0/24`
-- [ ] **Gateway**: This appliance will be `10.207.0.250`
-
----
-
-## 🎯 STEP 1: Initial System Preparation
-
-### 1.1 Connect to Your Server
+Ensure your system is up-to-date.
 
 ```bash
-# If using SSH from another machine:
-ssh username@your-server-ip
-
-# Or use console access directly
-```
-
-### 1.2 Update System Packages
-
-```bash
-# Update package lists and upgrade system
 sudo apt update && sudo apt upgrade -y
-
-# Reboot if kernel was updated
-sudo reboot  # (only if needed)
 ```
 
-### 1.3 Configure Network Interfaces
+### 1.3. Configure Network Interfaces (Netplan)
 
-Edit the netplan configuration:
+This is a critical step to ensure your server has the correct network configuration to function as a gateway.
+
+**A. Edit the Netplan Configuration File:**
 
 ```bash
 sudo nano /etc/netplan/00-installer-config.yaml
 ```
 
-Configure like this:
+**B. Set Static and DHCP Interfaces:**
+
+Replace the file's contents with the following, adjusting the interface names (`ens33`, `ens37`) to match your system.
 
 ```yaml
 network:
   version: 2
   ethernets:
-    ens18:  # WAN Interface
+    ens33:  # ⚠️ Your WAN Interface
       dhcp4: true
-      dhcp6: false
-    ens19:  # LAN Interface
+    ens37:  # ⚠️ Your LAN Interface
       addresses:
         - 10.207.0.250/24
-      dhcp4: false
-      dhcp6: false
 ```
 
-Apply the configuration:
+**C. Apply the Configuration:**
 
 ```bash
 sudo netplan apply
 ```
 
-### 1.4 Verify Network Configuration
+### 1.4. Verify Network and Clone Repository
+
+**A. Verify Connectivity:**
 
 ```bash
-# Check interface status
+# Check that your interfaces have the correct IPs
 ip addr show
 
-# Test connectivity
-ping -c 3 8.8.8.8  # Should work via ens18
+# Test internet connectivity (should work via your WAN interface)
+ping -c 3 8.8.8.8
 ```
 
----
-
-## 🎯 STEP 2: Repository Deployment
-
-### 2.1 Install Git and Clone Repository
+**B. Install Git and Clone the Repository:**
 
 ```bash
-# Install git
 sudo apt install -y git
-
-# Clone the repository
 cd /opt
 sudo git clone https://github.com/JollyOscar/server-config-repo.git
 cd server-config-repo
-
-# Set proper permissions
-sudo chown -R $USER:$USER /opt/server-config-repo
-```
-
-### 2.2 Make Scripts Executable
-
-```bash
-# Make deployment scripts executable
-chmod +x deploy-complete.sh
-chmod +x test-complete.sh
-chmod +x hardening/security-setup.sh
 ```
 
 ---
 
-## 🎯 STEP 3: Automated Deployment (Recommended)
+## 2. Replace Placeholders
 
-### 3.1 Run Complete Deployment Script
+Before deploying any configurations, you **must** replace all placeholder values.
+
+> **📖 Refer to the complete guide for this step:**
+> **[`docs/PLACEHOLDERS-GUIDE.md`](docs/PLACEHOLDERS-GUIDE.md)**
+
+After replacing placeholders, run the verification script to check your work:
 
 ```bash
-# Run the comprehensive deployment script
-sudo ./deploy-complete.sh
+bash scripts/verify-placeholders.sh
 ```
-
-**What this script does:**
-- ✅ Installs all required packages
-- ✅ Applies security hardening first
-- ✅ Configures DNS (BIND9)
-- ✅ Configures DHCP (Kea)
-- ✅ Configures Firewall (nftables)
-- ✅ Enables all services
-- ✅ Runs validation tests
-
-### 3.2 Monitor Deployment Progress
-
-The script will:
-1. Show progress for each phase
-2. Pause for confirmation at critical steps
-3. Display test results for each service
-4. Provide final status summary
 
 ---
 
-## 🎯 STEP 4: Manual Deployment (Alternative)
+## 3. Manual Service Deployment
 
-If you prefer manual control, follow these steps:
+Follow these steps to deploy each service one by one.
 
-### 4.1 Install Core Packages
+### 3.1. Install Core Packages
 
 ```bash
-# Install network services
-sudo apt install -y openssh-server bind9 kea-dhcp4 nftables fail2ban
-
-# Install security tools
-sudo apt install -y ufw aide rkhunter chkrootkit
-
-# Stop legacy services
-sudo systemctl stop isc-dhcp-server 2>/dev/null || true
-sudo systemctl disable isc-dhcp-server 2>/dev/null || true
+sudo apt install -y openssh-server bind9 kea-dhcp4-server nftables fail2ban aide rkhunter chkrootkit
 ```
 
-### 4.2 Apply Security Hardening
+### 3.2. Apply Security Hardening (Run First!)
+
+Hardening should always be the first configuration step.
+
+**A. Run the Hardening Script:**
+
+This script configures `sysctl`, sets up AIDE, and more.
 
 ```bash
-# Run security hardening (CRITICAL - do this first!)
-sudo ./hardening/security-setup.sh
+sudo bash scripts/hardening/security-setup.sh
+```
 
-# Apply SSH configuration
+**B. Deploy SSH Configuration:**
+
+This configuration enforces key-only authentication and changes the default port.
+
+```bash
+# Backup the original config
 sudo cp /etc/ssh/sshd_config /etc/ssh/sshd_config.backup
-sudo cp ./hardening/sshd_config /etc/ssh/
+
+# Copy the new hardened config
+sudo cp configs/hardening/sshd_config /etc/ssh/
 
 # Test and restart SSH
-sudo sshd -t && sudo systemctl restart ssh
+sudo sshd -t && sudo systemctl restart sshd
 ```
+> **🚨 WARNING:** Do not proceed unless you have configured your SSH keys. You may lock yourself out.
 
-### 4.3 Configure DNS Service
+### 3.3. Configure DNS (BIND9)
+
+This step sets up BIND9 to act as the internal DNS resolver.
+
+**A. Disable `systemd-resolved` Stub Listener:**
+
+`systemd-resolved` conflicts with BIND9 on port 53.
 
 ```bash
-# Backup original configuration
+sudo systemctl disable --now systemd-resolved
+sudo rm /etc/resolv.conf
+echo "nameserver 127.0.0.1" | sudo tee /etc/resolv.conf
+```
+
+**B. Deploy BIND9 Configuration:**
+
+```bash
+# Backup original files
 sudo cp /etc/bind/named.conf.local /etc/bind/named.conf.local.backup
 
-# Deploy new configuration
-sudo cp ./dns/named.conf.local /etc/bind/
-sudo cp ./configs/dns/db.forward-dns.template /etc/bind/
-sudo cp ./configs/dns/db.reverse-dns.template /etc/bind/
+# Copy new configuration files
+sudo cp configs/dns/named.conf.local /etc/bind/
+sudo cp configs/dns/db.forward-dns.template /etc/bind/
+sudo cp configs/dns/db.reverse-dns.template /etc/bind/
 
-# Set permissions
+# Set correct permissions
 sudo chown bind:bind /etc/bind/db.*
 sudo chmod 644 /etc/bind/db.*
 
-# Test and restart
+# Test and restart BIND9
 sudo named-checkconf
-sudo named-checkzone 0.207.10.in-addr.arpa /etc/bind/db.reverse-dns.template
 sudo systemctl restart bind9
 sudo systemctl enable bind9
 ```
 
-### 4.4 Configure DHCP Service
+### 3.4. Configure DHCP (Kea)
+
+This step configures Kea to manage IP address allocation for the LAN.
 
 ```bash
-# Backup original configuration
+# Backup original config
 sudo cp /etc/kea/kea-dhcp4.conf /etc/kea/kea-dhcp4.conf.backup
 
-# Deploy new configuration
-sudo cp ./dhcp/kea-dhcp4.conf /etc/kea/
+# Copy new configuration
+sudo cp configs/dhcp/kea-dhcp4.conf /etc/kea/
 
-# Test and restart
+# Test and restart Kea
 sudo kea-dhcp4 -t /etc/kea/kea-dhcp4.conf
-sudo systemctl restart kea-dhcp4
-sudo systemctl enable kea-dhcp4
+sudo systemctl restart kea-dhcp4-server
+sudo systemctl enable kea-dhcp4-server
 ```
 
-### 4.5 Configure Firewall
+### 3.5. Configure Firewall (nftables)
+
+This is the final step, which enables the firewall and NAT for the network.
+
+**A. Enable IP Forwarding:**
 
 ```bash
-# Enable IP forwarding (critical!)
 echo "net.ipv4.ip_forward=1" | sudo tee /etc/sysctl.d/99-ipforward.conf
 sudo sysctl -p /etc/sysctl.d/99-ipforward.conf
+```
 
-# Backup original configuration
+**B. Deploy Firewall Rules:**
+
+```bash
+# Backup original rules
 sudo cp /etc/nftables.conf /etc/nftables.conf.backup
 
-# Deploy new configuration
-sudo cp ./fw/nftables.conf /etc/nftables.conf
+# Copy new ruleset
+sudo cp configs/fw/nftables.conf /etc/
 
-# Test and restart
+# Test and restart nftables
 sudo nft -c -f /etc/nftables.conf
 sudo systemctl restart nftables
 sudo systemctl enable nftables
@@ -230,127 +204,19 @@ sudo systemctl enable nftables
 
 ---
 
-## 🔍 STEP 4.5: Placeholder Verification (Recommended)
+## 4. Final Verification
 
-### **Important: About False Positives**
-
-The verification script (`scripts/verify-placeholders.sh`) has been improved to filter out false positives. When you run it, pay attention to:
-
-- ❌ **Red X marks** = Critical issues that MUST be fixed
-- ⚠️  **Warning triangles** = Informational warnings (often OK)
-- ✅ **Green checks** = Verified and correct
-
-**Common false positives that are OK:**
-- `mycorp.lan` domain - fine for testing
-- Inline comments with ⚠️ markers - these are documentation
-- Placeholders mentioned in verification scripts themselves
-
-**Run verification anytime:**
-```bash
-sudo ./scripts/verify-placeholders.sh
-```
-
-The script will explain what needs fixing vs. what's just informational.
-
----
-
-## 🎯 STEP 5: Comprehensive Testing
-
-### 5.1 Run Complete Test Suite
+After deploying all services, run the comprehensive test script to ensure everything is working correctly.
 
 ```bash
-# Run comprehensive testing
-sudo ./test-complete.sh
+sudo bash scripts/test-complete.sh
 ```
 
-### 5.2 Manual Service Verification
+The script will validate:
+- DNS resolution (internal and external).
+- DHCP server responses.
+- Firewall rules and NAT functionality.
+- SSH hardening status.
+- The status of all critical services.
 
-```bash
-# Check all service status
-sudo systemctl status ssh bind9 kea-dhcp4 nftables
-
-# Test DNS resolution
-dig @127.0.0.1 gateway.mycorp.lan
-dig @127.0.0.1 google.com
-
-# Check DHCP service
-sudo journalctl -u kea-dhcp4 -n 10
-
-# Verify firewall rules
-sudo nft list ruleset | head -20
-```
-
----
-
-## 🎯 STEP 6: SSH Security Testing
-
-⚠️ **IMPORTANT**: Set up SSH keys BEFORE testing SSH configuration!
-
-> 📖 **For detailed SSH troubleshooting and recovery procedures**, see [`hardening/DEPLOYMENT.md`](hardening/DEPLOYMENT.md)
-
-### 6.1 Generate SSH Key Pair (on your client)
-
-```bash
-# Generate ED25519 key pair
-ssh-keygen -t ed25519 -C "your-email@example.com"
-
-# Copy public key to server (use current SSH session)
-ssh-copy-id -p 22 username@10.207.0.250  # Use current port first
-```
-
-### 6.2 Test SSH Access on New Port
-
-```bash
-# Test SSH on hardened port 2222
-ssh -p 2222 username@10.207.0.250
-
-# Verify password authentication is disabled
-ssh -o PreferredAuthentications=password -p 2222 username@10.207.0.250
-# Should fail with "Permission denied"
-```
-
----
-
-## 🎉 STEP 7: Deployment Complete
-
-### ✅ What You Now Have
-
-- **🛡️ Hardened SSH**: Port 2222, key-only authentication
-- **🌐 DNS Server**: Internal domain `mycorp.lan` + external forwarding  
-- **📡 DHCP Server**: Automatic IP assignment (10.207.0.100-200)
-- **🔥 Firewall**: NAT + stateful filtering with rate limiting
-- **🔒 Security**: fail2ban, AIDE monitoring, kernel hardening
-
-### 📊 Final Status Check
-
-```bash
-# Verify all services are running
-sudo systemctl status ssh bind9 kea-dhcp4 nftables --no-pager
-
-# Show network appliance summary
-echo "🌐 Network Appliance Ready!"
-echo "WAN: $(ip route get 8.8.8.8 | grep -oP 'src \K\S+')"
-echo "LAN: 10.207.0.250/24"
-echo "SSH: Port 2222 (key-only)"
-echo "DNS: Internal + External forwarding"
-echo "DHCP: 10.207.0.100-200"
-```
-
-### 🔧 Troubleshooting Resources
-
-- **Deployment Issues**: Check `/opt/server-config-repo/hardening/DEPLOYMENT.md`
-- **Service Logs**: `sudo journalctl -u <service-name>`
-- **Configuration Files**: Located in `/opt/server-config-repo/`
-- **Test Scripts**: Run `sudo ./test-complete.sh` anytime
-
----
-
-## 🚀 Next Steps
-
-1. **Monitor Logs**: Check service logs regularly for issues
-2. **Client Testing**: Connect multiple devices to test DHCP/DNS
-3. **Performance Tuning**: Adjust configurations based on usage
-4. **Regular Updates**: Keep system and configurations updated
-5. **Backup Schedule**: Set up automated configuration backups
-
-**🎊 Congratulations! Your enterprise-grade network appliance is operational!**
+**Congratulations! Your manual deployment is complete.**

@@ -1,34 +1,42 @@
-# 🔍 False Positives in Placeholder Verification
+# 🔍 Understanding "False Positives" in Verification
 
-This document explains warnings that may appear during placeholder verification but are **not actual problems**.
+This guide explains why the `verify-placeholders.sh` script might flag items that are not actual errors.
+Understanding these "false positives" will help you confidently assess the verification results.
 
 ## What is a False Positive?
 
-A false positive is when the verification script warns about a "placeholder" that is actually:
-- Documentation or a comment
-- Part of the verification script itself
-- A valid test/example value
-- Correct for your system but looks like a placeholder
+A false positive occurs when the verification script flags a piece of text as a placeholder that is, in fact, intentional.
+This can happen if the text is:
+- Part of a comment or documentation.
+- A valid example value (like `mycorp.lan`).
+- A necessary part of the script's own code.
+
+The current verification script is designed to be intelligent and ignore most of these, but it's still helpful to understand them.
 
 ---
 
-## Common False Positives
+## Common False Positives (and Why They Are Safe)
 
-### 1. "mycorp.lan" Domain
+### 1. The `mycorp.lan` Domain
 
-**Warning:**
+**Potential Warning:**
+
 ```
-⚠️  Found 'mycorp.lan' in 16 files
+⚠️  Found 'mycorp.lan' in 16 files. This may be a placeholder.
 ```
 
-**Why This Happens:**
-The default domain name is `mycorp.lan` which works perfectly for testing.
+**Explanation:**
 
-**Is This OK?**
-✅ **YES!** This is fine for testing and learning. Change it later when you have a real internal domain name.
+The repository uses `mycorp.lan` as a default, functional domain name for testing and demonstration purposes.
+It is not a broken value and works out-of-the-box.
 
-**How to Fix (Optional):**
-Edit these files if you want a custom domain:
+**Is This a Problem?**
+
+✅ **No.** This is the intended default. You only need to change this when you are ready to deploy with your own custom internal domain name.
+
+**How to Change (Optional):**
+
+If you have a custom domain, you can replace `mycorp.lan` in the following files:
 - `configs/dns/db.forward-dns.template`
 - `configs/dns/db.reverse-dns.template`
 - `configs/dns/named.conf.local`
@@ -36,94 +44,94 @@ Edit these files if you want a custom domain:
 
 ---
 
-### 2. Inline Comment Warnings
+### 2. Placeholders in Comments
 
-**Warning:**
+**Potential Warning:**
+
 ```
-Found 'REPLACE' in comments
+INFO: Found placeholder 'REPLACE' inside a comment.
 ```
 
-**Why This Happens:**
-Config files have helpful comments like:
+**Explanation:**
+
+Many configuration files contain helpful comments that include placeholder markers to guide you. For example:
+
 ```bash
-define WAN_IF = ens33  # ⚠️  REPLACE: Your WAN interface name
+# ⚠️ REPLACE: Your WAN interface name (e.g., ens33)
+define WAN_IF = "ens33"
 ```
 
-**Is This OK?**
-✅ **YES!** These are instructions for humans, not actual configuration values. The improved verification script filters these out.
+The script is designed to find placeholders, and sometimes it finds them in the instructional comments themselves.
 
-**How to Fix:**
-No fix needed! The improved `verify-placeholders.sh` ignores comments.
+**Is This a Problem?**
+
+✅ **No.** The improved `verify-placeholders.sh` script is smart enough to check if the placeholder is in a comment.
+It will inform you about it but will not treat it as an error that needs fixing.
 
 ---
 
-### 3. Verification Script Contains Placeholders
+### 3. Placeholders Within the Verification Script Itself
 
-**Warning:**
+**Potential Warning:**
+
 ```
-Found 'YOUR_USERNAME' in verify-placeholders.sh
+INFO: Found placeholder 'YOUR_USERNAME' in scripts/verify-placeholders.sh.
 ```
 
-**Why This Happens:**
-The verification script searches FOR these patterns, so they appear in the script itself.
+**Explanation:**
 
-**Is This OK?**
-✅ **YES!** The script needs these patterns to search for them. The improved script excludes itself from checks.
+The verification script must contain the placeholder patterns it is searching for.
+For example, to find `YOUR_USERNAME`, that exact string must exist within the script's code.
 
-**How to Fix:**
-No fix needed! This is expected and handled automatically.
+**Is This a Problem?**
+
+✅ **No.** This is expected behavior. The script is designed to ignore matches found within itself.
 
 ---
 
-### 4. SSH Username Doesn't Match Login
+### 4. Mismatched SSH Usernames
 
-**Warning:**
+**Potential Warning:**
+
 ```
-⚠️  WARNING: SSH allows 'alice' but you're logged in as 'bob'
-```
-
-**Why This Happens:**
-The SSH config allows a specific user, but you're currently logged in as a different user.
-
-**Is This OK?**
-⚠️  **MAYBE** - You need to decide:
-
-**Option A:** You want to SSH as your current user (`bob`)
-```bash
-sudo nano configs/hardening/sshd_config
-# Change: AllowUsers alice
-# To: AllowUsers bob
+⚠️  WARNING: SSH config allows user 'alice', but you are logged in as 'bob'.
 ```
 
-**Option B:** User `alice` exists and you'll use that account
-```bash
-# Make sure alice user exists:
-id alice
-```
+**Explanation:**
 
-**Option C:** Allow multiple users
-```bash
-sudo nano configs/hardening/sshd_config
-# Change: AllowUsers alice
-# To: AllowUsers alice bob
-```
+The `sshd_config` file specifies which users are allowed to log in via SSH.
+The script checks if your *current* Linux username is on that list. If not, it issues this warning.
+
+**Is This a Problem?**
+
+⚠️ **Maybe.** This is a genuine check that requires your judgment.
+
+- **Scenario A: The warning is correct.** You want to log in as `bob`, but the config only allows `alice`.
+  - **Fix:** Edit `configs/hardening/sshd_config` and change `AllowUsers alice` to `AllowUsers bob`.
+
+- **Scenario B: The warning is expected.** You are logged in as `bob` to run the deployment, but you fully intend to use the `alice` account for remote SSH access later.
+  - **Fix:** No fix is needed. You can safely ignore this warning, as your setup is intentional.
 
 ---
 
 ### 5. GitHub Workflow Files
 
 **Warning:**
+
 ```
 Found placeholders in .github/workflows/
 ```
 
 **Why This Happens:**
+
 CI/CD workflow files test the placeholder verification system.
 
 **Is This OK?**
+
 ✅ **YES!** These are for automated testing. The improved script excludes `.github` directories.
 
 **How to Fix:**
+
 No fix needed! Workflow files are excluded from verification.
 
 ---
@@ -133,6 +141,7 @@ No fix needed! Workflow files are excluded from verification.
 ### ❌ YOUR_USERNAME in Actual Config
 
 **Example:**
+
 ```bash
 # In configs/hardening/security-setup.sh:
 SSH_PUBLIC_KEY_URL="https://github.com/YOUR_USERNAME.keys"
@@ -141,6 +150,7 @@ SSH_PUBLIC_KEY_URL="https://github.com/YOUR_USERNAME.keys"
 **This is a REAL problem** - not a comment, actually used in the script.
 
 **Fix:**
+
 ```bash
 SSH_PUBLIC_KEY_URL="https://github.com/YourActualGitHubUsername.keys"
 ```
@@ -150,6 +160,7 @@ SSH_PUBLIC_KEY_URL="https://github.com/YourActualGitHubUsername.keys"
 ### ❌ Interface Names Don't Match System
 
 **Example:**
+
 ```
 ❌ Interface mismatch:
    nftables LAN_IF: ens37
@@ -159,7 +170,9 @@ SSH_PUBLIC_KEY_URL="https://github.com/YourActualGitHubUsername.keys"
 **This is a REAL problem** - config doesn't match your hardware.
 
 **Fix:**
+
 Check your actual interfaces:
+
 ```bash
 ip link show
 ```
@@ -171,6 +184,7 @@ Update config files to use your actual interface names.
 ### ❌ Placeholder MAC Address in DHCP
 
 **Example:**
+
 ```json
 "hw-address": "aa:bb:cc:dd:ee:ff",
 ```
@@ -178,7 +192,9 @@ Update config files to use your actual interface names.
 **This is a REAL problem** if it's not commented out or removed.
 
 **Fix:**
+
 Either remove the reservation or use a real MAC address:
+
 ```bash
 ip link show  # Find real MAC addresses
 ```
