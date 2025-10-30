@@ -1,0 +1,53 @@
+# OpenSSH server configuration file
+
+# Port number
+Port 22
+
+# Protocol version
+Protocol 2
+
+# HostKey file
+HostKey /etc/ssh/ssh_host_rsa_key
+HostKey /etc/ssh/ssh_host_ecdsa_key
+HostKey /etc/ssh/ssh_host_ed25519_key
+
+# Logging
+SyslogFacility AUTH
+LogLevel INFO
+
+# Authentication
+PermitRootLogin no
+PasswordAuthentication no
+ChallengeResponseAuthentication no
+UsePAM yes
+
+# Allow only specific users
+AllowUsers JollyOscar
+
+# Key based authentication
+PubkeyAuthentication yes
+AuthorizedKeysFile %h/.ssh/authorized_keys
+
+# Idle timeout interval
+ClientAliveInterval 300
+ClientAliveCountMax 2
+
+# X11 forwarding
+X11Forwarding yes
+X11DisplayOffset 10
+PrintMotd no
+PrintLastLog no
+TCPKeepAlive yes
+
+# Max start-ups
+MaxStartups 10:30:100
+
+# Banner
+Banner /etc/issue.net
+
+# Disable empty passwords
+PermitEmptyPasswords no
+
+# Ciphers and MACs
+Ciphers aes256-ctr,aes192-ctr,aes128-ctr
+MACs hmac-sha2-256,hmac-sha2-512

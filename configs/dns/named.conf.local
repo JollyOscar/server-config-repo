@@ -1,0 +1,16 @@
+//
+// Local zones configuration for mycorp.lan domain
+// Options are configured in /etc/bind/named.conf.options
+//
+
+zone "mycorp.lan" {
+    type master;
+    file "/etc/bind/db.forward-dns.template";
+    allow-update { none; };
+};
+
+zone "0.207.10.in-addr.arpa" {
+    type master;
+    file "/etc/bind/db.reverse-dns.template";
+    allow-update { none; };
+};

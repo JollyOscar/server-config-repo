@@ -18,9 +18,9 @@ jobs:
     - name: � Debug Repository Contents
       run: |
         echo "Repository structure:"
-        find . -name "*.conf" -o -name "*.local" | head -20
+        find . -type f -name "*.conf" -o -name "*.local" | head -20
         echo "DHCP directory contents:"
-        ls -la dhcp/ || echo "DHCP directory not found"
+        ls -la configs/dhcp/ || echo "DHCP directory not found"
         echo "Current working directory: $(pwd)"
       
     - name: �🔧 Install Dependencies
@@ -64,33 +64,33 @@ jobs:
         sudo mkdir -p /etc/bind
         
         # Create a test version of the config without the problematic directory directive
-        sed 's|directory "/var/cache/bind";|// directory "/var/cache/bind"; // Disabled for CI|' dns/named.conf.local > /tmp/named.conf.test
+        sed 's|directory "/var/cache/bind";|// directory "/var/cache/bind"; // Disabled for CI|' configs/dns/named.conf.local > /tmp/named.conf.test
         
         # Validate the modified configuration
         if named-checkconf /tmp/named.conf.test; then
           echo "✅ BIND9 configuration syntax is valid"
         else
           echo "⚠️ BIND9 configuration has issues, checking basic syntax..."
-          grep -E "(zone|options|allow-)" dns/named.conf.local > /dev/null && echo "✅ Basic BIND9 syntax appears correct"
+          grep -E "(zone|options|allow-)" configs/dns/named.conf.local > /dev/null && echo "✅ Basic BIND9 syntax appears correct"
         fi
         
         echo "Validating DNS zone files..."
-        named-checkzone mycorp.lan dns/db.mycorp.lan
-        named-checkzone 0.207.10.in-addr.arpa dns/db.10.207.0
+        named-checkzone mycorp.lan configs/dns/db.forward-dns.template
+        named-checkzone 0.207.10.in-addr.arpa configs/dns/db.reverse-dns.template
         
     - name: 🧪 Validate DHCP Configuration
       run: |
         echo "Validating Kea DHCP configuration..."
         
         # Check if the configuration file exists
-        if [[ ! -f "dhcp/kea-dhcp4.conf" ]]; then
-          echo "❌ Configuration file dhcp/kea-dhcp4.conf not found"
-          ls -la dhcp/
+        if [[ ! -f "configs/dhcp/kea-dhcp4.conf" ]]; then
+          echo "❌ Configuration file configs/dhcp/kea-dhcp4.conf not found"
+          ls -la configs/dhcp/
           exit 1
         fi
         
         # Get absolute path for Kea validation
-        CONFIG_PATH="$(pwd)/dhcp/kea-dhcp4.conf"
+        CONFIG_PATH="$(pwd)/configs/dhcp/kea-dhcp4.conf"
         echo "Configuration file path: $CONFIG_PATH"
         
         # Debug file permissions and accessibility
@@ -121,11 +121,11 @@ jobs:
           echo "⚠️ kea-dhcp4 binary not found - skipping Kea-specific validation"
         fi
         
-        echo "Checking JSON syntax..."
-        jq . dhcp/kea-dhcp4.conf > /dev/null
-        echo "✅ JSON syntax is valid"
-        
-    - name: 🧪 Validate Firewall Configuration
+  echo "Checking JSON syntax..."
+  jq . configs/dhcp/kea-dhcp4.conf > /dev/null
+  echo "✅ JSON syntax is valid"
+    
+- name: 🧪 Validate Firewall Configuration
       run: |
         echo "Validating nftables configuration..."
         # Create temporary file with corrected variables for testing

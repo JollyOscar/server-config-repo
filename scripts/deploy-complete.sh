@@ -1,5 +1,33 @@
 #!/bin/bash
-# 🚀 Server Configuration Repository - Complete Deployment Guide
+# 🚀 Ser# 🔍 PLACEHOLDER VERIFICATION (Optional Check)
+echo ""
+echo "🔍 PLACEHOLDER VERIFICATION (Optional)"
+echo "-------------------------------------"
+echo "Running improved placeholder check..."
+if [ -f "./verify-placeholders.sh" ]; then
+    bash ./verify-placeholders.sh
+    if [ $? -ne 0 ]; then
+        echo ""
+        echo "⚠️  Placeholders found - review the output above"
+        echo "📖 Many warnings are false positives or informational"
+        echo "   - 'mycorp.lan' domain is OK for testing"
+        echo "   - Comments with ⚠️ markers are documentation"
+        echo "   - Verify SSH username matches your actual user"
+        echo ""
+        read -p "Continue with deployment anyway? (y/n): " -n 1 -r
+        echo
+        if [[ ! $REPLY =~ ^[Yy]$ ]]; then
+            echo "❌ Deployment cancelled by user"
+            exit 1
+        fi
+    else
+        echo "✅ Placeholder verification passed!"
+    fi
+else
+    echo "⚠️  Placeholder verification script not found, proceeding..."
+fi
+echo ""
+read -p "Press Enter to continue with deployment..."epository - Complete Deployment Guide
 # Repository: https://github.com/JollyOscar/server-config-repo
 # Branch: markdown-customization (latest with enhanced documentation)
 
@@ -12,14 +40,34 @@ echo "📋 PHASE 1: PRE-DEPLOYMENT CHECKLIST"
 echo "-----------------------------------"
 echo "✅ Ubuntu Server LTS 24.04 installed"
 echo "✅ Two network interfaces configured:"
-echo "   - ens18 (WAN): DHCP from upstream"
-echo "   - ens19 (LAN): Static 10.207.0.250/24"
+echo "   - ens33 (WAN): DHCP from upstream"
+echo "   - ens37 (LAN): Static 10.207.0.250/24"
 echo "✅ SSH access available"
 echo "✅ Root/sudo privileges available"
 echo ""
 read -p "Press Enter when pre-deployment checklist is complete..."
 
-# 🔄 PHASE 2: SYSTEM PREPARATION
+# � PLACEHOLDER VERIFICATION
+echo ""
+echo "🔍 PLACEHOLDER VERIFICATION"
+echo "---------------------------"
+echo "Checking for unreplaced placeholders..."
+if [ -f "./verify-placeholders.sh" ]; then
+    bash ./verify-placeholders.sh
+    if [ $? -ne 0 ]; then
+        echo ""
+        echo "❌ DEPLOYMENT STOPPED: Placeholders found!"
+        echo "📖 Please see PLACEHOLDERS-GUIDE.md and fix issues above"
+        exit 1
+    fi
+    echo "✅ Placeholder verification passed"
+else
+    echo "⚠️  Placeholder verification script not found, proceeding..."
+fi
+echo ""
+read -p "Press Enter to continue with deployment..."
+
+# �🔄 PHASE 2: SYSTEM PREPARATION
 echo ""
 echo "🔄 PHASE 2: SYSTEM PREPARATION"
 echo "------------------------------"
@@ -27,7 +75,7 @@ echo "Updating system packages..."
 sudo apt update && sudo apt upgrade -y
 
 echo "Installing core network services..."
-sudo apt install -y openssh-server bind9 kea-dhcp4 nftables fail2ban
+sudo apt install -y openssh-server bind9 kea-dhcp4-server nftables fail2ban
 
 echo "Installing security tools..."
 sudo apt install -y ufw aide rkhunter chkrootkit git
@@ -57,14 +105,14 @@ echo "-------------------------------"
 echo "CRITICAL: Applying security hardening FIRST..."
 
 echo "Making security setup script executable..."
-sudo chmod +x ./hardening/security-setup.sh
+sudo chmod +x ./configs/hardening/security-setup.sh
 
 echo "Running comprehensive security hardening..."
-sudo ./hardening/security-setup.sh
+sudo ./configs/hardening/security-setup.sh
 
 echo "Applying SSH hardening (Ubuntu-aligned)..."
 sudo cp /etc/ssh/sshd_config /etc/ssh/sshd_config.backup
-sudo cp ./hardening/sshd_config /etc/ssh/
+sudo cp ./configs/hardening/sshd_config /etc/ssh/
 
 echo "Testing SSH configuration..."
 sudo sshd -t
@@ -82,12 +130,24 @@ fi
 echo ""
 echo "🌐 PHASE 5: DNS SERVICE DEPLOYMENT"
 echo "----------------------------------"
+
+echo "Configuring systemd-resolved to not conflict with BIND9..."
+sudo mkdir -p /etc/systemd/resolved.conf.d
+sudo tee /etc/systemd/resolved.conf.d/no-stub.conf > /dev/null <<'EOF'
+[Resolve]
+DNSStubListener=no
+DNS=127.0.0.1
+EOF
+
+sudo systemctl restart systemd-resolved
+echo "✅ systemd-resolved configured"
+
 echo "Configuring BIND9 DNS service..."
 
 sudo cp /etc/bind/named.conf.local /etc/bind/named.conf.local.backup
-sudo cp ./dns/named.conf.local /etc/bind/
-sudo cp ./dns/db.mycorp.lan /etc/bind/
-sudo cp ./dns/db.10.207.0 /etc/bind/
+sudo cp ./configs/dns/named.conf.local /etc/bind/
+sudo cp ./configs/dns/db.forward-dns.template /etc/bind/
+sudo cp ./configs/dns/db.reverse-dns.template /etc/bind/
 
 echo "Setting BIND9 file permissions..."
 sudo chown bind:bind /etc/bind/db.*
@@ -95,8 +155,8 @@ sudo chmod 644 /etc/bind/db.*
 
 echo "Testing BIND9 configuration..."
 sudo named-checkconf /etc/bind/named.conf.local
-sudo named-checkzone mycorp.lan /etc/bind/db.mycorp.lan
-sudo named-checkzone 0.207.10.in-addr.arpa /etc/bind/db.10.207.0
+sudo named-checkzone mycorp.lan /etc/bind/db.forward-dns.template
+sudo named-checkzone 0.207.10.in-addr.arpa /etc/bind/db.reverse-dns.template
 
 if [ $? -eq 0 ]; then
     echo "✅ DNS configuration valid"
@@ -114,15 +174,15 @@ echo "-----------------------------------"
 echo "Configuring Kea DHCP service..."
 
 sudo cp /etc/kea/kea-dhcp4.conf /etc/kea/kea-dhcp4.conf.backup
-sudo cp ./dhcp/kea-dhcp4.conf /etc/kea/
+sudo cp ./configs/dhcp/kea-dhcp4.conf /etc/kea/
 
 echo "Testing Kea DHCP configuration..."
 sudo kea-dhcp4 -t /etc/kea/kea-dhcp4.conf
 
 if [ $? -eq 0 ]; then
     echo "✅ DHCP configuration valid"
-    sudo systemctl restart kea-dhcp4
-    sudo systemctl enable kea-dhcp4
+    sudo systemctl restart kea-dhcp4-server
+    sudo systemctl enable kea-dhcp4-server
 else
     echo "❌ DHCP configuration invalid"
     exit 1
@@ -139,7 +199,7 @@ echo "net.ipv4.ip_forward=1" | sudo tee /etc/sysctl.d/99-ipforward.conf
 sudo sysctl -p /etc/sysctl.d/99-ipforward.conf
 
 sudo cp /etc/nftables.conf /etc/nftables.conf.backup
-sudo cp ./fw/nftables.conf /etc/nftables.conf
+sudo cp ./configs/fw/nftables.conf /etc/nftables.conf
 
 echo "Testing nftables configuration..."
 sudo nft -c -f /etc/nftables.conf
@@ -159,7 +219,7 @@ echo "🔧 PHASE 8: SERVICE VERIFICATION"
 echo "--------------------------------"
 echo "Checking all service status..."
 
-services=("ssh" "bind9" "kea-dhcp4" "nftables")
+services=("ssh" "bind9" "kea-dhcp4-server" "nftables")
 for service in "${services[@]}"; do
     if systemctl is-active --quiet $service; then
         echo "✅ $service is running"
@@ -179,7 +239,7 @@ nslookup gateway.mycorp.lan 127.0.0.1 || echo "⚠️  DNS local resolution test
 nslookup google.com 127.0.0.1 || echo "⚠️  DNS external forwarding test failed"
 
 echo "2. Testing DHCP service..."
-sudo journalctl -u kea-dhcp4 --no-pager -n 5
+sudo journalctl -u kea-dhcp4-server --no-pager -n 5
 
 echo "3. Testing firewall rules..."
 sudo nft list ruleset | head -20
@@ -195,7 +255,7 @@ echo "Setting up monitoring and maintenance..."
 
 echo "Creating maintenance scripts..."
 sudo mkdir -p /opt/maintenance
-sudo cp ./hardening/security-setup.sh /opt/maintenance/
+sudo cp ./configs/hardening/security-setup.sh /opt/maintenance/
 sudo chmod +x /opt/maintenance/*
 
 echo "Setting up log rotation..."
@@ -222,7 +282,7 @@ echo "3. Monitor logs for any issues"
 echo "4. Set up regular backups"
 echo ""
 echo "📊 Service Status Summary:"
-systemctl status ssh bind9 kea-dhcp4 nftables --no-pager -l
+systemctl status ssh bind9 kea-dhcp4-server nftables --no-pager -l
 echo ""
 echo "🔧 For troubleshooting, see: /opt/server-config-repo/hardening/DEPLOYMENT.md"
 echo ""

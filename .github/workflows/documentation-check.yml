@@ -35,10 +35,10 @@ jobs:
         
         required_files=(
           "README.md"
-          "dhcp/README.md"
-          "dns/README.md" 
-          "fw/README.md"
-          "hardening/README.md"
+          "configs/dhcp/README.md"
+          "configs/dns/README.md" 
+          "configs/fw/README.md"
+          "configs/hardening/README.md"
         )
         
         missing_files=()
@@ -61,26 +61,26 @@ jobs:
         echo "Verifying configuration file naming conventions..."
         
         # Check for correct Kea DHCP filename
-        if [[ -f "dhcp/kea-dhcp4.conf" ]]; then
+        if [[ -f "configs/dhcp/kea-dhcp4.conf" ]]; then
           echo "✅ Kea DHCP configuration file correctly named"
         else
-          echo "❌ Missing dhcp/kea-dhcp4.conf"
+          echo "❌ Missing configs/dhcp/kea-dhcp4.conf"
           exit 1
         fi
         
         # Check for correct BIND9 filename  
-        if [[ -f "dns/named.conf.local" ]]; then
+        if [[ -f "configs/dns/named.conf.local" ]]; then
           echo "✅ BIND9 configuration file correctly named"
         else
-          echo "❌ Missing dns/named.conf.local"
+          echo "❌ Missing configs/dns/named.conf.local"
           exit 1
         fi
         
         # Check for correct nftables filename
-        if [[ -f "fw/nftables.conf" ]]; then
+        if [[ -f "configs/fw/nftables.conf" ]]; then
           echo "✅ nftables configuration file correctly named"
         else
-          echo "❌ Missing fw/nftables.conf" 
+          echo "❌ Missing configs/fw/nftables.conf" 
           exit 1
         fi
         

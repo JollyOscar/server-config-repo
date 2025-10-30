@@ -2,7 +2,7 @@
 
 [![BIND9](https://img.shields.io/badge/BIND9-9.18+-blue?style=for-the-badge&logo=cloudflare&logoColor=white)](https://www.isc.org/bind/)
 [![Security](https://img.shields.io/badge/Security-Hardened-success?style=for-the-badge&logo=shield&logoColor=white)](./named.conf.local)
-[![Domain](https://img.shields.io/badge/Internal%20Domain-mycorp.lan-purple?style=for-the-badge&logo=domain&logoColor=white)](./db.mycorp.lan)
+[![Domain](https://img.shields.io/badge/Internal%20Domain-mycorp.lan-purple?style=for-the-badge&logo=domain&logoColor=white)](./db.forward-dns.template)
 
 ---
 

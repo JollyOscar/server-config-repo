@@ -180,8 +180,8 @@ sudo cp /etc/bind/named.conf.local /etc/bind/named.conf.local.backup
 
 # Deploy new configuration
 sudo cp ./dns/named.conf.local /etc/bind/
-sudo cp ./dns/db.mycorp.lan /etc/bind/
-sudo cp ./dns/db.10.207.0 /etc/bind/
+sudo cp ./configs/dns/db.forward-dns.template /etc/bind/
+sudo cp ./configs/dns/db.reverse-dns.template /etc/bind/
 
 # Set permissions
 sudo chown bind:bind /etc/bind/db.*
@@ -189,7 +189,7 @@ sudo chmod 644 /etc/bind/db.*
 
 # Test and restart
 sudo named-checkconf
-sudo named-checkzone mycorp.lan /etc/bind/db.mycorp.lan
+sudo named-checkzone 0.207.10.in-addr.arpa /etc/bind/db.reverse-dns.template
 sudo systemctl restart bind9
 sudo systemctl enable bind9
 ```
@@ -227,6 +227,30 @@ sudo nft -c -f /etc/nftables.conf
 sudo systemctl restart nftables
 sudo systemctl enable nftables
 ```
+
+---
+
+## 🔍 STEP 4.5: Placeholder Verification (Recommended)
+
+### **Important: About False Positives**
+
+The verification script (`scripts/verify-placeholders.sh`) has been improved to filter out false positives. When you run it, pay attention to:
+
+- ❌ **Red X marks** = Critical issues that MUST be fixed
+- ⚠️  **Warning triangles** = Informational warnings (often OK)
+- ✅ **Green checks** = Verified and correct
+
+**Common false positives that are OK:**
+- `mycorp.lan` domain - fine for testing
+- Inline comments with ⚠️ markers - these are documentation
+- Placeholders mentioned in verification scripts themselves
+
+**Run verification anytime:**
+```bash
+sudo ./scripts/verify-placeholders.sh
+```
+
+The script will explain what needs fixing vs. what's just informational.
 
 ---
 

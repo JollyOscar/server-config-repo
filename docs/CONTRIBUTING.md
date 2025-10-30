@@ -83,7 +83,7 @@ sudo apt install -y bind9-utils kea-dhcp4 nftables
 ```bash
 # Validate DNS configuration
 named-checkconf dns/named.conf.local
-named-checkzone mycorp.lan dns/db.mycorp.lan
+named-checkzone mycorp.lan configs/dns/db.forward-dns.template
 
 # Validate DHCP configuration  
 kea-dhcp4 -t dhcp/kea-dhcp4.conf

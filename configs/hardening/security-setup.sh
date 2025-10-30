@@ -1,7 +1,10 @@
 #!/bin/bash
+# 🚨 CRITICAL SECURITY WARNING: This script contains placeholders!
+# ⚠️  DO NOT RUN without replacing ALL placeholder values first!
+# 📖 See PLACEHOLDERS-GUIDE.md for complete instructions
+#
 # Security Hardening Script for Network Appliance
-# Run with sudo privileges
-# Replace placeholders with your actual configuration
+# Run with sudo privileges AFTER replacing placeholders
 
 set -euo pipefail
 
@@ -13,10 +16,10 @@ if [[ $EUID -ne 0 ]]; then
    exit 1
 fi
 
-# Variables - REPLACE THESE WITH YOUR ACTUAL VALUES
-ADMIN_USER="admin"                    # Replace with your admin username
-SSH_PUBLIC_KEY_URL="https://github.com/YOUR_USERNAME.keys"  # Replace with your GitHub keys URL
-FAIL2BAN_EMAIL="admin@mycorp.lan"     # Replace with your email
+# ⚠️  CRITICAL VARIABLES - REPLACE THESE WITH YOUR ACTUAL VALUES BEFORE RUNNING!
+ADMIN_USER="admin"                    # ⚠️  REPLACE: Your actual admin username
+SSH_PUBLIC_KEY_URL="https://github.com/YOUR_USERNAME.keys"  # ⚠️  REPLACE: Your GitHub username
+FAIL2BAN_EMAIL="admin@mycorp.lan"     # ⚠️  REPLACE: Your actual email address
 
 echo "📋 Hardening checklist:"
 echo "  - Update system packages"
@@ -79,9 +82,9 @@ echo "⚠️  Replace SSH_PUBLIC_KEY_URL with your actual GitHub keys URL"
 
 # Create example authorized_keys file
 cat > "$SSH_DIR/authorized_keys" << EOF
-# Add your SSH public keys here
+# ⚠️  ADD YOUR SSH PUBLIC KEYS HERE BEFORE RUNNING THIS SCRIPT!
 # Example: ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAAB... user@hostname
-# You can get your keys from: https://github.com/YOUR_USERNAME.keys
+# ⚠️  You can get your keys from: https://github.com/YOUR_USERNAME.keys (replace YOUR_USERNAME)
 EOF
 
 chmod 600 "$SSH_DIR/authorized_keys"
@@ -108,8 +111,11 @@ EOF
 
 # Initialize AIDE database
 echo "🔍 Initializing file integrity monitoring..."
-aideinit
-mv /var/lib/aide/aide.db.new /var/lib/aide/aide.db
+# AIDE initialization disabled for deployment speed (takes 20-30 minutes)
+# Run manually after deployment: sudo aideinit
+# aideinit
+# mv /var/lib/aide/aide.db.new /var/lib/aide/aide.db
+echo "⚠️  AIDE initialization disabled (run 'sudo aideinit' manually after deployment)"
 
 # Schedule security checks
 echo "⏰ Setting up automated security checks..."

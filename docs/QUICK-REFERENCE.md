@@ -122,7 +122,7 @@ sudo dhclient -v ens19  # On client machine
 sudo systemctl status bind9
 
 # Check zone files
-sudo named-checkzone mycorp.lan /etc/bind/db.mycorp.lan
+sudo named-checkzone mycorp.lan /etc/bind/db.forward-dns.template
 
 # Test resolution
 nslookup gateway.mycorp.lan 127.0.0.1
