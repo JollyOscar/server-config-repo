@@ -1,0 +1,54 @@
+name: CI — Lint documentation & scripts
+
+on:
+  pull_request:
+    branches: [ main ]
+  push:
+    branches: [ post-testing-checks ]
+
+jobs:
+  lint:
+    name: Lint Markdown and Shell Scripts
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v4
+
+    - name: Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '18'
+
+    - name: Install markdownlint-cli
+      run: |
+        npm install -g markdownlint-cli
+
+    - name: Run markdownlint
+      run: |
+        echo "Running markdownlint across repository..."
+        # Use the repo config if present, otherwise default rules will apply
+        if [ -f .markdownlint.json ]; then
+          markdownlint "**/*.md" --config .markdownlint.json
+        else
+          markdownlint "**/*.md"
+        fi
+
+    - name: Install shellcheck
+      run: |
+        sudo apt-get update && sudo apt-get install -y shellcheck
+
+    - name: Run shellcheck and basic bash syntax checks
+      run: |
+        echo "Running shellcheck on scripts/*.sh (if present)"
+        set -e
+        sh_files=(scripts/*.sh)
+        if [ -e "${sh_files[0]}" ]; then
+          shellcheck scripts/*.sh || true
+          # Also run bash -n for a quick syntax check
+          for f in scripts/*.sh; do
+            bash -n "$f" || true
+          done
+        else
+          echo "No shell scripts found in scripts/ to lint"
+        fi
