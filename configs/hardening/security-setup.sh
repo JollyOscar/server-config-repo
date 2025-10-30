@@ -41,9 +41,9 @@ apt install -y fail2ban ufw logwatch rkhunter chkrootkit aide
 echo "🛡️  Configuring fail2ban..."
 
 # Deploy custom user rules
-if [ -f "/opt/server-config-repo/hardening/user.rules" ]; then
+if [ -f "/opt/server-config-repo/configs/hardening/user.rules" ]; then
     echo "📋 Deploying custom fail2ban filter rules..."
-    cp /opt/server-config-repo/hardening/user.rules /etc/fail2ban/filter.d/
+    cp /opt/server-config-repo/configs/hardening/user.rules /etc/fail2ban/filter.d/
     chown root:root /etc/fail2ban/filter.d/user.rules
     chmod 644 /etc/fail2ban/filter.d/user.rules
 else
@@ -113,7 +113,7 @@ chown -R "$ADMIN_USER:$ADMIN_USER" "$SSH_DIR"
 
 # Apply sysctl security settings
 echo "⚙️  Applying kernel security parameters..."
-cp /opt/server-config-repo/hardening/sysctl-security.conf /etc/sysctl.d/99-security.conf
+cp /opt/server-config-repo/configs/hardening/sysctl-security.conf /etc/sysctl.d/99-security.conf
 sysctl -p /etc/sysctl.d/99-security.conf
 
 # Configure log rotation and monitoring

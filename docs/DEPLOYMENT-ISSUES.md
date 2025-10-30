@@ -37,7 +37,7 @@ Having an `options {}` block in both files causes a redefinition error.
 
 ### Issue #4: AIDE Initialization Hangs Deployment
 
-**File:** `scripts/hardening/security-setup.sh`
+**File:** `configs/hardening/security-setup.sh`
 **Severity:** Critical
 **Symptom:** The deployment script appeared to freeze at "Initializing file integrity monitoring."
 **Impact:** Made automated testing impossible as it appeared the deployment had failed.
@@ -107,7 +107,7 @@ Having an `options {}` block in both files causes a redefinition error.
 
 ### Issue #6: Hardcoded Admin Username
 
-**Files:** `configs/hardening/sshd_config`, `scripts/hardening/security-setup.sh`
+**Files:** `configs/hardening/sshd_config`, `configs/hardening/security-setup.sh`
 **Severity:** Medium
 **Symptom:** SSH allows user 'admin' or 'your_username' instead of actual user
 **Impact:** SSH access doesn't work for JollyOscar user

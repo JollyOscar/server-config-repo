@@ -39,7 +39,7 @@ fi
 
 echo ""
 echo "Checking for placeholder MAC address in DHCP config..."
-MAC_IN_DHCP=$(grep "aa:bb:cc:dd:ee:ff" ../configs/dhcp/kea-dhcp4.conf 2>/dev/null | grep -v "^//" | grep -v "^#" | grep -v "⚠️")
+MAC_IN_DHCP=$(grep "aa:bb:cc:dd:ee:ff" configs/dhcp/kea-dhcp4.conf 2>/dev/null | grep -v "^//" | grep -v "^#" | grep -v "⚠️")
 
 if [ -n "$MAC_IN_DHCP" ]; then
     echo "❌ Found placeholder MAC address in DHCP config:"
@@ -53,7 +53,7 @@ fi
 echo ""
 echo "Checking for 'mycorp.lan' domain..."
 MYCORP_IN_CONFIG=$(grep -r "mycorp.lan" \
-    ../configs/dns/ ../configs/dhcp/ \
+    configs/dns/ configs/dhcp/ \
     --include="*.conf" \
     --include="db.*" \
     2>/dev/null | wc -l)
@@ -72,9 +72,9 @@ echo "----------------------"
 
 # Check interface consistency (improved parsing)
 echo "Checking interface name consistency..."
-WAN_IF=$(grep "define WAN_IF" ../configs/fw/nftables.conf 2>/dev/null | awk -F'=' '{print $2}' | awk '{print $1}' | tr -d ' ')
-LAN_IF=$(grep "define LAN_IF" ../configs/fw/nftables.conf 2>/dev/null | awk -F'=' '{print $2}' | awk '{print $1}' | tr -d ' ')
-DHCP_IF=$(grep -A1 '"interfaces"' ../configs/dhcp/kea-dhcp4.conf 2>/dev/null | grep '"ens' | tr -d ' "[],' | head -1)
+WAN_IF=$(grep "define WAN_IF" configs/fw/nftables.conf 2>/dev/null | awk -F'=' '{print $2}' | awk '{print $1}' | tr -d ' ')
+LAN_IF=$(grep "define LAN_IF" configs/fw/nftables.conf 2>/dev/null | awk -F'=' '{print $2}' | awk '{print $1}' | tr -d ' ')
+DHCP_IF=$(grep -A1 '"interfaces"' configs/dhcp/kea-dhcp4.conf 2>/dev/null | grep '"ens' | tr -d ' "[],' | head -1)
 
 if [ -z "$LAN_IF" ] || [ -z "$DHCP_IF" ]; then
     echo "⚠️  Could not parse interface names"
@@ -89,7 +89,7 @@ fi
 
 echo ""
 echo "Checking SSH username configuration..."
-SSH_USER=$(grep "^AllowUsers" ../configs/hardening/sshd_config 2>/dev/null | awk '{print $2}')
+SSH_USER=$(grep "^AllowUsers" configs/hardening/sshd_config 2>/dev/null | awk '{print $2}')
 CURRENT_USER=${SUDO_USER:-$(whoami)}
 
 if [ -z "$SSH_USER" ]; then

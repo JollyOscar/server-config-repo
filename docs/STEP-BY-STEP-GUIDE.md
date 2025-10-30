@@ -126,7 +126,7 @@ Hardening should always be the first configuration step.
 This script configures `sysctl`, sets up AIDE, fail2ban with custom rules, and more.
 
 ```bash
-sudo bash scripts/hardening/security-setup.sh
+sudo bash configs/hardening/security-setup.sh
 ```
 
 The script automatically deploys:

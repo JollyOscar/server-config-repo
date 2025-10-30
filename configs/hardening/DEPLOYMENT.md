@@ -2,7 +2,7 @@
 
 This guide provides detailed SSH hardening procedures following Ubuntu's official recommendations.
 
-> ⚠️ **For complete system deployment**, see [`STEP-BY-STEP-GUIDE.md`](../STEP-BY-STEP-GUIDE.md) in the repository root.
+> ⚠️ **For complete system deployment**, see [`STEP-BY-STEP-GUIDE.md`](../../docs/STEP-BY-STEP-GUIDE.md) in the repository root.
 
 ## Pre-Deployment Checklist
 
@@ -75,7 +75,7 @@ The `user.rules` file contains enhanced intrusion detection patterns:
 
 ```bash
 # Deploy custom fail2ban rules
-sudo cp /opt/server-config-repo/hardening/user.rules /etc/fail2ban/filter.d/
+sudo cp /opt/server-config-repo/configs/hardening/user.rules /etc/fail2ban/filter.d/
 sudo chown root:root /etc/fail2ban/filter.d/user.rules
 sudo chmod 644 /etc/fail2ban/filter.d/user.rules
 
