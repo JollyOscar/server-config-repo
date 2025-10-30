@@ -115,7 +115,10 @@ jobs:
         # placeholders. Use the sanitized file for downstream checks.
         SANITIZED_CONFIG="/tmp/kea-dhcp4.conf.sanitized"
         echo "Creating sanitized Kea config at $SANITIZED_CONFIG (stripping /* ... */ comments)"
-        if perl -0777 -pe 's:/\*.*?\*/::gs' "$CONFIG_PATH" > "$SANITIZED_CONFIG"; then
+    # Strip C-style /*...*/ block comments and '//' end-of-line comments
+    # but avoid removing '//' that appear inside URLs by only removing
+    # '//' comments that are preceded by whitespace.
+    if perl -0777 -pe 's:/\*.*?\*/::gs; s/[ \t]+//.*$::gm' "$CONFIG_PATH" > "$SANITIZED_CONFIG"; then
           echo "✅ Created sanitized config"
         else
           echo "⚠️ Failed to create sanitized config; showing head of original file for debugging"
