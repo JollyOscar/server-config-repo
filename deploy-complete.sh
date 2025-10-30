@@ -27,7 +27,7 @@ echo "Updating system packages..."
 sudo apt update && sudo apt upgrade -y
 
 echo "Installing core network services..."
-sudo apt install -y openssh-server bind9 kea-dhcp4 nftables fail2ban
+sudo apt install -y openssh-server bind9 kea-dhcp4-server nftables fail2ban
 
 echo "Installing security tools..."
 sudo apt install -y ufw aide rkhunter chkrootkit git
@@ -82,6 +82,18 @@ fi
 echo ""
 echo "🌐 PHASE 5: DNS SERVICE DEPLOYMENT"
 echo "----------------------------------"
+
+echo "Configuring systemd-resolved to not conflict with BIND9..."
+sudo mkdir -p /etc/systemd/resolved.conf.d
+sudo tee /etc/systemd/resolved.conf.d/no-stub.conf > /dev/null <<'EOF'
+[Resolve]
+DNSStubListener=no
+DNS=127.0.0.1
+EOF
+
+sudo systemctl restart systemd-resolved
+echo "✅ systemd-resolved configured"
+
 echo "Configuring BIND9 DNS service..."
 
 sudo cp /etc/bind/named.conf.local /etc/bind/named.conf.local.backup
@@ -121,8 +133,8 @@ sudo kea-dhcp4 -t /etc/kea/kea-dhcp4.conf
 
 if [ $? -eq 0 ]; then
     echo "✅ DHCP configuration valid"
-    sudo systemctl restart kea-dhcp4
-    sudo systemctl enable kea-dhcp4
+    sudo systemctl restart kea-dhcp4-server
+    sudo systemctl enable kea-dhcp4-server
 else
     echo "❌ DHCP configuration invalid"
     exit 1
@@ -159,7 +171,7 @@ echo "🔧 PHASE 8: SERVICE VERIFICATION"
 echo "--------------------------------"
 echo "Checking all service status..."
 
-services=("ssh" "bind9" "kea-dhcp4" "nftables")
+services=("ssh" "bind9" "kea-dhcp4-server" "nftables")
 for service in "${services[@]}"; do
     if systemctl is-active --quiet $service; then
         echo "✅ $service is running"
@@ -179,7 +191,7 @@ nslookup gateway.mycorp.lan 127.0.0.1 || echo "⚠️  DNS local resolution test
 nslookup google.com 127.0.0.1 || echo "⚠️  DNS external forwarding test failed"
 
 echo "2. Testing DHCP service..."
-sudo journalctl -u kea-dhcp4 --no-pager -n 5
+sudo journalctl -u kea-dhcp4-server --no-pager -n 5
 
 echo "3. Testing firewall rules..."
 sudo nft list ruleset | head -20
@@ -222,7 +234,7 @@ echo "3. Monitor logs for any issues"
 echo "4. Set up regular backups"
 echo ""
 echo "📊 Service Status Summary:"
-systemctl status ssh bind9 kea-dhcp4 nftables --no-pager -l
+systemctl status ssh bind9 kea-dhcp4-server nftables --no-pager -l
 echo ""
 echo "🔧 For troubleshooting, see: /opt/server-config-repo/hardening/DEPLOYMENT.md"
 echo ""
