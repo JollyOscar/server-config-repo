@@ -59,6 +59,97 @@ ip link show        # On each device
 arp -a             # From DHCP server
 ```
 
+---
+
+## ⚠️  Understanding False Positives
+
+The verification script may report placeholders that are **actually OK**:
+
+### ✅ **These Are NOT Problems:**
+
+1. **Comments and Documentation**
+   - `# ⚠️  REPLACE: Your username` - These are instructions, not config
+   - Warning markers in config files are helpful reminders
+   - Comments explaining what to change are documentation
+
+2. **Verification Scripts Themselves**
+   - `verify-placeholders.sh` contains search patterns
+   - `verify-placeholders.ps1` contains the same patterns
+   - These scripts LOOK FOR placeholders, they don't USE them
+
+3. **GitHub Workflows**
+   - `.github/workflows/*.yml` files for CI/CD
+   - These test placeholder detection, not actual config
+
+4. **Default Domain Names**
+   - `mycorp.lan` is a valid test domain
+   - OK to deploy with this and change later
+   - Customize when you have a real internal domain
+
+5. **Example Values in Comments**
+   - `"hw-address": "aa:bb:cc:dd:ee:ff",  // Example - replace with actual MAC`
+   - These are documentation showing the format
+
+### ❌ **These ARE Real Problems:**
+
+1. **Uncommented Placeholders in Config Files**
+   - `SSH_PUBLIC_KEY_URL="https://github.com/YOUR_USERNAME.keys"` (not in a comment)
+   - `"hw-address": "aa:bb:cc:dd:ee:ff"` (not commented out or in a comment line)
+   - `AllowUsers YOUR_USERNAME_HERE` (not in a comment)
+
+2. **Interface Name Mismatches**
+   - nftables says `ens33` but your system has `eth0`
+   - DHCP says `ens37` but your system has `eth1`
+   - These MUST match your actual interface names from `ip link show`
+
+3. **Wrong Username in SSH Config**
+   - You're user `alice` but SSH allows only `bob`
+   - Will lock you out after deployment!
+   - SSH username must match an actual user on the system
+
+4. **Placeholder Email Addresses**
+   - `admin@mycorp.lan` won't receive fail2ban alerts
+   - Should be changed to a real monitored email
+
+## 🔍 **How to Verify:**
+
+Run the verification script:
+```bash
+sudo ./scripts/verify-placeholders.sh
+```
+
+**Read the output carefully:**
+- ❌ Red X = Must fix before deployment
+- ⚠️  Warning triangle = Review, might be OK
+- ✅ Green check = All good!
+- ℹ️  Info = Explanation about false positives
+
+The improved script now filters out false positives automatically!
+
+### **Example of Good Output:**
+
+```
+✅ No 'YOUR_USERNAME' placeholders in config files
+✅ No placeholder MAC addresses in DHCP config
+⚠️  Found 'mycorp.lan' in 16 files
+   ℹ️  This is OK for testing! Change later if needed.
+✅ Interface names consistent: ens37
+✅ SSH username configured: alice
+```
+
+### **Example of Issues to Fix:**
+
+```
+❌ Found 'YOUR_USERNAME' in actual configuration:
+hardening/security-setup.sh:SSH_PUBLIC_KEY_URL="https://github.com/YOUR_USERNAME.keys"
+
+❌ Interface mismatch:
+   nftables LAN_IF: ens37
+   DHCP interface: eth1
+```
+
+---
+
 ## 🔍 Finding All Placeholders
 
 Search for placeholders using these patterns:

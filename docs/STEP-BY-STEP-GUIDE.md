@@ -230,6 +230,30 @@ sudo systemctl enable nftables
 
 ---
 
+## 🔍 STEP 4.5: Placeholder Verification (Recommended)
+
+### **Important: About False Positives**
+
+The verification script (`scripts/verify-placeholders.sh`) has been improved to filter out false positives. When you run it, pay attention to:
+
+- ❌ **Red X marks** = Critical issues that MUST be fixed
+- ⚠️  **Warning triangles** = Informational warnings (often OK)
+- ✅ **Green checks** = Verified and correct
+
+**Common false positives that are OK:**
+- `mycorp.lan` domain - fine for testing
+- Inline comments with ⚠️ markers - these are documentation
+- Placeholders mentioned in verification scripts themselves
+
+**Run verification anytime:**
+```bash
+sudo ./scripts/verify-placeholders.sh
+```
+
+The script will explain what needs fixing vs. what's just informational.
+
+---
+
 ## 🎯 STEP 5: Comprehensive Testing
 
 ### 5.1 Run Complete Test Suite

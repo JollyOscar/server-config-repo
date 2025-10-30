@@ -1,5 +1,33 @@
 #!/bin/bash
-# 🚀 Server Configuration Repository - Complete Deployment Guide
+# 🚀 Ser# 🔍 PLACEHOLDER VERIFICATION (Optional Check)
+echo ""
+echo "🔍 PLACEHOLDER VERIFICATION (Optional)"
+echo "-------------------------------------"
+echo "Running improved placeholder check..."
+if [ -f "./verify-placeholders.sh" ]; then
+    bash ./verify-placeholders.sh
+    if [ $? -ne 0 ]; then
+        echo ""
+        echo "⚠️  Placeholders found - review the output above"
+        echo "📖 Many warnings are false positives or informational"
+        echo "   - 'mycorp.lan' domain is OK for testing"
+        echo "   - Comments with ⚠️ markers are documentation"
+        echo "   - Verify SSH username matches your actual user"
+        echo ""
+        read -p "Continue with deployment anyway? (y/n): " -n 1 -r
+        echo
+        if [[ ! $REPLY =~ ^[Yy]$ ]]; then
+            echo "❌ Deployment cancelled by user"
+            exit 1
+        fi
+    else
+        echo "✅ Placeholder verification passed!"
+    fi
+else
+    echo "⚠️  Placeholder verification script not found, proceeding..."
+fi
+echo ""
+read -p "Press Enter to continue with deployment..."epository - Complete Deployment Guide
 # Repository: https://github.com/JollyOscar/server-config-repo
 # Branch: markdown-customization (latest with enhanced documentation)
 
