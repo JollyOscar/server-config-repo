@@ -12,14 +12,34 @@ echo "📋 PHASE 1: PRE-DEPLOYMENT CHECKLIST"
 echo "-----------------------------------"
 echo "✅ Ubuntu Server LTS 24.04 installed"
 echo "✅ Two network interfaces configured:"
-echo "   - ens18 (WAN): DHCP from upstream"
-echo "   - ens19 (LAN): Static 10.207.0.250/24"
+echo "   - ens33 (WAN): DHCP from upstream"
+echo "   - ens37 (LAN): Static 10.207.0.250/24"
 echo "✅ SSH access available"
 echo "✅ Root/sudo privileges available"
 echo ""
 read -p "Press Enter when pre-deployment checklist is complete..."
 
-# 🔄 PHASE 2: SYSTEM PREPARATION
+# � PLACEHOLDER VERIFICATION
+echo ""
+echo "🔍 PLACEHOLDER VERIFICATION"
+echo "---------------------------"
+echo "Checking for unreplaced placeholders..."
+if [ -f "./verify-placeholders.sh" ]; then
+    bash ./verify-placeholders.sh
+    if [ $? -ne 0 ]; then
+        echo ""
+        echo "❌ DEPLOYMENT STOPPED: Placeholders found!"
+        echo "📖 Please see PLACEHOLDERS-GUIDE.md and fix issues above"
+        exit 1
+    fi
+    echo "✅ Placeholder verification passed"
+else
+    echo "⚠️  Placeholder verification script not found, proceeding..."
+fi
+echo ""
+read -p "Press Enter to continue with deployment..."
+
+# �🔄 PHASE 2: SYSTEM PREPARATION
 echo ""
 echo "🔄 PHASE 2: SYSTEM PREPARATION"
 echo "------------------------------"

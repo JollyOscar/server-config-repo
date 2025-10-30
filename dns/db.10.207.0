@@ -1,7 +1,12 @@
+; 🚨 CRITICAL: This file contains placeholders - DO NOT deploy as-is!
+; ⚠️  1. If using different subnet, RENAME FILE (e.g., db.192.168.1)
+; ⚠️  2. REPLACE all IP addresses with your actual infrastructure
+; ⚠️  3. UPDATE named.conf.local to reference correct subnet
+; 📖 See PLACEHOLDERS-GUIDE.md for complete instructions
+;
 ; BIND9 Reverse Zone File for 10.207.0.x network
-; Replace IP addresses with your actual infrastructure
 $TTL    604800
-@       IN      SOA     dns.mycorp.lan. admin.mycorp.lan. (
+@       IN      SOA     dns.mycorp.lan. admin.mycorp.lan. (  ; ⚠️  REPLACE: your domain
                               1         ; Serial (increment for changes)
                          604800         ; Refresh
                           86400         ; Retry
@@ -11,14 +16,14 @@ $TTL    604800
 ; Name servers
 @       IN      NS      dns.mycorp.lan.
 
-; PTR records for reverse DNS lookups
-; Replace these with your actual server names and last octet of IP
-250     IN      PTR     dns.mycorp.lan.
-250     IN      PTR     gateway.mycorp.lan.
-250     IN      PTR     router.mycorp.lan.
+; ⚠️  PTR records for reverse DNS lookups - REPLACE WITH YOUR INFRASTRUCTURE
+; ⚠️  Replace these with your actual server names and last octet of IP
+250     IN      PTR     dns.mycorp.lan.         ; ⚠️  Gateway/DNS server
+250     IN      PTR     gateway.mycorp.lan.     ; ⚠️  Same server, different names
+250     IN      PTR     router.mycorp.lan.      ; ⚠️  Same server, different names
 
-; Example internal hosts (replace with actual infrastructure)
-50      IN      PTR     server.mycorp.lan.
-101     IN      PTR     workstation1.mycorp.lan.
-102     IN      PTR     workstation2.mycorp.lan.
-110     IN      PTR     printer.mycorp.lan.
+; ⚠️  EXAMPLE internal hosts - REPLACE WITH YOUR ACTUAL INFRASTRUCTURE
+50      IN      PTR     server.mycorp.lan.         ; ⚠️  REPLACE: Your main server
+101     IN      PTR     workstation1.mycorp.lan.   ; ⚠️  REPLACE: Your workstations
+102     IN      PTR     workstation2.mycorp.lan.   ; ⚠️  REPLACE: Adjust or remove
+110     IN      PTR     printer.mycorp.lan.        ; ⚠️  REPLACE: Your network printer

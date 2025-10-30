@@ -1,7 +1,13 @@
+; 🚨 CRITICAL: This file contains placeholders - DO NOT deploy as-is!
+; ⚠️  1. RENAME FILE to match your domain (e.g., db.yourdomain.com)
+; ⚠️  2. REPLACE all "mycorp.lan" with your actual domain
+; ⚠️  3. UPDATE all IP addresses to match your infrastructure
+; ⚠️  4. MODIFY named.conf.local to reference new filename
+; 📖 See PLACEHOLDERS-GUIDE.md for complete instructions
+;
 ; BIND9 Forward Zone File for mycorp.lan
-; Replace domain names and IPs with your actual infrastructure
 $TTL    604800
-@       IN      SOA     dns.mycorp.lan. admin.mycorp.lan. (
+@       IN      SOA     dns.mycorp.lan. admin.mycorp.lan. (  ; ⚠️  REPLACE: your actual domain
                               1         ; Serial (increment for changes)
                          604800         ; Refresh
                           86400         ; Retry
@@ -11,18 +17,18 @@ $TTL    604800
 ; Name servers
 @       IN      NS      dns.mycorp.lan.
 
-; A records for internal hosts
-; Replace these with your actual server names and IP addresses
-dns             IN      A       10.207.0.250
-gateway         IN      A       10.207.0.250
-router          IN      A       10.207.0.250
+; ⚠️  A records for internal hosts - REPLACE WITH YOUR ACTUAL INFRASTRUCTURE
+; ⚠️  Replace these with your actual server names and IP addresses
+dns             IN      A       10.207.0.250    ; ⚠️  Gateway/DNS server IP
+gateway         IN      A       10.207.0.250    ; ⚠️  Same as DNS for this setup
+router          IN      A       10.207.0.250    ; ⚠️  Same as DNS for this setup
 
-; Example internal hosts (replace with actual infrastructure)
-server          IN      A       10.207.0.50
-workstation1    IN      A       10.207.0.101
-workstation2    IN      A       10.207.0.102
-printer         IN      A       10.207.0.110
+; ⚠️  EXAMPLE internal hosts - REPLACE WITH YOUR ACTUAL INFRASTRUCTURE
+server          IN      A       10.207.0.50     ; ⚠️  REPLACE: Your main server
+workstation1    IN      A       10.207.0.101    ; ⚠️  REPLACE: Your workstations
+workstation2    IN      A       10.207.0.102    ; ⚠️  REPLACE: Adjust or remove
+printer         IN      A       10.207.0.110    ; ⚠️  REPLACE: Your network printer
 
-; CNAME records (aliases)
-mail            IN      CNAME   server.mycorp.lan.
-www             IN      CNAME   server.mycorp.lan.
+; ⚠️  CNAME records (aliases) - REPLACE WITH YOUR ACTUAL SERVICES
+mail            IN      CNAME   server.mycorp.lan.    ; ⚠️  REPLACE: Your mail server
+www             IN      CNAME   server.mycorp.lan.    ; ⚠️  REPLACE: Your web server
