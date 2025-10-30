@@ -69,6 +69,23 @@ ps -A | grep sshd
 sudo ss -lnp | grep sshd
 ```
 
+### 3. Deploy Fail2ban Custom Rules
+
+The `user.rules` file contains enhanced intrusion detection patterns:
+
+```bash
+# Deploy custom fail2ban rules
+sudo cp /opt/server-config-repo/hardening/user.rules /etc/fail2ban/filter.d/
+sudo chown root:root /etc/fail2ban/filter.d/user.rules
+sudo chmod 644 /etc/fail2ban/filter.d/user.rules
+
+# Restart fail2ban to load new rules
+sudo systemctl restart fail2ban
+
+# Verify custom rules are loaded
+sudo fail2ban-client status
+```
+
 ### Test Connection
 
 ```bash
@@ -77,6 +94,10 @@ ssh -p 2222 username@server_ip
 
 # Check SSH logs for issues
 sudo tail -f /var/log/auth.log
+
+# Monitor fail2ban activity
+sudo fail2ban-client status sshd
+sudo fail2ban-client status custom-ssh
 ```
 
 ## Recovery Procedures

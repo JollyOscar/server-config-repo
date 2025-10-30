@@ -39,6 +39,17 @@ apt install -y fail2ban ufw logwatch rkhunter chkrootkit aide
 
 # Configure fail2ban
 echo "🛡️  Configuring fail2ban..."
+
+# Deploy custom user rules
+if [ -f "/opt/server-config-repo/hardening/user.rules" ]; then
+    echo "📋 Deploying custom fail2ban filter rules..."
+    cp /opt/server-config-repo/hardening/user.rules /etc/fail2ban/filter.d/
+    chown root:root /etc/fail2ban/filter.d/user.rules
+    chmod 644 /etc/fail2ban/filter.d/user.rules
+else
+    echo "⚠️  Warning: user.rules not found, using default fail2ban filters"
+fi
+
 cat > /etc/fail2ban/jail.local << EOF
 [DEFAULT]
 bantime = 3600
@@ -54,6 +65,16 @@ port = 2222
 logpath = /var/log/auth.log
 maxretry = 3
 bantime = 7200
+filter = sshd[mode=aggressive]
+
+# Enable custom user rules if available
+[custom-ssh]
+enabled = true
+port = 2222
+logpath = /var/log/auth.log
+filter = user
+maxretry = 2
+bantime = 10800
 EOF
 
 systemctl enable fail2ban

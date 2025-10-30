@@ -50,6 +50,16 @@ echo ""
 echo "2.4 Fail2ban Status..."
 sudo systemctl status fail2ban --no-pager -l 2>/dev/null || echo "Fail2ban not running"
 
+echo ""
+echo "2.5 Fail2ban Custom Rules Check..."
+if [ -f "/etc/fail2ban/filter.d/user.rules" ]; then
+    echo "✅ Custom user.rules deployed successfully"
+    echo "📋 Active fail2ban jails:"
+    sudo fail2ban-client status 2>/dev/null || echo "⚠️ Could not get fail2ban status"
+else
+    echo "⚠️  Custom user.rules not found in /etc/fail2ban/filter.d/"
+fi
+
 # 🌐 TEST SUITE 3: DNS SERVICE TESTING
 echo ""
 echo "🌐 TEST 3: DNS SERVICE TESTING"
